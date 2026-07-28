@@ -37,6 +37,10 @@
   </script>
 
   <style>
+    /* Global overflow safety: prevent any fixed-width element from creating horizontal scroll */
+    html, body { overflow-x: hidden; width: 100%; }
+    img, svg { max-width: 100%; }
+
     /* Hero background — Figma artwork */
     .hero-bg {
       background-image:
@@ -109,8 +113,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       min-height: 69px;
-      padding: 0 24px;
+      padding: 14px 20px;
       cursor: pointer;
       list-style: none;
       font-size: 14px;
@@ -119,7 +124,7 @@
     .faq-summary::-webkit-details-marker { display: none; }
     .faq-chev { height: 20px; width: 20px; flex: none; color: rgba(255,255,255,0.7); transition: transform 0.25s; }
     details[open] .faq-chev { transform: rotate(180deg); }
-    .faq-answer { padding: 0 24px 18px; font-size: 13px; line-height: 1.6; color: rgba(216,204,228,0.6); }
+    .faq-answer { padding: 0 20px 18px; font-size: 13px; line-height: 1.6; color: rgba(216,204,228,0.6); }
 
     /* ---- Expert Minds ---- */
     .expert-bg {
@@ -225,6 +230,7 @@
     .feature-card {
       position: relative;
       width: 215px;
+      max-width: 100%;
       height: 150px;               /* uniform size for every card */
       border-radius: 1rem;
       border: 1px solid rgba(255,255,255,0.07);
@@ -260,19 +266,72 @@
     @media (min-width: 768px) {
       .fc-line-r, .fc-line-l { display: block; }
     }
+
+    /* ---- Mobile nav drawer (added for responsiveness; visual style matches existing navbar) ---- */
+    .mobile-nav-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .mobile-nav-panel.open { max-height: 400px; }
+
+    /* ---- Shadow at both the top and bottom edge of every section ----
+       Adds soft dark gradients hugging both edges of each section so
+       adjoining sections blend into one another with no visible seam.
+       Purely visual, non-interactive, and clipped by each section's
+       existing overflow so nothing else about layout/spacing changes. */
+    section { position: relative; }
+    section::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 40px;
+      background: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%);
+      pointer-events: none;
+      z-index: 30;
+    }
+    section::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%);
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    /* ---- Section height safety net ----
+       Design sections were authored as fixed h-screen blocks with overflow-hidden.
+       On short / narrow mobile viewports that clips content, so below 1024px
+       sections use min-height instead and are allowed to grow with their content.
+       At lg+ the original locked-viewport composition is preserved untouched. */
+    .screen-section {
+      min-height: 100vh;
+      height: auto;
+    }
+    @media (min-width: 1024px) {
+      .screen-section {
+        height: 100vh;
+        overflow: hidden;
+      }
+    }
   </style>
 </head>
 
-<body class="font-sans antialiased bg-plum-900 text-white">
+<body class="font-sans antialiased bg-plum-900 text-white overflow-x-hidden">
 
   <!-- ===================== HERO ===================== -->
-  <section class="hero-fallback relative min-h-screen w-full overflow-hidden">
+  <section class="hero-fallback relative min-h-[100dvh] w-full overflow-hidden">
     <!-- image layer -->
     <div class="hero-bg absolute inset-0"></div>
 
     <!-- ---------- Navbar ---------- -->
     <header class="relative z-20 border-b border-white/10 bg-plum-900/40 backdrop-blur-md rounded-b-2xl">
-      <div class="mx-auto flex max-w-shell items-center justify-between px-6 py-4 lg:px-8">
+      <div class="mx-auto flex max-w-shell items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
 
         <!-- Logo -->
         <a href="#" class="flex items-center gap-2">
@@ -281,11 +340,11 @@
               <path d="M12 3c1.6 1.7 2.4 3.4 2.4 5.1 0 .9-.2 1.7-.6 2.5 1.4-.4 2.7-1.3 3.9-2.6.3 2.2-.2 4-1.6 5.4-1 1-2.3 1.7-4.1 2.1 1.8.4 3.1 1.1 4.1 2.1-1.6.3-3 .1-4.2-.5-.9-.5-1.6-1.1-2.3-2-.7.9-1.4 1.5-2.3 2-1.2.6-2.6.8-4.2.5 1-1 2.3-1.7 4.1-2.1-1.8-.4-3.1-1.1-4.1-2.1C5.3 13 4.8 11.2 5.1 9c1.2 1.3 2.5 2.2 3.9 2.6-.4-.8-.6-1.6-.6-2.5C8.4 6.4 9.2 4.7 12 3z"/>
             </svg>
           </span>
-          <span class="text-[22px] font-inter tracking-tight">Ettazenn</span>
+          <span class="text-[20px] sm:text-[22px] font-inter tracking-tight">Ettazenn</span>
         </a>
 
-        <!-- Nav links -->
-        <nav class="hidden font-DM Sans items-center gap-9 text-[15px] text-white/85 md:flex">
+        <!-- Nav links (desktop) -->
+        <nav class="hidden font-DM Sans items-center gap-9 text-[15px] text-white/85 lg:flex">
           <a href="#" class="font-medium text-white">Home</a>
           <a href="#" class="transition hover:text-white">Features</a>
           <a href="#" class="transition hover:text-white">Explore</a>
@@ -293,12 +352,47 @@
         </nav>
 
         <!-- Right actions -->
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
+        <div class="flex items-center gap-2 sm:gap-4">
+          <div class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
             <button class="rounded-full font-DM Sans bg-white/15 px-3 py-1 font-medium text-white">EN</button>
             <button class="rounded-full font-DM Sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
           </div>
-          <a href="#" class="rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20">
+          <a href="#" class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20">
+            Log in
+          </a>
+
+          <!-- Mobile hamburger toggle (opens drawer below) -->
+          <button
+            id="navToggle"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+            aria-controls="mobileNavPanel"
+            class="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white lg:hidden"
+          >
+            <svg id="navIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="h-5 w-5">
+              <path d="M3 6h18M3 12h18M3 18h18"/>
+            </svg>
+            <svg id="navIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="hidden h-5 w-5">
+              <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav drawer -->
+      <div id="mobileNavPanel" class="mobile-nav-panel border-t border-white/10 lg:hidden">
+        <div class="flex flex-col gap-4 px-4 py-5 sm:px-6">
+          <a href="#" class="text-[15px] font-medium text-white">Home</a>
+          <a href="#" class="text-[15px] text-white/80 transition hover:text-white">Features</a>
+          <a href="#" class="text-[15px] text-white/80 transition hover:text-white">Explore</a>
+          <a href="#" class="text-[15px] text-white/80 transition hover:text-white">Coaches</a>
+
+          <div class="flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] w-fit">
+            <button class="rounded-full bg-white/15 px-3 py-1.5 font-medium text-white">EN</button>
+            <button class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
+          </div>
+
+          <a href="#" class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20">
             Log in
           </a>
         </div>
@@ -306,26 +400,26 @@
     </header>
 
     <!-- ---------- Hero copy (bottom-aligned, centered) ---------- -->
-    <div class="relative z-10 flex min-h-[calc(100vh-80px)] flex-col items-center justify-end pb-20 text-center">
-      <h1 class="max-w-3xl font-inter px-6 text-[44px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[52px]">
+    <div class="relative z-10 flex min-h-[calc(100dvh-80px)] flex-col items-center justify-end pb-14 sm:pb-20 text-center">
+      <h1 class="max-w-3xl font-inter px-4 sm:px-6 text-[32px] sm:text-[44px] font-extrabold leading-[1.1] tracking-tight text-white md:text-[52px]">
         Strengthen Your Body. Anytime.
       </h1>
 
-      <p class="mt-4 font-inter font-inter max-w-xl px-6 text-[15px] leading-relaxed text-lavender">
+      <p class="mt-4 font-inter max-w-xl px-4 sm:px-6 text-[14px] sm:text-[15px] leading-relaxed text-lavender">
         A sanctuary for the digital soul. Immerse yourself in guided practices
         designed to align your body and spirit under the celestial canopy.
       </p>
 
       <!-- Store badges -->
-    <div class="mt-8 flex items-center justify-center gap-4">
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 px-4 xs:flex-row sm:gap-4">
   <a
     href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Download on the App Store"
-    class="flex items-center gap-2 rounded-xl bg-black/85 px-4 py-2.5 ring-1 ring-white/15 transition hover:bg-black"
+    class="flex w-full items-center justify-center gap-2 rounded-xl bg-black/85 px-4 py-2.5 ring-1 ring-white/15 transition hover:bg-black xs:w-auto"
   >
-    <svg viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-white">
+    <svg viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-white shrink-0">
       <path d="M16.365 1.43c0 1.14-.417 2.09-1.25 2.85-.83.76-1.79 1.2-2.79 1.12-.13-1.09.42-2.24 1.2-2.98.85-.8 2.02-1.32 2.84-1.36.02.12.02.24 0 .37zM20.5 17.2c-.55 1.27-.82 1.84-1.53 2.97-.99 1.57-2.39 3.53-4.12 3.55-1.54.01-1.94-1-4.03-.99-2.09.01-2.52 1.01-4.06.99-1.73-.02-3.05-1.79-4.04-3.36-2.77-4.39-3.06-9.54-1.35-12.28 1.21-1.95 3.13-3.09 4.93-3.09 1.83 0 2.98 1 4.5 1 1.47 0 2.36-1 4.48-1 1.6 0 3.3.87 4.51 2.38-3.96 2.17-3.32 7.82.71 9.83z"/>
     </svg>
     <span class="text-left leading-none">
@@ -339,9 +433,9 @@
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Get it on Google Play"
-    class="flex items-center gap-2 rounded-xl bg-black/85 px-4 py-2.5 ring-1 ring-white/15 transition hover:bg-black"
+    class="flex w-full items-center justify-center gap-2 rounded-xl bg-black/85 px-4 py-2.5 ring-1 ring-white/15 transition hover:bg-black xs:w-auto"
   >
-    <svg viewBox="0 0 24 24" class="h-6 w-6">
+    <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0">
       <path fill="#EA4335" d="M3.6 2.2 13.4 12 3.6 21.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1z"/>
       <path fill="#FBBC04" d="m17.2 8.3 3.1 1.8c1 .6 1 2.2 0 2.8l-3.1 1.8L14 12l3.2-3.7z"/>
       <path fill="#34A853" d="M3.6 21.8 13.4 12l3.8 2.7-11.1 6.4c-.9.5-1.9.3-2.5-.3z"/>
@@ -358,27 +452,27 @@
   </section>
 
   <!-- ===================== COURSES & SPECIALIZED PRACTICES ===================== -->
-  <section class="flex h-screen flex-col items-center justify-center overflow-hidden bg-[#15111e] px-6 py-10">
+  <section class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-10">
     <div class="w-full max-w-shell">
 
       <!-- Section heading -->
       <div class="mx-auto max-w-xl text-center">
-        <h2 class="text-[30px] font-inter tracking-tight text-white sm:text-[34px]">
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
           Courses &amp; Specialized Practices
         </h2>
-        <p class="mx-auto font-DM Sans mt-3 max-w-md text-[14px] leading-relaxed text-lavender/60">
+        <p class="mx-auto font-DM Sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of Tai Chi.
         </p>
       </div>
 
-      <!-- Feature card  (Figma: 1065 x 673, gap 50 — capped to viewport so the section never scrolls) -->
-      <div class="relative mx-auto mt-8 flex h-[calc(100vh-230px)] max-h-[673px] min-h-[400px] w-full max-w-[1065px] items-center rounded-[28px] bg-gradient-to-br from-[#4b3d6b] via-[#3d3160] to-[#2f2547] p-8 shadow-2xl shadow-black/40 ring-1 ring-white/5 sm:p-12 lg:p-14">
+      <!-- Feature card  (Figma: 1065 x 673, gap 50 — capped to viewport on desktop so the section never scrolls) -->
+      <div class="relative mx-auto mt-8 flex min-h-[420px] w-full max-w-[1065px] items-center rounded-[24px] bg-gradient-to-br from-[#4b3d6b] via-[#3d3160] to-[#2f2547] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5 sm:rounded-[28px] sm:p-10 lg:h-[calc(100vh-230px)] lg:max-h-[673px] lg:p-14">
 
         <!-- Award seal (top-right): scalloped medal + ribbon tails -->
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linejoin="round" stroke-linecap="round"
-             class="absolute right-10 -top-6 h-14 w-14 text-white/15">
+             class="absolute right-6 -top-6 hidden h-14 w-14 text-white/15 sm:right-10 md:block">
           <!-- scalloped seal edge (12 bumps) -->
           <path d="M32 13 L34.85 15.38 L38.5 14.74 L39.78 18.22 L43.26 19.5 L42.62 23.15
                    L45 26 L42.62 28.85 L43.26 32.5 L39.78 33.78 L38.5 37.26 L34.85 36.62
@@ -391,14 +485,14 @@
           <path d="M37 37 L40 53 L34 48.5" />
         </svg>
 
-        <div class="flex w-full flex-col items-center gap-[50px] md:flex-row md:justify-between">
+        <div class="flex w-full flex-col items-center gap-8 md:flex-row md:justify-between md:gap-[50px]">
 
           <!-- Left: copy -->
           <div class="max-w-md text-center md:text-left">
-            <h3 class="text-[38px] font-inter leading-[1.1] text-white sm:text-[40px]">
+            <h3 class="text-[30px] sm:text-[38px] font-inter leading-[1.1] text-white md:text-[40px]">
               Learn from<br />Experts.
             </h3>
-            <p class="mt-5 font-DM Sans text-[14px] leading-relaxed text-lavender/70">
+            <p class="mt-5 font-DM Sans text-[13px] sm:text-[14px] leading-relaxed text-lavender/70">
               Master the ancient arts with modern instruction.
               From deep-flow Yoga to the moving meditation of minds.
             </p>
@@ -410,11 +504,11 @@
 
           <!-- Right: glowing meditation icon -->
           <div class="shrink-0">
-            <div class="grid h-52 w-52 place-items-center rounded-full bg-white/[0.04]">
-              <div class="grid h-40 w-40 place-items-center rounded-full bg-white/[0.05]">
-                <div class="grid h-28 w-28 place-items-center rounded-full bg-brand/25 shadow-[0_0_40px_-4px_rgba(139,92,246,0.6)]">
+            <div class="grid h-40 w-40 place-items-center rounded-full bg-white/[0.04] sm:h-52 sm:w-52">
+              <div class="grid h-32 w-32 place-items-center rounded-full bg-white/[0.05] sm:h-40 sm:w-40">
+                <div class="grid h-24 w-24 place-items-center rounded-full bg-brand/25 shadow-[0_0_40px_-4px_rgba(139,92,246,0.6)] sm:h-28 sm:w-28">
                   <!-- Meditation / lotus figure — redrawn by eye; swap for exported SVG for exact match -->
-                  <svg viewBox="0 0 64 64" fill="currentColor" class="h-16 w-16 text-brand-light">
+                  <svg viewBox="0 0 64 64" fill="currentColor" class="h-14 w-14 text-brand-light sm:h-16 sm:w-16">
                     <!-- head -->
                     <circle cx="32" cy="13" r="5.5" />
                     <!-- torso + arms resting to hands at lap -->
@@ -436,7 +530,7 @@
   </section>
 
   <!-- ===================== CRAZY FEATURES ===================== -->
-  <section class="relative flex h-screen flex-col justify-center overflow-hidden bg-[#15111e] px-6 py-8">
+  <section class="screen-section relative flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8">
     <!-- ambient purple glow (left-center, like the Figma) -->
     <div class="pointer-events-none absolute left-[-100px] top-1/2 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-brand/10 blur-[130px]"></div>
     <div class="pointer-events-none absolute right-[-120px] bottom-0 h-[420px] w-[420px] rounded-full bg-brand/5 blur-[130px]"></div>
@@ -445,30 +539,24 @@
 
       <!-- Heading -->
       <div class="mx-auto max-w-xl text-center">
-        <h2 class="text-[30px] font-inter tracking-tight text-white sm:text-[34px]">
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
           Crazy Features of Ettazenn
         </h2>
-        <p class="mx-auto font-DM Sans mt-3 max-w-md text-[14px] leading-relaxed text-lavender/60">
+        <p class="mx-auto font-DM Sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of minds.
         </p>
       </div>
 
       <!-- Cards fanned around the phone -->
-      <div class="mt-8 grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-10">
+      <div class="mt-8 grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-8 lg:gap-10">
 
         <!-- LEFT column -->
         <div class="flex flex-col items-center gap-5 md:items-end">
           <!-- Sessions -->
           <div class="feature-card md:translate-x-2">
             <div class="fc-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5 width: 220;
-height: 391;
-angle: 0 deg;
-opacity: 1;
-top: 174px;
-left: 422px;
-">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
                 <rect x="3" y="4.5" width="18" height="16" rx="2.5" /><path d="M3 9h18M8 3v3M16 3v3" />
                 <circle cx="8" cy="13" r="1" /><circle cx="12" cy="13" r="1" /><circle cx="16" cy="13" r="1" />
               </svg>
@@ -504,7 +592,7 @@ left: 422px;
 
         <!-- PHONE (center) -->
         <div class="order-first flex justify-center md:order-none">
-          <img src="mobile.png" alt="Ettazenn app" class="h-[54vh] max-h-[500px] w-auto drop-shadow-2xl" />
+          <img src="mobile.png" alt="Ettazenn app" class="h-[38vh] max-h-[420px] w-auto drop-shadow-2xl sm:h-[46vh] md:h-[54vh] md:max-h-[500px]" />
         </div>
 
         <!-- RIGHT column -->
@@ -550,7 +638,7 @@ left: 422px;
   </section>
 
   <!-- ===================== APP SHOWCASE (half phone rising) ===================== -->
-  <section class="dusk-bg relative h-screen min-h-[620px] w-full overflow-hidden">
+  <section class="dusk-bg relative h-[100dvh] min-h-[560px] w-full overflow-hidden">
 
     <!-- misty mountain silhouettes -->
     <svg class="absolute inset-x-0 bottom-0 h-[55%] w-full" viewBox="0 0 1440 400"
@@ -567,7 +655,7 @@ left: 422px;
     <!-- phone: bottom-centered, lower part clipped so it shows down to "Recommended For You" -->
     <div class="absolute bottom-0 left-1/2 z-10 -translate-x-1/2 translate-y-[28%]">
       <img src="mobile.png" alt="Ettazenn app"
-           class="h-[116vh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)]" />
+           class="h-[100dvh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:h-[110dvh] lg:h-[116vh]" />
     </div>
 
     <!-- black shadow rising from the bottom edge -->
@@ -576,25 +664,25 @@ left: 422px;
   </section>
 
   <!-- ===================== SPECIALIZED PRACTICES (masterclass) ===================== -->
-  <section class="flex h-screen flex-col justify-center overflow-hidden bg-[#15111e] px-6 py-8">
+  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8">
     <div class="mx-auto w-full max-w-shell">
 
       <!-- Heading -->
       <div class="mx-auto max-w-xl text-center">
-        <h2 class="text-[30px] font-inter tracking-tight text-white sm:text-[34px]">
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
           Courses &amp; Specialized Practices
         </h2>
-        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[14px] leading-relaxed text-lavender/60">
+        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of Tai Chi.
         </p>
       </div>
 
       <!-- Cards -->
-      <div class="mt-10 grid h-[58vh] max-h-[420px] gap-5 md:grid-cols-[1.7fr_1fr]">
+      <div class="mt-10 grid min-h-[520px] gap-5 md:grid-cols-[1.7fr_1fr] lg:h-[58vh] lg:max-h-[420px] lg:min-h-0">
 
         <!-- LEFT: masterclass image card -->
-        <div class="mc-card relative overflow-hidden rounded-[24px] ring-1 ring-white/5">
+        <div class="mc-card relative min-h-[260px] overflow-hidden rounded-[24px] ring-1 ring-white/5">
           <!-- image (swap in masterclass.jpg); hides itself if missing so the gradient shows -->
           <img src="masterclass.jpg" alt="" onerror="this.style.display='none'"
                class="absolute inset-0 h-full w-full object-cover" />
@@ -602,10 +690,10 @@ left: 422px;
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/20"></div>
           <div class="absolute inset-0 bg-[#1a1030]/35 mix-blend-multiply"></div>
 
-          <div class="relative flex h-full flex-col justify-end p-8">
+          <div class="relative flex h-full flex-col justify-end p-6 sm:p-8">
             <span class="mc-pill font-DM Sans mb-4">MASTERCLASS</span>
-            <h3 class="text-[24px] font-inter text-white">Lunar Vinyasa &amp; Tai Chi</h3>
-            <p class="mt-2 max-w-sm font-DM Sans font-DM Sans text-[13px] leading-relaxed text-lavender/60">
+            <h3 class="text-[20px] sm:text-[24px] font-inter text-white">Lunar Vinyasa &amp; Tai Chi</h3>
+            <p class="mt-2 max-w-sm font-DM Sans text-[13px] leading-relaxed text-lavender/60">
               Our signature 8-week series blending the fluid strength of Vinyasa with the
               grounding energy of Tai Chi.
             </p>
@@ -647,15 +735,15 @@ left: 422px;
   </section>
 
   <!-- ===================== PERSONALIZED GUIDANCE ===================== -->
-  <section class="pg-section flex h-screen flex-col justify-center overflow-hidden px-6 py-8">
+  <section class="pg-section screen-section flex flex-col justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-8">
     <div class="mx-auto w-full max-w-shell">
 
       <!-- Heading -->
       <div class="mx-auto max-w-xl text-center">
-        <h2 class="text-[30px] font-inter tracking-tight text-white sm:text-[34px]">
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
           Personalized Guidance
         </h2>
-        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[14px] leading-relaxed text-lavender/60">
+        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
           Journey inward with direct support from our master instructors. Our
           personalized sessions offer a serene path to wellness.
         </p>
@@ -663,7 +751,7 @@ left: 422px;
 
       <!-- Panel -->
       <!-- Panel (Figma: 1065 x 642) -->
-      <div class="pg-panel mx-auto mt-10 grid h-[62vh] max-h-[642px] w-full max-w-[1065px] gap-6 p-6 md:grid-cols-[1fr_1.5fr] md:p-7">
+      <div class="pg-panel mx-auto mt-10 grid min-h-[560px] w-full max-w-[1065px] gap-6 p-5 sm:p-6 md:grid-cols-[1fr_1.5fr] md:p-7 lg:h-[62vh] lg:max-h-[642px] lg:min-h-0">
 
         <!-- LEFT: tabs -->
         <div class="flex flex-col justify-center gap-3">
@@ -703,8 +791,8 @@ left: 422px;
                class="absolute inset-0 h-full w-full object-cover object-center" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
 
-          <div class="absolute inset-x-0 bottom-0 p-7">
-            <h4 class="text-[17px] font-inter text-white">Coach &amp; Wellness centre's:</h4>
+          <div class="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+            <h4 class="text-[16px] sm:text-[17px] font-inter text-white">Coach &amp; Wellness centre's:</h4>
             <p class="mt-2 max-w-md font-DM Sans text-[13px] leading-relaxed text-lavender/70">
               Journey inward with direct support from our master instructors. Our
               personalized sessions offer a serene path to wellness.
@@ -717,26 +805,26 @@ left: 422px;
   </section>
 
   <!-- ===================== DAILY WISDOM DECK ===================== -->
-  <section class="deck-bg relative flex h-screen flex-col items-center justify-center overflow-hidden px-6">
+  <section class="deck-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6">
 
     <!-- faint feathers on the left (white bg knocked out via invert + screen) -->
     <img src="feathers.png" alt=""
-         class="pointer-events-none absolute left-0 top-[54%] w-[360px] max-w-[45vw] -translate-y-1/2 select-none"
+         class="pointer-events-none absolute left-0 top-[54%] hidden w-[360px] max-w-[45vw] -translate-y-1/2 select-none md:block"
          style="mix-blend-mode: screen; filter: invert(1); opacity: 0.55;" />
 
     <!-- heading + deck group (Figma: 447 x 718, gap 50) -->
-    <div class="relative z-10 flex w-[447px] max-w-full flex-col items-center gap-[50px]">
+    <div class="relative z-10 flex w-[447px] max-w-full flex-col items-center gap-10 sm:gap-[50px]">
 
       <!-- Heading -->
       <div class="text-center">
-        <h2 class="text-[30px] font-inter tracking-tight text-white sm:text-[34px]">Daily Wisdom Deck</h2>
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">Daily Wisdom Deck</h2>
         <p class="mx-auto font-inter mt-3 max-w-sm text-[13px] leading-relaxed text-lavender/60">
           Draw a card for your daily dose of celestial inspiration.
         </p>
       </div>
 
       <!-- Card deck (Figma card: 320 x 480, radius 26, 2° tilt) -->
-      <div class="relative" style="width:320px;height:480px;">
+      <div class="relative w-[260px] h-[390px] sm:w-[300px] sm:h-[450px] md:w-[320px] md:h-[480px]">
         <div class="deck-card absolute inset-0" style="transform: rotate(6deg) translateX(14px); opacity:.55;"></div>
         <div class="deck-card absolute inset-0" style="transform: rotate(-4deg) translateX(-11px); opacity:.8;"></div>
         <div class="deck-card deck-front absolute inset-0" style="transform: rotate(2deg);">
@@ -753,11 +841,11 @@ left: 422px;
 
       <!-- Swipe -->
       <div class="swipe-text">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4">
-          <path d="M8 font-inter 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4 shrink-0">
+          <path d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        SWIPE TO EXPLORE
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4 -scale-x-100">
+        <span class="text-center">SWIPE TO EXPLORE</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4 shrink-0 -scale-x-100">
           <path d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
@@ -766,11 +854,17 @@ left: 422px;
   </section>
 
   <!-- ===================== CTA: JOIN COMMUNITY ===================== -->
-  <section class="flex h-screen items-center justify-center overflow-hidden bg-[#12101f] px-6 py-16">
+  <section class="screen-section flex items-center justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-16">
     <div class="relative mx-auto w-full max-w-[1065px]">
 
-      <!-- Card shape (Figma: 1065 x 481, radius 30, 4px border, arched bottom) -->
-      <svg viewBox="0 0 1065 466" class="block w-full" xmlns="http://www.w3.org/2000/svg">
+      <!--
+        Card shape (Figma: 1065 x 481, radius 30, 4px border, arched bottom)
+        preserveAspectRatio="none" + absolute inset-0 lets this stretch to match
+        whatever height the real content below needs, instead of the content
+        being forced into the SVG's fixed 1065:466 ratio (which is what made
+        the text overflow the arch on narrow screens).
+      -->
+      <svg viewBox="0 0 1065 466" preserveAspectRatio="none" class="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="ctaFill" x1="0" y1="0" x2="1" y2="0.06">
             <stop offset="0.1"  stop-color="rgba(117,92,180,0.9)" />
@@ -787,17 +881,17 @@ left: 422px;
               fill="url(#ctaFill)" stroke="url(#ctaBorder)" stroke-width="4" />
       </svg>
 
-      <!-- Content overlay -->
-      <div class="absolute inset-0 flex flex-col items-center justify-center px-6 pb-10 text-center">
-        <p class="text-[13px] font-inter uppercase tracking-[0.3em] text-[#251b47]">Are You Ready?</p>
+      <!-- Content: in normal flow now, so it sets the container's real height -->
+      <div class="relative z-10 flex flex-col items-center justify-center px-6 py-14 text-center sm:py-16 lg:py-20">
+        <p class="text-[11px] sm:text-[13px] font-inter uppercase tracking-[0.3em] text-[#251b47]">Are You Ready?</p>
 
-        <h2 class="mt-4 font-inter text-[30px] font-bold leading-[1.15] text-white sm:text-[36px]">
+        <h2 class="mt-4 font-inter text-[24px] sm:text-[30px] font-bold leading-[1.15] text-white md:text-[36px]">
           Be A Part Of The<br />Ettazenn Community
         </h2>
 
         <span class="my-5 block h-px w-16 bg-white/40"></span>
 
-        <p class="max-w-lg text-[13px] font-inter leading-relaxed text-white/70">
+        <p class="max-w-lg text-[12px] sm:text-[13px] font-inter leading-relaxed text-white/70">
           Join ettazenn now as a coach or as a wellness centre, and let us create your profile for you.
         </p>
 
@@ -811,14 +905,14 @@ left: 422px;
   </section>
 
   <!-- ===================== EXPERT MINDS ===================== -->
-  <section class="expert-bg relative flex h-screen flex-col items-center justify-center overflow-hidden px-6 py-10">
+  <section class="expert-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-10">
     <!-- Internal contents (Figma: 1065 x 673, gap 50) -->
-    <div class="mx-auto flex w-full max-w-[1065px] flex-col items-center gap-[50px]">
+    <div class="mx-auto flex w-full max-w-[1065px] flex-col items-center gap-10 sm:gap-[50px]">
 
       <!-- Heading -->
       <div class="text-center">
-        <h2 class="text-[30px] font-inter tracking-tight text-white sm:text-[34px]">Expert Minds</h2>
-        <p class="mx-auto mt-3 font-DM Sans max-w-md text-[14px] leading-relaxed text-lavender/60">
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">Expert Minds</h2>
+        <p class="mx-auto mt-3 font-DM Sans max-w-md text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of Tai Chi.
         </p>
@@ -828,16 +922,16 @@ left: 422px;
       <div class="relative flex w-full items-center justify-center">
 
         <!-- LEFT peeking coach -->
-        <div class="absolute left-[7%] top-1/2 hidden -translate-y-1/2 md:block">
-          <div class="relative h-36 w-36">
+        <div class="absolute left-[2%] top-1/2 hidden -translate-y-1/2 lg:left-[7%] xl:block">
+          <div class="relative h-28 w-28 xl:h-36 xl:w-36">
             <img src="coach2.jpg" alt="" class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
             <span class="rating-badge">5<span class="text-amber-400">★</span></span>
           </div>
         </div>
 
         <!-- RIGHT peeking coach -->
-        <div class="absolute right-[7%] top-1/2 hidden -translate-y-1/2 md:block">
-          <div class="relative h-36 w-36">
+        <div class="absolute right-[2%] top-1/2 hidden -translate-y-1/2 lg:right-[7%] xl:block">
+          <div class="relative h-28 w-28 xl:h-36 xl:w-36">
             <img src="coach3.jpg" alt="" class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
             <span class="rating-badge">5<span class="text-amber-400">★</span></span>
           </div>
@@ -851,8 +945,8 @@ left: 422px;
                  class="h-full w-full rounded-full object-cover ring-4 ring-[#160f2c]" />
           </div>
 
-          <div class="expert-card px-8 pb-8 pt-16 text-center">
-            <h3 class="text-[20px] font-inter text-white">Zayn Omar</h3>
+          <div class="expert-card px-6 pb-8 pt-16 text-center sm:px-8">
+            <h3 class="text-[18px] sm:text-[20px] font-inter text-white">Zayn Omar</h3>
             <div class="mt-2 flex items-center justify-center gap-2 text-amber-400">
               <span class="text-[13px] tracking-tight">★★★★<span class="text-white/25">★</span></span>
               <span class="text-[12px] text-lavender/60">4.9</span>
@@ -885,13 +979,13 @@ left: 422px;
   </section>
 
   <!-- ===================== FAQ ===================== -->
-  <section class="flex h-screen flex-col justify-center overflow-hidden bg-[#12101f] px-6 py-10">
-    <div class="mx-auto flex w-full max-w-[1065px] flex-col items-center gap-[50px]">
+  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-10">
+    <div class="mx-auto flex w-full max-w-[1065px] flex-col items-center gap-10 sm:gap-[50px]">
 
       <!-- Heading -->
       <div class="text-center">
-        <h2 class="text-[30px] font-inter tracking-tight text-white sm:text-[36px]">Frequently Asked Questions</h2>
-        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[13px] leading-relaxed text-lavender/60">
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white md:text-[36px]">Frequently Asked Questions</h2>
+        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[12px] sm:text-[13px] leading-relaxed text-lavender/60">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of Tai Chi.
         </p>
@@ -937,10 +1031,10 @@ left: 422px;
   </section>
 
   <!-- ===================== FOOTER ===================== -->
-  <footer class="bg-[#0c0a16] px-6 py-8">
+  <footer class="bg-[#0c0a16] px-4 py-8 sm:px-6">
     <div class="mx-auto max-w-shell">
 
-      <div class="flex items-center gap-6">
+      <div class="flex flex-col items-center gap-6 sm:flex-row">
         <!-- Logo -->
         <a href="#" class="flex shrink-0 items-center gap-2">
           <span class="grid h-8 w-8 place-items-center rounded-full bg-brand/20 text-brand-light">
@@ -952,7 +1046,7 @@ left: 422px;
         </a>
 
         <!-- Centered links -->
-        <div class="flex flex-1 items-center justify-center gap-10 text-[13px]">
+        <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-[13px] sm:flex-1">
           <a href="#" class="text-lavender/70 transition hover:text-white">Location</a>
           <a href="#" class="text-lavender/70 transition hover:text-white">Privacy</a>
           <a href="#" class="text-lavender/70 transition hover:text-white">Terms</a>
@@ -975,10 +1069,36 @@ left: 422px;
       </div>
 
       <!-- Copyright -->
-      <p class="mt-4 text-[12px] text-lavender/50">© 2026 Ettazenn. Find your midnight flow.</p>
+      <p class="mt-4 text-center text-[12px] text-lavender/50 sm:text-left">© 2026 Ettazenn. Find your midnight flow.</p>
 
     </div>
   </footer>
+
+  <script>
+    // Mobile nav drawer toggle
+    (function () {
+      var navToggle = document.getElementById('navToggle');
+      var mobilePanel = document.getElementById('mobileNavPanel');
+      var iconOpen = document.getElementById('navIconOpen');
+      var iconClose = document.getElementById('navIconClose');
+      if (navToggle && mobilePanel) {
+        navToggle.addEventListener('click', function () {
+          var isOpen = mobilePanel.classList.toggle('open');
+          iconOpen.classList.toggle('hidden', isOpen);
+          iconClose.classList.toggle('hidden', !isOpen);
+          navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        mobilePanel.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            mobilePanel.classList.remove('open');
+            iconOpen.classList.remove('hidden');
+            iconClose.classList.add('hidden');
+            navToggle.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+    })();
+  </script>
 
 </body>
 </html>
