@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +12,8 @@
   <!-- Poppins matches the rounded geometric sans in the Figma -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
 
   <!--
     ============================================================
@@ -26,8 +28,8 @@
             sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           },
           colors: {
-            brand:    { DEFAULT: '#8B5CF6', light: '#A78BFA', deep: '#7C4DDF' },
-            plum:     { 900: '#2A1F3D', 700: '#3B2A4D', 500: '#5B3A6E' },
+            brand: { DEFAULT: '#8B5CF6', light: '#A78BFA', deep: '#7C4DDF' },
+            plum: { 900: '#2A1F3D', 700: '#3B2A4D', 500: '#5B3A6E' },
             lavender: '#D8CCE4',
           },
           maxWidth: { shell: '1200px' },
@@ -38,21 +40,30 @@
 
   <style>
     /* Global overflow safety: prevent any fixed-width element from creating horizontal scroll */
-    html, body { overflow-x: hidden; width: 100%; }
-    img, svg { max-width: 100%; }
+    html,
+    body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    img,
+    svg {
+      max-width: 100%;
+    }
 
     /* Hero background — Figma artwork */
     .hero-bg {
       background-image:
         linear-gradient(to bottom,
-          rgba(42,31,61,0.25) 0%,
-          rgba(42,31,61,0.05) 30%,
-          rgba(42,31,61,0.55) 75%,
-          rgba(42,31,61,0.85) 100%),
+          rgba(42, 31, 61, 0.25) 0%,
+          rgba(42, 31, 61, 0.05) 30%,
+          rgba(42, 31, 61, 0.55) 75%,
+          rgba(42, 31, 61, 0.85) 100%),
         url('hero.png');
       background-size: cover;
       background-position: center;
     }
+
     /* Fallback tint until hero.jpg exists so the page never looks broken */
     .hero-fallback {
       background:
@@ -62,7 +73,7 @@
     /* ---- Dusk mountain showcase background ---- */
     .dusk-bg {
       background:
-        radial-gradient(55% 38% at 50% 40%, rgba(206,188,232,0.28) 0%, rgba(206,188,232,0) 60%),
+        radial-gradient(55% 38% at 50% 40%, rgba(206, 188, 232, 0.28) 0%, rgba(206, 188, 232, 0) 60%),
         linear-gradient(to bottom, #5b4a7e 0%, #46375f 34%, #2e2447 68%, #191325 100%);
     }
 
@@ -70,30 +81,38 @@
     .pg-section {
       background: linear-gradient(180deg, rgba(28, 22, 53, 0.53) 0%, #131023 100%);
     }
+
     .pg-panel {
       border-radius: 28px;
-      border: 1px solid rgba(255,255,255,0.07);
+      border: 1px solid rgba(255, 255, 255, 0.07);
       background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%);
       backdrop-filter: blur(8px);
     }
+
     .pg-tab {
       display: flex;
       align-items: center;
       gap: 0.75rem;
       border-radius: 0.85rem;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
       padding: 0.8rem 1rem;
       font-size: 14px;
-      color: rgba(216,204,228,0.7);
+      color: rgba(216, 204, 228, 0.7);
       transition: all 0.2s;
     }
-    .pg-tab:hover { background: rgba(255,255,255,0.05); color: #fff; }
-    .pg-tab.active {
-      background: rgba(255,255,255,0.10);
-      border-color: rgba(255,255,255,0.16);
+
+    .pg-tab:hover {
+      background: rgba(255, 255, 255, 0.05);
       color: #fff;
     }
+
+    .pg-tab.active {
+      background: rgba(255, 255, 255, 0.10);
+      border-color: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+
     /* glowing-brain placeholder until brain.jpg is exported from Figma */
     .brain-bg {
       background: radial-gradient(circle at 50% 42%, #5a3a92 0%, #33215e 34%, #1a1130 62%, #0d0918 100%);
@@ -104,11 +123,12 @@
       width: 885px;
       max-width: 100%;
       border-radius: 14px;
-      border: 0.98px solid rgba(255,255,255,0.10);
+      border: 0.98px solid rgba(255, 255, 255, 0.10);
       background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.47) -5.62%, rgba(33, 26, 59, 0.5) 111.1%);
       backdrop-filter: blur(6px);
       overflow: hidden;
     }
+
     .faq-summary {
       display: flex;
       align-items: center;
@@ -121,21 +141,42 @@
       font-size: 14px;
       color: #fff;
     }
-    .faq-summary::-webkit-details-marker { display: none; }
-    .faq-chev { height: 20px; width: 20px; flex: none; color: rgba(255,255,255,0.7); transition: transform 0.25s; }
-    details[open] .faq-chev { transform: rotate(180deg); }
-    .faq-answer { padding: 0 20px 18px; font-size: 13px; line-height: 1.6; color: rgba(216,204,228,0.6); }
+
+    .faq-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-chev {
+      height: 20px;
+      width: 20px;
+      flex: none;
+      color: rgba(255, 255, 255, 0.7);
+      transition: transform 0.25s;
+    }
+
+    details[open] .faq-chev {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      padding: 0 20px 18px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(216, 204, 228, 0.6);
+    }
 
     /* ---- Expert Minds ---- */
     .expert-bg {
       background: radial-gradient(ellipse 72% 58% at 50% 44%, #3d2c63 0%, #251b44 38%, #160f2c 68%, #0d0a1c 100%);
     }
+
     .expert-card {
       border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%);
       backdrop-filter: blur(6px);
     }
+
     .rating-badge {
       position: absolute;
       left: 50%;
@@ -146,84 +187,111 @@
       gap: 3px;
       border-radius: 9999px;
       background: #1c1533;
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       padding: 3px 10px;
       font-size: 11px;
       font-weight: 600;
       color: #fff;
     }
+
     .nav-btn {
       display: grid;
       place-items: center;
       width: 44px;
       height: 44px;
       border-radius: 9999px;
-      border: 1px solid rgba(255,255,255,0.25);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       color: #fff;
       transition: background 0.2s;
     }
-    .nav-btn:hover { background: rgba(255,255,255,0.1); }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
 
     /* ---- Daily Wisdom Deck ---- */
     .deck-bg {
       background:
-        radial-gradient(1.5px 1.5px at 15% 25%, rgba(255,255,255,0.85), transparent),
-        radial-gradient(1px 1px at 25% 62%, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1.5px 1.5px at 40% 14%, rgba(255,255,255,0.75), transparent),
-        radial-gradient(1px 1px at 58% 72%, rgba(255,255,255,0.5), transparent),
-        radial-gradient(1.5px 1.5px at 76% 28%, rgba(255,255,255,0.85), transparent),
-        radial-gradient(1px 1px at 86% 55%, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1px 1px at 92% 18%, rgba(255,255,255,0.7), transparent),
-        radial-gradient(1px 1px at 50% 38%, rgba(255,255,255,0.5), transparent),
-        radial-gradient(1px 1px at 33% 84%, rgba(255,255,255,0.5), transparent),
-        radial-gradient(1.5px 1.5px at 66% 88%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.5px 1.5px at 15% 25%, rgba(255, 255, 255, 0.85), transparent),
+        radial-gradient(1px 1px at 25% 62%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1.5px 1.5px at 40% 14%, rgba(255, 255, 255, 0.75), transparent),
+        radial-gradient(1px 1px at 58% 72%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1.5px 1.5px at 76% 28%, rgba(255, 255, 255, 0.85), transparent),
+        radial-gradient(1px 1px at 86% 55%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1px 1px at 92% 18%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1px 1px at 50% 38%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 33% 84%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1.5px 1.5px at 66% 88%, rgba(255, 255, 255, 0.6), transparent),
         radial-gradient(ellipse 85% 65% at 72% 34%, #201d44 0%, #12102a 45%, #0a0818 76%, #060410 100%);
       background-repeat: no-repeat;
     }
+
     .deck-card {
       border-radius: 26px;
-      border: 0.75px solid rgba(255,255,255,0.28);
+      border: 0.75px solid rgba(255, 255, 255, 0.28);
       background: linear-gradient(160deg, #7d5fd6 0%, #5c40b0 100%);
-      box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6);
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
     }
+
     .deck-front {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 30px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px 32px;
     }
+
     .deck-quote {
-      font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-      font-size: 17px; line-height: 1.65; color: #fff;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 17px;
+      line-height: 1.65;
+      color: #fff;
     }
-    .deck-label { margin-top: 18px; font-size: 10px; letter-spacing: 0.25em; color: rgba(255,255,255,0.6); }
+
+    .deck-label {
+      margin-top: 18px;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
     .swipe-text {
-      display: flex; align-items: center; gap: 12px;
-      font-size: 11px; letter-spacing: 0.22em; color: rgba(255,255,255,0.55);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: rgba(255, 255, 255, 0.55);
     }
 
     /* ---- Masterclass / specialized practices ---- */
     .mc-card {
       background: radial-gradient(120% 95% at 62% 18%, #2c2547 0%, #16121f 62%, #0b0910 100%);
     }
+
     .side-card {
       position: relative;
       border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.02);
     }
+
     .mc-pill {
       display: inline-flex;
       width: -moz-fit-content;
       width: fit-content;
       align-items: center;
       border-radius: 9999px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.06);
       padding: 4px 12px;
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(216,204,228,0.85);
+      color: rgba(216, 204, 228, 0.85);
     }
 
     /* ---- Crazy Features cards ---- */
@@ -231,14 +299,16 @@
       position: relative;
       width: 215px;
       max-width: 100%;
-      height: 150px;               /* uniform size for every card */
+      height: 150px;
+      /* uniform size for every card */
       border-radius: 1rem;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.015);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.015);
       padding: 0.9rem 1rem;
       backdrop-filter: blur(4px);
       overflow: hidden;
     }
+
     .fc-icon {
       display: grid;
       place-items: center;
@@ -246,25 +316,50 @@
       height: 2.25rem;
       margin-bottom: 0.55rem;
       border-radius: 0.7rem;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
       color: #A78BFA;
     }
-    .fc-title { font-size: 12.5px; font-weight: 600; color: #fff; }
-    .fc-body  { margin-top: 0.35rem; font-size: 11px; line-height: 1.5; color: rgba(216,204,228,0.5); }
+
+    .fc-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .fc-body {
+      margin-top: 0.35rem;
+      font-size: 11px;
+      line-height: 1.5;
+      color: rgba(216, 204, 228, 0.5);
+    }
 
     /* dashed connector stubs toward the phone (desktop only) */
-    .fc-line-r, .fc-line-l {
+    .fc-line-r,
+    .fc-line-l {
       display: none;
       position: absolute;
       top: 50%;
       width: 34px;
-      border-top: 1px dashed rgba(255,255,255,0.18);
+      border-top: 1px dashed rgba(255, 255, 255, 0.18);
     }
-    .fc-line-r { right: 0; transform: translateX(100%); }
-    .fc-line-l { left: 0;  transform: translateX(-100%); }
+
+    .fc-line-r {
+      right: 0;
+      transform: translateX(100%);
+    }
+
+    .fc-line-l {
+      left: 0;
+      transform: translateX(-100%);
+    }
+
     @media (min-width: 768px) {
-      .fc-line-r, .fc-line-l { display: block; }
+
+      .fc-line-r,
+      .fc-line-l {
+        display: block;
+      }
     }
 
     /* ---- Mobile nav drawer (added for responsiveness; visual style matches existing navbar) ---- */
@@ -273,14 +368,20 @@
       overflow: hidden;
       transition: max-height 0.3s ease;
     }
-    .mobile-nav-panel.open { max-height: 400px; }
+
+    .mobile-nav-panel.open {
+      max-height: 400px;
+    }
 
     /* ---- Shadow at both the top and bottom edge of every section ----
        Adds soft dark gradients hugging both edges of each section so
        adjoining sections blend into one another with no visible seam.
        Purely visual, non-interactive, and clipped by each section's
        existing overflow so nothing else about layout/spacing changes. */
-    section { position: relative; }
+    section {
+      position: relative;
+    }
+
     section::before {
       content: "";
       position: absolute;
@@ -288,10 +389,11 @@
       right: 0;
       top: 0;
       height: 40px;
-      background: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
       pointer-events: none;
       z-index: 30;
     }
+
     section::after {
       content: "";
       position: absolute;
@@ -299,7 +401,7 @@
       right: 0;
       bottom: 0;
       height: 40px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%);
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
       pointer-events: none;
       z-index: 30;
     }
@@ -313,6 +415,7 @@
       min-height: 100vh;
       height: auto;
     }
+
     @media (min-width: 1024px) {
       .screen-section {
         height: 100vh;
@@ -334,13 +437,12 @@
       <div class="mx-auto flex max-w-shell items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
 
         <!-- Logo -->
-        <a href="#" class="flex items-center gap-2">
-          <span class="grid h-8 w-8 place-items-center rounded-full bg-brand/20 text-brand-light">
-            <svg viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
-              <path d="M12 3c1.6 1.7 2.4 3.4 2.4 5.1 0 .9-.2 1.7-.6 2.5 1.4-.4 2.7-1.3 3.9-2.6.3 2.2-.2 4-1.6 5.4-1 1-2.3 1.7-4.1 2.1 1.8.4 3.1 1.1 4.1 2.1-1.6.3-3 .1-4.2-.5-.9-.5-1.6-1.1-2.3-2-.7.9-1.4 1.5-2.3 2-1.2.6-2.6.8-4.2.5 1-1 2.3-1.7 4.1-2.1-1.8-.4-3.1-1.1-4.1-2.1C5.3 13 4.8 11.2 5.1 9c1.2 1.3 2.5 2.2 3.9 2.6-.4-.8-.6-1.6-.6-2.5C8.4 6.4 9.2 4.7 12 3z"/>
-            </svg>
+        <a href="#" class="relative flex shrink-0 items-center gap-2">
+          <span class="relative" style="width: 40.5px; height: 42.65px;">
+            <img src="Vector.png" alt="Ettazenn logo" class="absolute object-contain"
+              style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
           </span>
-          <span class="text-[20px] sm:text-[22px] font-inter tracking-tight">Ettazenn</span>
+          <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
         </a>
 
         <!-- Nav links (desktop) -->
@@ -353,27 +455,26 @@
 
         <!-- Right actions -->
         <div class="flex items-center gap-2 sm:gap-4">
-          <div class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
+          <div
+            class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
             <button class="rounded-full font-DM Sans bg-white/15 px-3 py-1 font-medium text-white">EN</button>
             <button class="rounded-full font-DM Sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
           </div>
-          <a href="#" class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20">
+          <a href="#"
+            class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20">
             Log in
           </a>
 
           <!-- Mobile hamburger toggle (opens drawer below) -->
-          <button
-            id="navToggle"
-            aria-label="Toggle menu"
-            aria-expanded="false"
-            aria-controls="mobileNavPanel"
-            class="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white lg:hidden"
-          >
-            <svg id="navIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="h-5 w-5">
-              <path d="M3 6h18M3 12h18M3 18h18"/>
+          <button id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNavPanel"
+            class="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white lg:hidden">
+            <svg id="navIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" class="h-5 w-5">
+              <path d="M3 6h18M3 12h18M3 18h18" />
             </svg>
-            <svg id="navIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="hidden h-5 w-5">
-              <path d="M6 6l12 12M18 6L6 18"/>
+            <svg id="navIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" class="hidden h-5 w-5">
+              <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           </button>
         </div>
@@ -392,7 +493,8 @@
             <button class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
           </div>
 
-          <a href="#" class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20">
+          <a href="#"
+            class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20">
             Log in
           </a>
         </div>
@@ -400,8 +502,10 @@
     </header>
 
     <!-- ---------- Hero copy (bottom-aligned, centered) ---------- -->
-    <div class="relative z-10 flex min-h-[calc(100dvh-80px)] flex-col items-center justify-end pb-14 sm:pb-20 text-center">
-      <h1 class="max-w-3xl font-inter px-4 sm:px-6 text-[32px] sm:text-[44px] font-extrabold leading-[1.1] tracking-tight text-white md:text-[52px]">
+    <div
+      class="relative z-10 flex min-h-[calc(100dvh-80px)] flex-col items-center justify-end pb-14 sm:pb-20 text-center">
+      <h1
+        class="max-w-3xl font-inter px-4 sm:px-6 text-[32px] sm:text-[44px] font-extrabold leading-[1.1] tracking-tight text-white md:text-[52px]">
         Strengthen Your Body. Anytime.
       </h1>
 
@@ -411,48 +515,42 @@
       </p>
 
       <!-- Store badges -->
-    <div class="mt-8 flex flex-col items-center justify-center gap-3 px-4 xs:flex-row sm:gap-4">
-  <a
-    href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Download on the App Store"
-    class="flex w-full items-center justify-center gap-2 rounded-xl bg-black/85 px-4 py-2.5 ring-1 ring-white/15 transition hover:bg-black xs:w-auto"
-  >
-    <svg viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-white shrink-0">
-      <path d="M16.365 1.43c0 1.14-.417 2.09-1.25 2.85-.83.76-1.79 1.2-2.79 1.12-.13-1.09.42-2.24 1.2-2.98.85-.8 2.02-1.32 2.84-1.36.02.12.02.24 0 .37zM20.5 17.2c-.55 1.27-.82 1.84-1.53 2.97-.99 1.57-2.39 3.53-4.12 3.55-1.54.01-1.94-1-4.03-.99-2.09.01-2.52 1.01-4.06.99-1.73-.02-3.05-1.79-4.04-3.36-2.77-4.39-3.06-9.54-1.35-12.28 1.21-1.95 3.13-3.09 4.93-3.09 1.83 0 2.98 1 4.5 1 1.47 0 2.36-1 4.48-1 1.6 0 3.3.87 4.51 2.38-3.96 2.17-3.32 7.82.71 9.83z"/>
-    </svg>
-    <span class="text-left leading-none">
-      <span class="block text-[10px] text-white/70">Download on the</span>
-      <span class="block text-[15px] font-semibold text-white">App Store</span>
-    </span>
-  </a>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 px-4 xs:flex-row sm:gap-4">
+        <a href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455" target="_blank"
+          rel="noopener noreferrer" aria-label="Download on the App Store"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-black/85 px-4 py-2.5 ring-1 ring-white/15 transition hover:bg-black xs:w-auto">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-white shrink-0">
+            <path
+              d="M16.365 1.43c0 1.14-.417 2.09-1.25 2.85-.83.76-1.79 1.2-2.79 1.12-.13-1.09.42-2.24 1.2-2.98.85-.8 2.02-1.32 2.84-1.36.02.12.02.24 0 .37zM20.5 17.2c-.55 1.27-.82 1.84-1.53 2.97-.99 1.57-2.39 3.53-4.12 3.55-1.54.01-1.94-1-4.03-.99-2.09.01-2.52 1.01-4.06.99-1.73-.02-3.05-1.79-4.04-3.36-2.77-4.39-3.06-9.54-1.35-12.28 1.21-1.95 3.13-3.09 4.93-3.09 1.83 0 2.98 1 4.5 1 1.47 0 2.36-1 4.48-1 1.6 0 3.3.87 4.51 2.38-3.96 2.17-3.32 7.82.71 9.83z" />
+          </svg>
+          <span class="text-left leading-none">
+            <span class="block text-[10px] text-white/70">Download on the</span>
+            <span class="block text-[15px] font-semibold text-white">App Store</span>
+          </span>
+        </a>
 
-  <a
-    href="https://play.google.com/store/apps/details?id=com.ettazenn.ettazen"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Get it on Google Play"
-    class="flex w-full items-center justify-center gap-2 rounded-xl bg-black/85 px-4 py-2.5 ring-1 ring-white/15 transition hover:bg-black xs:w-auto"
-  >
-    <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0">
-      <path fill="#EA4335" d="M3.6 2.2 13.4 12 3.6 21.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1z"/>
-      <path fill="#FBBC04" d="m17.2 8.3 3.1 1.8c1 .6 1 2.2 0 2.8l-3.1 1.8L14 12l3.2-3.7z"/>
-      <path fill="#34A853" d="M3.6 21.8 13.4 12l3.8 2.7-11.1 6.4c-.9.5-1.9.3-2.5-.3z"/>
-      <path fill="#4285F4" d="M3.6 2.2c.6-.6 1.6-.8 2.5-.3l11.1 6.4L13.4 12 3.6 2.2z"/>
-    </svg>
-    <span class="text-left leading-none">
-      <span class="block text-[10px] text-white/70">GET IT ON</span>
-      <span class="block text-[15px] font-semibold text-white">Google Play</span>
-    </span>
-  </a>
-</div>
+        <a href="https://play.google.com/store/apps/details?id=com.ettazenn.ettazen" target="_blank"
+          rel="noopener noreferrer" aria-label="Get it on Google Play"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-black/85 px-4 py-2.5 ring-1 ring-white/15 transition hover:bg-black xs:w-auto">
+          <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0">
+            <path fill="#EA4335" d="M3.6 2.2 13.4 12 3.6 21.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1z" />
+            <path fill="#FBBC04" d="m17.2 8.3 3.1 1.8c1 .6 1 2.2 0 2.8l-3.1 1.8L14 12l3.2-3.7z" />
+            <path fill="#34A853" d="M3.6 21.8 13.4 12l3.8 2.7-11.1 6.4c-.9.5-1.9.3-2.5-.3z" />
+            <path fill="#4285F4" d="M3.6 2.2c.6-.6 1.6-.8 2.5-.3l11.1 6.4L13.4 12 3.6 2.2z" />
+          </svg>
+          <span class="text-left leading-none">
+            <span class="block text-[10px] text-white/70">GET IT ON</span>
+            <span class="block text-[15px] font-semibold text-white">Google Play</span>
+          </span>
+        </a>
+      </div>
     </div>
 
   </section>
 
   <!-- ===================== COURSES & SPECIALIZED PRACTICES ===================== -->
-  <section class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-10">
+  <section
+    class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-10">
     <div class="w-full max-w-shell">
 
       <!-- Section heading -->
@@ -467,12 +565,12 @@
       </div>
 
       <!-- Feature card  (Figma: 1065 x 673, gap 50 — capped to viewport on desktop so the section never scrolls) -->
-      <div class="relative mx-auto mt-8 flex min-h-[420px] w-full max-w-[1065px] items-center rounded-[24px] bg-gradient-to-br from-[#4b3d6b] via-[#3d3160] to-[#2f2547] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5 sm:rounded-[28px] sm:p-10 lg:h-[calc(100vh-230px)] lg:max-h-[673px] lg:p-14">
+      <div
+        class="relative mx-auto mt-8 flex min-h-[420px] w-full max-w-[1065px] items-center rounded-[24px] bg-gradient-to-br from-[#4b3d6b] via-[#3d3160] to-[#2f2547] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5 sm:rounded-[28px] sm:p-10 lg:h-[calc(100vh-230px)] lg:max-h-[673px] lg:p-14">
 
         <!-- Award seal (top-right): scalloped medal + ribbon tails -->
-        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linejoin="round" stroke-linecap="round"
-             class="absolute right-6 -top-6 hidden h-14 w-14 text-white/15 sm:right-10 md:block">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"
+          stroke-linecap="round" class="absolute right-6 -top-6 hidden h-14 w-14 text-white/15 sm:right-10 md:block">
           <!-- scalloped seal edge (12 bumps) -->
           <path d="M32 13 L34.85 15.38 L38.5 14.74 L39.78 18.22 L43.26 19.5 L42.62 23.15
                    L45 26 L42.62 28.85 L43.26 32.5 L39.78 33.78 L38.5 37.26 L34.85 36.62
@@ -497,7 +595,7 @@
               From deep-flow Yoga to the moving meditation of minds.
             </p>
             <a href="#"
-               class="mt-8 font-inter inline-block rounded-full border border-white/40 px-7 py-2.5 text-[14px] font-medium text-white transition hover:bg-white/10">
+              class="mt-8 font-inter inline-block rounded-full border border-white/40 px-7 py-2.5 text-[14px] font-medium text-white transition hover:bg-white/10">
               Explore Now
             </a>
           </div>
@@ -506,17 +604,22 @@
           <div class="shrink-0">
             <div class="grid h-40 w-40 place-items-center rounded-full bg-white/[0.04] sm:h-52 sm:w-52">
               <div class="grid h-32 w-32 place-items-center rounded-full bg-white/[0.05] sm:h-40 sm:w-40">
-                <div class="grid h-24 w-24 place-items-center rounded-full bg-brand/25 shadow-[0_0_40px_-4px_rgba(139,92,246,0.6)] sm:h-28 sm:w-28">
+                <div
+                  class="grid h-24 w-24 place-items-center rounded-full bg-brand/25 shadow-[0_0_40px_-4px_rgba(139,92,246,0.6)] sm:h-28 sm:w-28">
                   <!-- Meditation / lotus figure — redrawn by eye; swap for exported SVG for exact match -->
                   <svg viewBox="0 0 64 64" fill="currentColor" class="h-14 w-14 text-brand-light sm:h-16 sm:w-16">
                     <!-- head -->
                     <circle cx="32" cy="13" r="5.5" />
                     <!-- torso + arms resting to hands at lap -->
-                    <path d="M32 20.5c-6.2 0-11.4 3.6-13.2 9.2 3-2.1 6.2-3.2 9.4-3.2L32 30l3.8-3.5c3.2 0 6.4 1.1 9.4 3.2-1.8-5.6-7-9.2-13.2-9.2z" />
+                    <path
+                      d="M32 20.5c-6.2 0-11.4 3.6-13.2 9.2 3-2.1 6.2-3.2 9.4-3.2L32 30l3.8-3.5c3.2 0 6.4 1.1 9.4 3.2-1.8-5.6-7-9.2-13.2-9.2z" />
                     <!-- crossed legs / lotus base -->
-                    <path d="M16.5 39.5c3.9 4.4 9.4 6.7 15.5 6.7s11.6-2.3 15.5-6.7c1.3-1.5 0-3.8-1.9-3.4-3.9 2-8.4 3.1-13.6 3.1s-9.7-1.1-13.6-3.1c-1.9-.4-3.2 1.9-1.9 3.4z" />
+                    <path
+                      d="M16.5 39.5c3.9 4.4 9.4 6.7 15.5 6.7s11.6-2.3 15.5-6.7c1.3-1.5 0-3.8-1.9-3.4-3.9 2-8.4 3.1-13.6 3.1s-9.7-1.1-13.6-3.1c-1.9-.4-3.2 1.9-1.9 3.4z" />
                     <!-- lotus petals at the base -->
-                    <path d="M32 46.2c-2.3 3.1-5.6 4.6-9.2 4.6 1.1-3.4 4.7-5.7 9.2-5.7s8.1 2.3 9.2 5.7c-3.6 0-6.9-1.5-9.2-4.6z" opacity=".8" />
+                    <path
+                      d="M32 46.2c-2.3 3.1-5.6 4.6-9.2 4.6 1.1-3.4 4.7-5.7 9.2-5.7s8.1 2.3 9.2 5.7c-3.6 0-6.9-1.5-9.2-4.6z"
+                      opacity=".8" />
                   </svg>
                 </div>
               </div>
@@ -530,10 +633,15 @@
   </section>
 
   <!-- ===================== CRAZY FEATURES ===================== -->
-  <section class="screen-section relative flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8">
+  <section
+    class="screen-section relative flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8">
     <!-- ambient purple glow (left-center, like the Figma) -->
-    <div class="pointer-events-none absolute left-[-100px] top-1/2 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-brand/10 blur-[130px]"></div>
-    <div class="pointer-events-none absolute right-[-120px] bottom-0 h-[420px] w-[420px] rounded-full bg-brand/5 blur-[130px]"></div>
+    <div
+      class="pointer-events-none absolute left-[-100px] top-1/2 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-brand/10 blur-[130px]">
+    </div>
+    <div
+      class="pointer-events-none absolute right-[-120px] bottom-0 h-[420px] w-[420px] rounded-full bg-brand/5 blur-[130px]">
+    </div>
 
     <div class="relative mx-auto w-full max-w-shell">
 
@@ -557,42 +665,52 @@
           <div class="feature-card md:translate-x-2">
             <div class="fc-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
-                <rect x="3" y="4.5" width="18" height="16" rx="2.5" /><path d="M3 9h18M8 3v3M16 3v3" />
-                <circle cx="8" cy="13" r="1" /><circle cx="12" cy="13" r="1" /><circle cx="16" cy="13" r="1" />
+                <rect x="3" y="4.5" width="18" height="16" rx="2.5" />
+                <path d="M3 9h18M8 3v3M16 3v3" />
+                <circle cx="8" cy="13" r="1" />
+                <circle cx="12" cy="13" r="1" />
+                <circle cx="16" cy="13" r="1" />
               </svg>
             </div>
             <h4 class="fc-title font-DM Sans">Sessions:</h4>
-            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the moving meditation of minds.</p>
+            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+              moving meditation of minds.</p>
             <span class="fc-line-r"></span>
           </div>
           <!-- Events & Retreats -->
           <div class="feature-card md:-translate-x-10">
             <div class="fc-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
-                <path d="M8 4h8v4a4 4 0 01-8 0V4z" /><path d="M8 5.5H5V7a3 3 0 003 3M16 5.5h3V7a3 3 0 01-3 3" />
+                <path d="M8 4h8v4a4 4 0 01-8 0V4z" />
+                <path d="M8 5.5H5V7a3 3 0 003 3M16 5.5h3V7a3 3 0 01-3 3" />
                 <path d="M12 12v4M9 20h6M10.5 20v-2h3v2" />
               </svg>
             </div>
             <h4 class="fc-title font-DM Sans">Events &amp; Retreats:</h4>
-            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the moving meditation of minds.</p>
+            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+              moving meditation of minds.</p>
             <span class="fc-line-r"></span>
           </div>
           <!-- Music Hub -->
           <div class="feature-card md:translate-x-2">
             <div class="fc-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
-                <path d="M9 18V6l10-2v12" /><circle cx="6.5" cy="18" r="2.4" /><circle cx="16.5" cy="16" r="2.4" />
+                <path d="M9 18V6l10-2v12" />
+                <circle cx="6.5" cy="18" r="2.4" />
+                <circle cx="16.5" cy="16" r="2.4" />
               </svg>
             </div>
             <h4 class="fc-title font-DM Sans">Music Hub:</h4>
-            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the moving meditation of minds.</p>
+            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+              moving meditation of minds.</p>
             <span class="fc-line-r"></span>
           </div>
         </div>
 
         <!-- PHONE (center) -->
         <div class="order-first flex justify-center md:order-none">
-          <img src="mobile.png" alt="Ettazenn app" class="h-[38vh] max-h-[420px] w-auto drop-shadow-2xl sm:h-[46vh] md:h-[54vh] md:max-h-[500px]" />
+          <img src="mobile.png" alt="Ettazenn app"
+            class="h-[38vh] max-h-[420px] w-auto drop-shadow-2xl sm:h-[46vh] md:h-[54vh] md:max-h-[500px]" />
         </div>
 
         <!-- RIGHT column -->
@@ -601,23 +719,27 @@
           <div class="feature-card md:-translate-x-2">
             <div class="fc-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
-                <rect x="3" y="6" width="12" height="12" rx="2.5" /><path d="M15 10l6-3v10l-6-3" />
+                <rect x="3" y="6" width="12" height="12" rx="2.5" />
+                <path d="M15 10l6-3v10l-6-3" />
               </svg>
             </div>
             <h4 class="fc-title font-DM Sans">Courses:</h4>
-            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the moving meditation of minds.</p>
+            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+              moving meditation of minds.</p>
             <span class="fc-line-l"></span>
           </div>
           <!-- Community -->
           <div class="feature-card md:translate-x-10">
             <div class="fc-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
-                <path d="M12 6.5v11" /><path d="M12 8.5c-1-3-4.2-4-6.2-2.8s-1.8 5 0 6.8C7.3 13.9 10 14.5 12 14.5" />
+                <path d="M12 6.5v11" />
+                <path d="M12 8.5c-1-3-4.2-4-6.2-2.8s-1.8 5 0 6.8C7.3 13.9 10 14.5 12 14.5" />
                 <path d="M12 8.5c1-3 4.2-4 6.2-2.8s1.8 5 0 6.8C16.7 13.9 14 14.5 12 14.5" />
               </svg>
             </div>
             <h4 class="fc-title font-DM Sans">Community:</h4>
-            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the moving meditation of minds.</p>
+            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+              moving meditation of minds.</p>
             <span class="fc-line-l"></span>
           </div>
           <!-- Ettazenn Hub -->
@@ -628,7 +750,8 @@
               </svg>
             </div>
             <h4 class="fc-title font-DM Sans">Ettazenn Hub:</h4>
-            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the moving meditation of minds.</p>
+            <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+              moving meditation of minds.</p>
             <span class="fc-line-l"></span>
           </div>
         </div>
@@ -641,25 +764,29 @@
   <section class="dusk-bg relative h-[100dvh] min-h-[560px] w-full overflow-hidden">
 
     <!-- misty mountain silhouettes -->
-    <svg class="absolute inset-x-0 bottom-0 h-[55%] w-full" viewBox="0 0 1440 400"
-         preserveAspectRatio="none" style="filter: blur(2px)">
-      <path d="M0 250 L220 175 L430 235 L680 135 L920 225 L1180 155 L1440 240 L1440 400 L0 400 Z"
-            fill="#2a2145" opacity="0.55" />
-      <path d="M0 315 L300 235 L600 300 L860 215 L1180 300 L1440 245 L1440 400 L0 400 Z"
-            fill="#211a37" opacity="0.85" />
+    <svg class="absolute inset-x-0 bottom-0 h-[55%] w-full" viewBox="0 0 1440 400" preserveAspectRatio="none"
+      style="filter: blur(2px)">
+      <path d="M0 250 L220 175 L430 235 L680 135 L920 225 L1180 155 L1440 240 L1440 400 L0 400 Z" fill="#2a2145"
+        opacity="0.55" />
+      <path d="M0 315 L300 235 L600 300 L860 215 L1180 300 L1440 245 L1440 400 L0 400 Z" fill="#211a37"
+        opacity="0.85" />
     </svg>
 
     <!-- soft moonlight glow behind the phone -->
-    <div class="pointer-events-none absolute left-1/2 top-[30%] h-64 w-64 -translate-x-1/2 rounded-full bg-white/20 blur-[90px]"></div>
+    <div
+      class="pointer-events-none absolute left-1/2 top-[30%] h-64 w-64 -translate-x-1/2 rounded-full bg-white/20 blur-[90px]">
+    </div>
 
     <!-- phone: bottom-centered, lower part clipped so it shows down to "Recommended For You" -->
     <div class="absolute bottom-0 left-1/2 z-10 -translate-x-1/2 translate-y-[28%]">
       <img src="mobile.png" alt="Ettazenn app"
-           class="h-[100dvh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:h-[110dvh] lg:h-[116vh]" />
+        class="h-[100dvh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:h-[110dvh] lg:h-[116vh]" />
     </div>
 
     <!-- black shadow rising from the bottom edge -->
-    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[30%] bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+    <div
+      class="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[30%] bg-gradient-to-t from-black via-black/60 to-transparent">
+    </div>
 
   </section>
 
@@ -685,7 +812,7 @@
         <div class="mc-card relative min-h-[260px] overflow-hidden rounded-[24px] ring-1 ring-white/5">
           <!-- image (swap in masterclass.jpg); hides itself if missing so the gradient shows -->
           <img src="Container.png" alt="" onerror="this.style.display='none'"
-               class="absolute inset-0 h-full w-full object-cover" />
+            class="absolute inset-0 h-full w-full object-cover" />
           <!-- readability overlay + cool purple tint to match the Figma mood -->
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/20"></div>
           <div class="absolute inset-0 bg-[#1a1030]/35 mix-blend-multiply"></div>
@@ -707,8 +834,10 @@
           <div class="side-card flex flex-1 flex-col justify-center p-6">
             <svg viewBox="0 0 64 64" fill="currentColor" class="mb-3 h-8 w-8 text-emerald-400">
               <circle cx="32" cy="13" r="5.5" />
-              <path d="M32 20.5c-6.2 0-11.4 3.6-13.2 9.2 3-2.1 6.2-3.2 9.4-3.2L32 30l3.8-3.5c3.2 0 6.4 1.1 9.4 3.2-1.8-5.6-7-9.2-13.2-9.2z" />
-              <path d="M16.5 39.5c3.9 4.4 9.4 6.7 15.5 6.7s11.6-2.3 15.5-6.7c1.3-1.5 0-3.8-1.9-3.4-3.9 2-8.4 3.1-13.6 3.1s-9.7-1.1-13.6-3.1c-1.9-.4-3.2 1.9-1.9 3.4z" />
+              <path
+                d="M32 20.5c-6.2 0-11.4 3.6-13.2 9.2 3-2.1 6.2-3.2 9.4-3.2L32 30l3.8-3.5c3.2 0 6.4 1.1 9.4 3.2-1.8-5.6-7-9.2-13.2-9.2z" />
+              <path
+                d="M16.5 39.5c3.9 4.4 9.4 6.7 15.5 6.7s11.6-2.3 15.5-6.7c1.3-1.5 0-3.8-1.9-3.4-3.9 2-8.4 3.1-13.6 3.1s-9.7-1.1-13.6-3.1c-1.9-.4-3.2 1.9-1.9 3.4z" />
             </svg>
             <h4 class="text-[18px] font-inter text-white">Morning Yoga Flow</h4>
             <p class="mt-2 text-[13px] font-DM Sans leading-relaxed text-lavender/50">
@@ -720,8 +849,10 @@
           <div class="side-card flex flex-1 flex-col justify-center p-6">
             <svg viewBox="0 0 64 64" fill="currentColor" class="mb-3 h-8 w-8 text-emerald-400">
               <circle cx="32" cy="13" r="5.5" />
-              <path d="M32 20.5c-6.2 0-11.4 3.6-13.2 9.2 3-2.1 6.2-3.2 9.4-3.2L32 30l3.8-3.5c3.2 0 6.4 1.1 9.4 3.2-1.8-5.6-7-9.2-13.2-9.2z" />
-              <path d="M16.5 39.5c3.9 4.4 9.4 6.7 15.5 6.7s11.6-2.3 15.5-6.7c1.3-1.5 0-3.8-1.9-3.4-3.9 2-8.4 3.1-13.6 3.1s-9.7-1.1-13.6-3.1c-1.9-.4-3.2 1.9-1.9 3.4z" />
+              <path
+                d="M32 20.5c-6.2 0-11.4 3.6-13.2 9.2 3-2.1 6.2-3.2 9.4-3.2L32 30l3.8-3.5c3.2 0 6.4 1.1 9.4 3.2-1.8-5.6-7-9.2-13.2-9.2z" />
+              <path
+                d="M16.5 39.5c3.9 4.4 9.4 6.7 15.5 6.7s11.6-2.3 15.5-6.7c1.3-1.5 0-3.8-1.9-3.4-3.9 2-8.4 3.1-13.6 3.1s-9.7-1.1-13.6-3.1c-1.9-.4-3.2 1.9-1.9 3.4z" />
             </svg>
             <h4 class="text-[18px] font-inter text-white">Advance Yoga Treat</h4>
             <p class="mt-2 text-[13px] font-DM Sans leading-relaxed text-lavender/50">
@@ -751,13 +882,16 @@
 
       <!-- Panel -->
       <!-- Panel (Figma: 1065 x 642) -->
-      <div class="pg-panel mx-auto mt-10 grid min-h-[560px] w-full max-w-[1065px] gap-6 p-5 sm:p-6 md:grid-cols-[1fr_1.5fr] md:p-7 lg:h-[62vh] lg:max-h-[642px] lg:min-h-0">
+      <div
+        class="pg-panel mx-auto mt-10 grid min-h-[560px] w-full max-w-[1065px] gap-6 p-5 sm:p-6 md:grid-cols-[1fr_1.5fr] md:p-7 lg:h-[62vh] lg:max-h-[642px] lg:min-h-0">
 
         <!-- LEFT: tabs -->
         <div class="flex flex-col justify-center gap-3">
           <button class="pg-tab active">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
-              <rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /><circle cx="12" cy="9.5" r="2" />
+              <rect x="3" y="4" width="18" height="12" rx="2" />
+              <path d="M8 20h8M12 16v4" />
+              <circle cx="12" cy="9.5" r="2" />
             </svg>
             Coaches
           </button>
@@ -769,18 +903,22 @@
           </button>
           <button class="pg-tab">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
-              <path d="M3 9l9-5 9 5-9 5-9-5z" /><path d="M6 11v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5" />
+              <path d="M3 9l9-5 9 5-9 5-9-5z" />
+              <path d="M6 11v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5" />
             </svg>
             Schools
           </button>
           <button class="pg-tab">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
-              <circle cx="8" cy="8" r="3" /><circle cx="17" cy="10" r="2.5" /><path d="M2.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M14.5 18.5c.4-2.2 2-3.5 4-3.5s3.2 1.1 3.5 3" />
+              <circle cx="8" cy="8" r="3" />
+              <circle cx="17" cy="10" r="2.5" />
+              <path d="M2.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M14.5 18.5c.4-2.2 2-3.5 4-3.5s3.2 1.1 3.5 3" />
             </svg>
             Partners
           </button>
 
-          <a href="#" class="mt-2 inline-flex w-fit items-center rounded-full border border-white/25 px-6 py-2.5 text-[13px] font-medium text-white transition hover:bg-white/10">
+          <a href="#"
+            class="mt-2 inline-flex w-fit items-center rounded-full border border-white/25 px-6 py-2.5 text-[13px] font-medium text-white transition hover:bg-white/10">
             Explore Now
           </a>
         </div>
@@ -788,7 +926,7 @@
         <!-- RIGHT: image card -->
         <div class="brain-bg relative min-h-[300px] overflow-hidden rounded-2xl ring-1 ring-white/5">
           <img src="brain.png" alt="Glowing brain" onerror="this.style.display='none'"
-               class="absolute inset-0 h-full w-full object-cover object-center" />
+            class="absolute inset-0 h-full w-full object-cover object-center" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
 
           <div class="absolute inset-x-0 bottom-0 p-5 sm:p-7">
@@ -805,19 +943,21 @@
   </section>
 
   <!-- ===================== DAILY WISDOM DECK ===================== -->
-  <section class="deck-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6">
+  <section
+    class="deck-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6">
 
     <!-- faint feathers on the left (white bg knocked out via invert + screen) -->
     <img src="feathers.png" alt=""
-         class="pointer-events-none absolute left-0 top-[54%] hidden w-[360px] max-w-[45vw] -translate-y-1/2 select-none md:block"
-         style="mix-blend-mode: screen; filter: invert(1); opacity: 0.55;" />
+      class="pointer-events-none absolute left-0 top-[54%] hidden w-[360px] max-w-[45vw] -translate-y-1/2 select-none md:block"
+      style="mix-blend-mode: screen; filter: invert(1); opacity: 0.55;" />
 
     <!-- heading + deck group (Figma: 447 x 718, gap 50) -->
     <div class="relative z-10 flex w-[447px] max-w-full flex-col items-center gap-10 sm:gap-[50px]">
 
       <!-- Heading -->
       <div class="text-center">
-        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">Daily Wisdom Deck</h2>
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">Daily Wisdom Deck
+        </h2>
         <p class="mx-auto font-inter mt-3 max-w-sm text-[13px] leading-relaxed text-lavender/60">
           Draw a card for your daily dose of celestial inspiration.
         </p>
@@ -831,10 +971,13 @@
           <!-- meditation icon -->
           <svg viewBox="0 0 64 64" fill="currentColor" class="mb-7 h-8 w-8 text-white/85">
             <circle cx="32" cy="13" r="5.5" />
-            <path d="M32 20.5c-6.2 0-11.4 3.6-13.2 9.2 3-2.1 6.2-3.2 9.4-3.2L32 30l3.8-3.5c3.2 0 6.4 1.1 9.4 3.2-1.8-5.6-7-9.2-13.2-9.2z" />
-            <path d="M16.5 39.5c3.9 4.4 9.4 6.7 15.5 6.7s11.6-2.3 15.5-6.7c1.3-1.5 0-3.8-1.9-3.4-3.9 2-8.4 3.1-13.6 3.1s-9.7-1.1-13.6-3.1c-1.9-.4-3.2 1.9-1.9 3.4z" />
+            <path
+              d="M32 20.5c-6.2 0-11.4 3.6-13.2 9.2 3-2.1 6.2-3.2 9.4-3.2L32 30l3.8-3.5c3.2 0 6.4 1.1 9.4 3.2-1.8-5.6-7-9.2-13.2-9.2z" />
+            <path
+              d="M16.5 39.5c3.9 4.4 9.4 6.7 15.5 6.7s11.6-2.3 15.5-6.7c1.3-1.5 0-3.8-1.9-3.4-3.9 2-8.4 3.1-13.6 3.1s-9.7-1.1-13.6-3.1c-1.9-.4-3.2 1.9-1.9 3.4z" />
           </svg>
-          <p class="deck-quote">“The soul always knows what to do to heal itself. The challenge is to silence the mind.”</p>
+          <p class="deck-quote">“The soul always knows what to do to heal itself. The challenge is to silence the mind.”
+          </p>
           <span class="deck-label">MEDITATION</span>
         </div>
       </div>
@@ -842,11 +985,16 @@
       <!-- Swipe -->
       <div class="swipe-text">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4 shrink-0">
-          <path d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2"
+            stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <span class="text-center">SWIPE TO EXPLORE</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4 shrink-0 -scale-x-100">
-          <path d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"
+          class="h-4 w-4 shrink-0 -scale-x-100">
+          <path
+            d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2"
+            stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
 
@@ -854,7 +1002,8 @@
   </section>
 
   <!-- ===================== CTA: JOIN COMMUNITY ===================== -->
-  <section class="screen-section flex items-center justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-16">
+  <section
+    class="screen-section flex items-center justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-16">
     <div class="relative mx-auto w-full max-w-[1065px]">
 
       <!--
@@ -864,21 +1013,21 @@
         being forced into the SVG's fixed 1065:466 ratio (which is what made
         the text overflow the arch on narrow screens).
       -->
-      <svg viewBox="0 0 1065 466" preserveAspectRatio="none" class="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 1065 466" preserveAspectRatio="none" class="absolute inset-0 h-full w-full"
+        xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="ctaFill" x1="0" y1="0" x2="1" y2="0.06">
-            <stop offset="0.1"  stop-color="rgba(117,92,180,0.9)" />
-            <stop offset="1"    stop-color="rgba(74,51,133,0.9)" />
+            <stop offset="0.1" stop-color="rgba(117,92,180,0.9)" />
+            <stop offset="1" stop-color="rgba(74,51,133,0.9)" />
           </linearGradient>
           <linearGradient id="ctaBorder" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0"   stop-color="rgba(196,180,232,0.75)" />
-            <stop offset="1"   stop-color="rgba(120,96,168,0.35)" />
+            <stop offset="0" stop-color="rgba(196,180,232,0.75)" />
+            <stop offset="1" stop-color="rgba(120,96,168,0.35)" />
           </linearGradient>
         </defs>
         <path d="M6,36 Q6,6 36,6 H1029 Q1059,6 1059,36 V434
                  Q1059,452 1042,457 C 800,410 265,410 23,457
-                 Q6,452 6,434 Z"
-              fill="url(#ctaFill)" stroke="url(#ctaBorder)" stroke-width="4" />
+                 Q6,452 6,434 Z" fill="url(#ctaFill)" stroke="url(#ctaBorder)" stroke-width="4" />
       </svg>
 
       <!-- Content: in normal flow now, so it sets the container's real height -->
@@ -896,7 +1045,7 @@
         </p>
 
         <a href="#"
-           class="mt-7 font-inter inline-flex items-center rounded-full border border-white/45 px-7 py-2.5 text-[13px] font-medium text-white transition hover:bg-white/10">
+          class="mt-7 font-inter inline-flex items-center rounded-full border border-white/45 px-7 py-2.5 text-[13px] font-medium text-white transition hover:bg-white/10">
           Send Details
         </a>
       </div>
@@ -905,7 +1054,8 @@
   </section>
 
   <!-- ===================== EXPERT MINDS ===================== -->
-  <section class="expert-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-10">
+  <section
+    class="expert-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-10">
     <!-- Internal contents (Figma: 1065 x 673, gap 50) -->
     <div class="mx-auto flex w-full max-w-[1065px] flex-col items-center gap-10 sm:gap-[50px]">
 
@@ -924,7 +1074,8 @@
         <!-- LEFT peeking coach -->
         <div class="absolute left-[2%] top-1/2 hidden -translate-y-1/2 lg:left-[7%] xl:block">
           <div class="relative h-28 w-28 xl:h-36 xl:w-36">
-            <img src="coach2.jpg" alt="" class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
+            <img src="coach2.jpg" alt=""
+              class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
             <span class="rating-badge">5<span class="text-amber-400">★</span></span>
           </div>
         </div>
@@ -932,7 +1083,8 @@
         <!-- RIGHT peeking coach -->
         <div class="absolute right-[2%] top-1/2 hidden -translate-y-1/2 lg:right-[7%] xl:block">
           <div class="relative h-28 w-28 xl:h-36 xl:w-36">
-            <img src="coach3.jpg" alt="" class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
+            <img src="coach3.jpg" alt=""
+              class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
             <span class="rating-badge">5<span class="text-amber-400">★</span></span>
           </div>
         </div>
@@ -942,7 +1094,7 @@
           <!-- avatar overlapping the top -->
           <div class="absolute left-1/2 top-0 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2">
             <img src="coach1.jpg" alt="Zayn Omar"
-                 class="h-full w-full rounded-full object-cover ring-4 ring-[#160f2c]" />
+              class="h-full w-full rounded-full object-cover ring-4 ring-[#160f2c]" />
           </div>
 
           <div class="expert-card px-6 pb-8 pt-16 text-center sm:px-8">
@@ -984,7 +1136,8 @@
 
       <!-- Heading -->
       <div class="text-center">
-        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white md:text-[36px]">Frequently Asked Questions</h2>
+        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white md:text-[36px]">Frequently Asked
+          Questions</h2>
         <p class="mx-auto mt-3 max-w-md font-DM Sans text-[12px] sm:text-[13px] leading-relaxed text-lavender/60">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of Tai Chi.
@@ -997,33 +1150,45 @@
         <details class="faq-item">
           <summary class="faq-summary">
             <span class="font-inter">What makes Ettazenn different from other apps?</span>
-            <svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </summary>
-          <div class="faq-answer">Ettazenn blends ancient practices with modern instruction, guided by real coaches and personalized to your pace — not just pre-recorded clips.</div>
+          <div class="faq-answer">Ettazenn blends ancient practices with modern instruction, guided by real coaches and
+            personalized to your pace — not just pre-recorded clips.</div>
         </details>
 
         <details class="faq-item">
           <summary class="faq-summary">
             <span class="font-inter">Do I need any special equipment to start?</span>
-            <svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </summary>
-          <div class="faq-answer">No. Just comfortable clothing and a small quiet space. A mat is helpful but optional for most sessions.</div>
+          <div class="faq-answer">No. Just comfortable clothing and a small quiet space. A mat is helpful but optional
+            for most sessions.</div>
         </details>
 
         <details class="faq-item">
           <summary class="faq-summary">
             <span class="font-inter">Are the sessions and courses suitable for the beginners?</span>
-            <svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </summary>
-          <div class="faq-answer">Yes. Every session includes beginner-friendly guidance and modifications, so you can start wherever you are.</div>
+          <div class="faq-answer">Yes. Every session includes beginner-friendly guidance and modifications, so you can
+            start wherever you are.</div>
         </details>
 
         <details class="faq-item">
           <summary class="faq-summary">
             <span class="font-inter">How often are new courses added?</span>
-            <svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="faq-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </summary>
-          <div class="faq-answer">New courses and sessions are added every week, alongside seasonal retreats and special events.</div>
+          <div class="faq-answer">New courses and sessions are added every week, alongside seasonal retreats and special
+            events.</div>
         </details>
 
       </div>
@@ -1038,9 +1203,7 @@
         <!-- Logo -->
         <a href="#" class="flex shrink-0 items-center gap-2">
           <span class="grid h-8 w-8 place-items-center rounded-full bg-brand/20 text-brand-light">
-            <svg viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
-              <path d="M12 3c1.6 1.7 2.4 3.4 2.4 5.1 0 .9-.2 1.7-.6 2.5 1.4-.4 2.7-1.3 3.9-2.6.3 2.2-.2 4-1.6 5.4-1 1-2.3 1.7-4.1 2.1 1.8.4 3.1 1.1 4.1 2.1-1.6.3-3 .1-4.2-.5-.9-.5-1.6-1.1-2.3-2-.7.9-1.4 1.5-2.3 2-1.2.6-2.6.8-4.2.5 1-1 2.3-1.7 4.1-2.1-1.8-.4-3.1-1.1-4.1-2.1C5.3 13 4.8 11.2 5.1 9c1.2 1.3 2.5 2.2 3.9 2.6-.4-.8-.6-1.6-.6-2.5C8.4 6.4 9.2 4.7 12 3z"/>
-            </svg>
+            <img src="Vector.png" alt="Ettazenn logo" class="h-5 w-5 object-contain" />
           </span>
           <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
         </a>
@@ -1056,20 +1219,24 @@
         <div class="flex shrink-0 items-center gap-4 text-white/70">
           <a href="#" aria-label="Share" class="transition hover:text-white">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5">
-              <circle cx="18" cy="5" r="2.5" /><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="19" r="2.5" />
+              <circle cx="18" cy="5" r="2.5" />
+              <circle cx="6" cy="12" r="2.5" />
+              <circle cx="18" cy="19" r="2.5" />
               <path d="M8.2 10.8l7.6-4.6M8.2 13.2l7.6 4.6" stroke-linecap="round" />
             </svg>
           </a>
           <a href="#" aria-label="Email" class="transition hover:text-white">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5">
-              <rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="M4 7l8 5 8-5" stroke-linecap="round" stroke-linejoin="round" />
+              <rect x="3" y="5" width="18" height="14" rx="2.5" />
+              <path d="M4 7l8 5 8-5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </a>
         </div>
       </div>
 
       <!-- Copyright -->
-      <p class="mt-4 text-center text-[12px] text-lavender/50 sm:text-left">© 2026 Ettazenn. Find your midnight flow.</p>
+      <p class="mt-4 text-center text-[12px] text-lavender/50 sm:text-left">© 2026 Ettazenn. Find your midnight flow.
+      </p>
 
     </div>
   </footer>
@@ -1101,4 +1268,5 @@
   </script>
 
 </body>
+
 </html>
