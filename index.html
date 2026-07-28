@@ -221,6 +221,26 @@
 .connector-line-vert {
   border-left: 1px dashed rgba(168,85,247,0.3);
 }
+@keyframes floatFeathers {
+    0%, 100% { transform: translateY(-50%) translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-50%) translateY(-6px) rotate(1deg); }
+  }
+
+  .animate-celestial { animation: celestialGlow 10s ease-in-out infinite; }
+  .animate-feathers { animation: floatFeathers 7s ease-in-out infinite; }
+
+  /* Celestial Star Field */
+  .star-field {
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow: 
+      120px 150px #fff, 350px 80px rgba(255,255,255,0.6), 700px 250px #fff,
+      200px 400px rgba(255,255,255,0.4), 900px 120px #fff, 1100px 300px rgba(255,255,255,0.7),
+      450px 500px #fff, 850px 550px rgba(255,255,255,0.5), 1300px 200px #fff,
+      150px 550px rgba(255,255,255,0.6), 1050px 450px #fff, 600px 180px rgba(255,255,255,0.4);
+  }
+
 </style>
 </head>
 <body class="bg-radial-1 overflow-x-hidden">
@@ -368,7 +388,7 @@
 
     <div class="flex flex-row items-center gap-4">
       <!-- App Store badge -->
-      <a href="#" class="flex items-center gap-2 bg-black/40 border border-white/15 rounded-xl px-4 py-2 hover:bg-black/60 transition-colors duration-200">
+      <a href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-black/40 border border-white/15 rounded-xl px-4 py-2 hover:bg-black/60 transition-colors duration-200">
         <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M16.5 12.6c0-2.1 1.7-3.1 1.8-3.2-1-1.4-2.5-1.6-3-1.6-1.3-.1-2.5.8-3.2.8-.6 0-1.7-.7-2.8-.7-1.4 0-2.7.8-3.5 2.1-1.5 2.6-.4 6.4 1 8.5.7 1 1.6 2.2 2.7 2.1 1.1-.1 1.5-.7 2.8-.7s1.7.7 2.8.6c1.2 0 1.9-1 2.6-2 .8-1.2 1.2-2.3 1.2-2.4-.1 0-2.4-.9-2.4-3.5zM14.2 5.4c.6-.7 1-1.7.9-2.7-.9 0-2 .6-2.6 1.3-.6.6-1.1 1.6-.9 2.6 1 .1 1.9-.5 2.6-1.2z" fill="white"/>
         </svg>
@@ -378,7 +398,7 @@
         </div>
       </a>
       <!-- Google Play badge -->
-      <a href="#" class="flex items-center gap-2 bg-black/40 border border-white/15 rounded-xl px-4 py-2 hover:bg-black/60 transition-colors duration-200">
+      <a href="https://play.google.com/store/apps/details?id=com.ettazenn.ettazen" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-black/40 border border-white/15 rounded-xl px-4 py-2 hover:bg-black/60 transition-colors duration-200">
         <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1 1.3C.6 1.7.5 2.3.5 3v16c0 .7.1 1.3.5 1.7L11.5 11 1 1.3z" fill="#D8B4FE"/>
           <path d="M15 7.3l-3.2-1.8-3.3 3.3 3.3 3.3 3.4-1.9c1-.6 1-1.9-.2-2.9z" fill="#A855F7"/>
@@ -782,6 +802,105 @@
   </div>
 </section>
 
+<!-- DAILY WISDOM DECK SECTION -->
+<section id="wisdom-deck" class="relative h-screen w-full bg-[#0b051b] flex flex-col justify-between items-center px-4 py-4 md:py-8 overflow-hidden select-none">
+  
+  <!-- BACKGROUND LAYERS -->
+  <div class="absolute inset-0 bg-radial from-[#150a33] via-[#0b051b] to-[#05020d] opacity-90 pointer-events-none z-0"></div>
+  <div class="star-field absolute inset-0 pointer-events-none opacity-60 z-0"></div>
+
+  <!-- Soft Center Glow -->
+  <div class="animate-celestial absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] md:w-[650px] h-[350px] md:h-[450px] bg-purple-900/30 blur-[120px] rounded-full pointer-events-none z-0"></div>
+
+  <!-- LEFT FEATHERS GRAPHIC -->
+  <div class="animate-feathers absolute left-6 md:left-16 top-1/2 -translate-y-1/2 opacity-35 pointer-events-none hidden sm:block w-36 md:w-48 z-0">
+    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-purple-200">
+      <path d="M40 100C60 80 100 70 140 80C110 100 80 110 40 100Z" fill="currentColor" opacity="0.4"/>
+      <path d="M20 120C40 95 90 85 130 95C100 115 70 125 20 120Z" fill="currentColor" opacity="0.3"/>
+      <path d="M60 70C75 55 110 50 140 58C115 72 90 78 60 70Z" fill="currentColor" opacity="0.5"/>
+      <path d="M10 140C25 125 60 120 90 125C70 138 50 142 10 140Z" fill="currentColor" opacity="0.2"/>
+    </svg>
+  </div>
+
+  <!-- MAIN WRAPPER CONTAINER -->
+  <div class="relative max-w-4xl w-full h-full mx-auto flex flex-col items-center justify-between z-10 py-2">
+    
+    <!-- Section Header -->
+    <div class="text-center my-auto">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">
+        Daily Wisdom Deck
+      </h2>
+      <p class="text-xs sm:text-sm text-purple-200/70 max-w-md mx-auto font-normal leading-relaxed">
+        Draw a card for your daily dose of celestial inspiration.
+      </p>
+    </div>
+
+    <!-- Stacked Card Deck Container (Proportional max-height relative to viewport) -->
+    <div class="relative my-auto w-[220px] sm:w-[260px] md:w-[280px] h-[340px] sm:h-[390px] md:h-[420px] max-h-[52vh] flex items-center justify-center">
+      
+      <!-- Background Card 3 (Bottom Layer) -->
+      <div class="absolute inset-0 rounded-[20px] sm:rounded-[24px] bg-gradient-to-b from-[#5638A0] to-[#3B2275] border border-purple-400/20 transform rotate-[4.5deg] translate-x-2.5 translate-y-1 shadow-xl opacity-60"></div>
+
+      <!-- Background Card 2 (Middle Layer) -->
+      <div class="absolute inset-0 rounded-[20px] sm:rounded-[24px] bg-gradient-to-b from-[#623FB3] to-[#422683] border border-purple-400/25 transform rotate-[2.2deg] translate-x-1 translate-y-0.5 shadow-2xl opacity-80"></div>
+
+      <!-- Front Active Card -->
+      <div class="relative w-full h-full rounded-[20px] sm:rounded-[24px] bg-gradient-to-b from-[#6D45C7] via-[#5935A8] to-[#432387] border border-purple-300/35 px-5 py-6 sm:px-6 sm:py-8 flex flex-col items-center justify-center text-center shadow-[0_18px_40px_rgba(0,0,0,0.65)] backdrop-blur-sm cursor-grab active:cursor-grabbing transition-all duration-300 hover:scale-[1.01]">
+        
+        <div class="flex flex-col items-center justify-between h-full w-full py-1">
+          <!-- Top Meditation Icon -->
+          <div class="text-purple-200/90">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="4" r="2"/>
+              <path d="M12 6v5"/>
+              <path d="M8 10l4 2 4-2"/>
+              <path d="M6 18c2-1 4-2 6-2s4 1 6 2"/>
+              <path d="M9 14l-3 4"/>
+              <path d="M15 14l3 4"/>
+            </svg>
+          </div>
+
+          <!-- Quote Text -->
+          <blockquote class="px-1 my-auto">
+            <p class="text-white font-serif text-xs sm:text-sm md:text-base leading-relaxed tracking-wide italic">
+              “The soul always knows what to do to heal itself. The challenge is to silence the mind.”
+            </p>
+          </blockquote>
+
+          <!-- Category Label -->
+          <span class="text-[9px] sm:text-[10px] font-semibold tracking-[0.22em] text-purple-200/60 uppercase">
+            Meditation
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Swipe / Navigation Hint -->
+    <div class="flex items-center justify-center gap-1 text-purple-200/60 text-[10px] sm:text-[11px] font-medium tracking-[0.2em] uppercase my-auto">
+      <!-- Touch Icon Left -->
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 11V6a2 2 0 0 0-4 0v5"/>
+        <path d="M14 10V4a2 2 0 0 0-4 0v6"/>
+        <path d="M10 10.5V6a2 2 0 0 0-4 0v8"/>
+        <path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.8-5.6-2.2L3 14"/>
+      </svg>
+      
+      <span>Swipe To Explore</span>
+      
+      <!-- Touch Icon Right -->
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="scale-x-[-1]">
+        <path d="M18 11V6a2 2 0 0 0-4 0v5"/>
+        <path d="M14 10V4a2 2 0 0 0-4 0v6"/>
+        <path d="M10 10.5V6a2 2 0 0 0-4 0v8"/>
+        <path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.8-5.6-2.2L3 14"/>
+      </svg>
+    </div>
+
+  </div>
+</section>
+
 
 <!-- PERSONALIZED GUIDANCE SECTION -->
 <section id="guidance" class="relative min-h-screen w-full bg-[#090515] flex flex-col justify-center items-center px-4 sm:px-6 py-8 sm:py-12 overflow-hidden">
@@ -992,115 +1111,171 @@
   </div>
 </section>
 
-<section class="relative min-h-screen w-full bg-[#080413] flex flex-col justify-center items-center px-4 py-20 overflow-hidden">
-  <div class="absolute inset-0 ambient-testimonial-glow pointer-events-none"></div>
+<!-- EXPERT MINDS SECTION (STRICT SCREEN FIT) -->
+<section id="instructors" class="relative h-screen max-h-screen w-full bg-[#080413] flex flex-col justify-center items-center px-4 overflow-hidden">
+  
+  <!-- Ambient Background Glow -->
+  <div class="absolute inset-0 bg-radial from-purple-900/20 via-transparent to-transparent pointer-events-none"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-purple-600/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-  <div class="relative">
-    <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-3">Expert Minds</h2>
-    <p class="text-xs md:text-sm text-gray-400 text-center max-w-lg mx-auto mb-16 font-normal leading-relaxed">
-      Master the ancient arts with modern instruction. From deep-flow Yoga to the moving meditation of Tai Chi.
-    </p>
+  <div class="relative max-w-5xl w-full mx-auto flex flex-col items-center my-auto">
+    
+    <!-- Section Header -->
+    <div class="text-center mb-10 sm:mb-12">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">
+        Expert Minds
+      </h2>
+      <p class="text-xs sm:text-sm text-purple-200/70 max-w-md mx-auto font-normal leading-relaxed">
+        Master the ancient arts with modern instruction. From deep-flow Yoga to the moving meditation of Tai Chi.
+      </p>
+    </div>
 
-    <div class="relative flex items-center justify-center gap-6 md:gap-10 max-w-4xl mx-auto mb-8">
+    <!-- Instructor Showcase Grid/Carousel -->
+    <div class="relative flex items-center justify-center gap-6 md:gap-10 max-w-3xl w-full mx-auto mb-6">
 
-      <!-- Left inactive avatar -->
-      <div class="hidden sm:block relative flex-shrink-0">
-        <div class="relative rounded-full w-24 h-24 md:w-28 md:h-28 border-2 border-purple-500/20 overflow-hidden avatar-ring">
-          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop" alt="Instructor" class="w-full h-full object-cover">
+      <!-- Left Inactive Avatar -->
+      <div class="hidden sm:block relative flex-shrink-0 transition-transform duration-300 hover:scale-105">
+        <div class="relative rounded-full w-20 h-20 md:w-24 md:h-24 border-2 border-purple-500/30 p-1 bg-[#130B24]/60 backdrop-blur-sm">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop" 
+               alt="Instructor" 
+               class="w-full h-full object-cover rounded-full">
         </div>
-        <span class="absolute -bottom-2 right-2 bg-[#130B24] border border-purple-500/20 text-white text-[10px] px-2.5 py-0.5 rounded-full flex items-center gap-1">
+        <span class="absolute -bottom-1 right-1 bg-[#130B24] border border-purple-400/30 text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
           5 <span class="text-yellow-400">★</span>
         </span>
       </div>
 
-      <!-- Center featured card -->
-      <div class="relative max-w-md w-full pt-14 pb-8 px-8 rounded-3xl bg-[#1A1230]/80 border border-purple-500/20 text-center shadow-2xl backdrop-blur-md z-10">
-        <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=300&auto=format&fit=crop" alt="Zayn Omar"
-             class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full border-2 border-purple-400/40 object-cover shadow-lg avatar-ring">
-
-        <h3 class="text-lg font-bold text-white mb-1">Zayn Omar</h3>
-
-        <div class="text-xs text-yellow-400 font-semibold mb-3 flex items-center justify-center gap-1">
-          <span>★★★★</span><span class="text-gray-500">★</span>
-          <span class="text-purple-200/70 ml-1">4.9</span>
+      <!-- Center Featured Card -->
+      <div class="relative max-w-md w-full pt-12 pb-6 px-6 sm:px-8 rounded-[24px] bg-gradient-to-b from-[#1E1338]/90 to-[#120B24]/90 border border-purple-500/25 text-center shadow-2xl backdrop-blur-md z-10">
+        
+        <!-- Overlapping Avatar -->
+        <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full border-2 border-purple-400/50 p-1 bg-[#130B24] shadow-xl">
+          <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=300&auto=format&fit=crop" 
+               alt="Zayn Omar" 
+               class="w-full h-full rounded-full object-cover">
         </div>
 
-        <p class="text-xs text-gray-300 leading-relaxed">
+        <!-- Instructor Info -->
+        <h3 class="text-base font-bold text-white mb-0.5">Zayn Omar</h3>
+
+        <!-- Rating Stars -->
+        <div class="text-[11px] text-yellow-400 font-semibold mb-3 flex items-center justify-center gap-1">
+          <span>★★★★★</span>
+          <span class="text-purple-200/80 ml-1 text-[10px]">4.9</span>
+        </div>
+
+        <!-- Bio -->
+        <p class="text-xs text-purple-200/80 leading-relaxed font-normal line-clamp-4 sm:line-clamp-none">
           I'm a yoga coach dedicated to helping people build strength, flexibility, and inner balance through mindful movement and breathwork. My approach focuses on simple, effective practices that fit into everyday life, guiding students toward better posture, reduced stress, and a deeper connection between body and mind.
         </p>
       </div>
 
-      <!-- Right inactive avatar -->
-      <div class="hidden sm:block relative flex-shrink-0">
-        <div class="relative rounded-full w-24 h-24 md:w-28 md:h-28 border-2 border-purple-500/20 overflow-hidden avatar-ring">
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop" alt="Instructor" class="w-full h-full object-cover">
+      <!-- Right Inactive Avatar -->
+      <div class="hidden sm:block relative flex-shrink-0 transition-transform duration-300 hover:scale-105">
+        <div class="relative rounded-full w-20 h-20 md:w-24 md:h-24 border-2 border-purple-500/30 p-1 bg-[#130B24]/60 backdrop-blur-sm">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop" 
+               alt="Instructor" 
+               class="w-full h-full object-cover rounded-full">
         </div>
-        <span class="absolute -bottom-2 right-2 bg-[#130B24] border border-purple-500/20 text-white text-[10px] px-2.5 py-0.5 rounded-full flex items-center gap-1">
+        <span class="absolute -bottom-1 right-1 bg-[#130B24] border border-purple-400/30 text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
           5 <span class="text-yellow-400">★</span>
         </span>
       </div>
+
     </div>
 
-    <!-- Carousel controls -->
+    <!-- Carousel Controls -->
     <div class="flex items-center justify-center gap-4">
-      <button class="w-10 h-10 rounded-full border border-purple-400/30 flex items-center justify-center text-white hover:bg-purple-600/20 cursor-pointer transition-all duration-200" aria-label="Previous instructor">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button type="button" 
+              class="w-9 h-9 rounded-full border border-purple-400/30 bg-[#18102E]/60 flex items-center justify-center text-white hover:bg-purple-600/30 hover:border-purple-300 transition-all duration-200 shadow-md cursor-pointer" 
+              aria-label="Previous instructor">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </button>
-      <button class="w-10 h-10 rounded-full border border-purple-400/30 flex items-center justify-center text-white hover:bg-purple-600/20 cursor-pointer transition-all duration-200" aria-label="Next instructor">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+      <button type="button" 
+              class="w-9 h-9 rounded-full border border-purple-400/30 bg-[#18102E]/60 flex items-center justify-center text-white hover:bg-purple-600/30 hover:border-purple-300 transition-all duration-200 shadow-md cursor-pointer" 
+              aria-label="Next instructor">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </button>
     </div>
+
   </div>
 </section>
 
-<!-- FAQ -->
-<section id="faq" class="relative min-h-screen w-full bg-[#080413] flex flex-col justify-center items-center px-6 py-20 overflow-hidden">
-  <div class="absolute inset-0 courses-ambient-glow pointer-events-none"></div>
+<!-- FAQ SECTION (STRICT SCREEN FIT) -->
+<section id="faq" class="relative h-screen max-h-screen w-full bg-[#080413] flex flex-col justify-center items-center px-4 sm:px-6 py-6 overflow-hidden">
+  
+  <!-- Ambient Background Glow -->
+  <div class="absolute inset-0 bg-radial from-purple-900/20 via-transparent to-transparent pointer-events-none"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-purple-600/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-  <div class="relative max-w-3xl mx-auto">
-    <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-3">Frequently Asked Questions</h2>
-    <p class="text-xs md:text-sm text-gray-400 text-center max-w-lg mx-auto mb-12 font-normal leading-relaxed">
-      Everything you need to know before you begin your practice.
-    </p>
+  <div class="relative max-w-3xl w-full mx-auto flex flex-col justify-center my-auto">
+    
+    <!-- Header -->
+    <div class="text-center mb-6 sm:mb-8">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">
+        Frequently Asked Questions
+      </h2>
+      <p class="text-xs sm:text-sm text-gray-400 max-w-md mx-auto font-normal leading-relaxed">
+        Everything you need to know before you begin your practice.
+      </p>
+    </div>
 
-    <div class="flex flex-col gap-4">
+    <!-- Accordion List -->
+    <div class="flex flex-col gap-3">
 
-      <div class="faq-item rounded-2xl bg-[#130B24]/80 border border-purple-500/20 px-6 py-5">
+      <!-- Item 1 -->
+      <div class="faq-item rounded-2xl bg-[#130B24]/80 border border-purple-500/20 px-5 py-4 backdrop-blur-md transition-all duration-200 hover:border-purple-500/40">
         <button type="button" class="faq-toggle w-full flex items-center justify-between gap-4 text-left cursor-pointer" aria-expanded="false">
-          <span class="text-sm md:text-base font-semibold text-white">What makes Ettazenn different from other apps?</span>
-          <svg class="faq-chevron flex-shrink-0 text-purple-300" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          <span class="text-xs sm:text-sm md:text-base font-semibold text-white">What makes Ettazenn different from other apps?</span>
+          <svg class="faq-chevron flex-shrink-0 text-purple-300 transition-transform duration-200" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
         </button>
-        <p class="faq-answer text-xs md:text-sm text-gray-400 leading-relaxed">
+        <p class="faq-answer text-xs text-gray-400 leading-relaxed mt-2 hidden">
           Ettazenn blends expert-led courses, guided meditation, and daily rituals into a single calm space — built around real consistency, not just content to scroll through.
         </p>
       </div>
 
-      <div class="faq-item rounded-2xl bg-[#130B24]/80 border border-purple-500/20 px-6 py-5">
+      <!-- Item 2 -->
+      <div class="faq-item rounded-2xl bg-[#130B24]/80 border border-purple-500/20 px-5 py-4 backdrop-blur-md transition-all duration-200 hover:border-purple-500/40">
         <button type="button" class="faq-toggle w-full flex items-center justify-between gap-4 text-left cursor-pointer" aria-expanded="false">
-          <span class="text-sm md:text-base font-semibold text-white">Do I need any prior experience to start?</span>
-          <svg class="faq-chevron flex-shrink-0 text-purple-300" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          <span class="text-xs sm:text-sm md:text-base font-semibold text-white">Do I need any prior experience to start?</span>
+          <svg class="faq-chevron flex-shrink-0 text-purple-300 transition-transform duration-200" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
         </button>
-        <p class="faq-answer text-xs md:text-sm text-gray-400 leading-relaxed">
+        <p class="faq-answer text-xs text-gray-400 leading-relaxed mt-2 hidden">
           Not at all. Every course starts with the fundamentals, and our coaches adjust pacing to your level as you go.
         </p>
       </div>
 
-      <div class="faq-item rounded-2xl bg-[#130B24]/80 border border-purple-500/20 px-6 py-5">
+      <!-- Item 3 -->
+      <div class="faq-item rounded-2xl bg-[#130B24]/80 border border-purple-500/20 px-5 py-4 backdrop-blur-md transition-all duration-200 hover:border-purple-500/40">
         <button type="button" class="faq-toggle w-full flex items-center justify-between gap-4 text-left cursor-pointer" aria-expanded="false">
-          <span class="text-sm md:text-base font-semibold text-white">Can I access Ettazenn on both mobile and desktop?</span>
-          <svg class="faq-chevron flex-shrink-0 text-purple-300" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          <span class="text-xs sm:text-sm md:text-base font-semibold text-white">Can I access Ettazenn on both mobile and desktop?</span>
+          <svg class="faq-chevron flex-shrink-0 text-purple-300 transition-transform duration-200" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
         </button>
-        <p class="faq-answer text-xs md:text-sm text-gray-400 leading-relaxed">
+        <p class="faq-answer text-xs text-gray-400 leading-relaxed mt-2 hidden">
           Yes. Your progress, streaks, and saved sessions sync automatically between the app and the web.
         </p>
       </div>
 
-      <div class="faq-item rounded-2xl bg-[#130B24]/80 border border-purple-500/20 px-6 py-5">
+      <!-- Item 4 -->
+      <div class="faq-item rounded-2xl bg-[#130B24]/80 border border-purple-500/20 px-5 py-4 backdrop-blur-md transition-all duration-200 hover:border-purple-500/40">
         <button type="button" class="faq-toggle w-full flex items-center justify-between gap-4 text-left cursor-pointer" aria-expanded="false">
-          <span class="text-sm md:text-base font-semibold text-white">Is there a free trial before I subscribe?</span>
-          <svg class="faq-chevron flex-shrink-0 text-purple-300" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          <span class="text-xs sm:text-sm md:text-base font-semibold text-white">Is there a free trial before I subscribe?</span>
+          <svg class="faq-chevron flex-shrink-0 text-purple-300 transition-transform duration-200" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
         </button>
-        <p class="faq-answer text-xs md:text-sm text-gray-400 leading-relaxed">
+        <p class="faq-answer text-xs text-gray-400 leading-relaxed mt-2 hidden">
           Yes — every new member gets full access for 7 days, no card details required to begin.
         </p>
       </div>
