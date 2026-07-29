@@ -73,8 +73,12 @@
     /* ---- Dusk mountain showcase background ---- */
     .dusk-bg {
       background:
-        radial-gradient(55% 38% at 50% 40%, rgba(206, 188, 232, 0.28) 0%, rgba(206, 188, 232, 0) 60%),
-        linear-gradient(to bottom, #5b4a7e 0%, #46375f 34%, #2e2447 68%, #191325 100%);
+        radial-gradient(55% 38% at 50% 40%, rgba(206, 188, 232, 0.22) 0%, rgba(206, 188, 232, 0) 60%),
+        linear-gradient(to bottom, rgba(9, 6, 20, 0.7) 0%, rgba(30, 20, 45, 0.5) 55%, rgba(15, 11, 24, 0.92) 100%),
+        url('dusk-mountains.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
     /* ---- Personalized Guidance ---- */
@@ -167,7 +171,12 @@
 
     /* ---- Expert Minds ---- */
     .expert-bg {
-      background: radial-gradient(ellipse 72% 58% at 50% 44%, #3d2c63 0%, #251b44 38%, #160f2c 68%, #0d0a1c 100%);
+      background:
+        linear-gradient(to bottom, rgba(13, 10, 28, 0.8) 0%, rgba(37, 27, 68, 0.55) 40%, rgba(13, 10, 28, 0.85) 100%),
+        url('expert-bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
     .expert-card {
@@ -212,17 +221,10 @@
     /* ---- Daily Wisdom Deck ---- */
     .deck-bg {
       background:
-        radial-gradient(1.5px 1.5px at 15% 25%, rgba(255, 255, 255, 0.85), transparent),
-        radial-gradient(1px 1px at 25% 62%, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(1.5px 1.5px at 40% 14%, rgba(255, 255, 255, 0.75), transparent),
-        radial-gradient(1px 1px at 58% 72%, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(1.5px 1.5px at 76% 28%, rgba(255, 255, 255, 0.85), transparent),
-        radial-gradient(1px 1px at 86% 55%, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(1px 1px at 92% 18%, rgba(255, 255, 255, 0.7), transparent),
-        radial-gradient(1px 1px at 50% 38%, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(1px 1px at 33% 84%, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(1.5px 1.5px at 66% 88%, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(ellipse 85% 65% at 72% 34%, #201d44 0%, #12102a 45%, #0a0818 76%, #060410 100%);
+        linear-gradient(to bottom, rgba(6, 4, 16, 0.55) 0%, rgba(6, 4, 16, 0.4) 45%, rgba(6, 4, 16, 0.75) 100%),
+        url('bg 3.png');
+      background-size: cover;
+      background-position: center;
       background-repeat: no-repeat;
     }
 
@@ -294,6 +296,11 @@
       color: rgba(216, 204, 228, 0.85);
     }
 
+    /* ---- Crazy Features section background ---- */
+    .features-bg {
+      background: radial-gradient(ellipse 75% 65% at 50% 48%, #35204f 0%, #170f2e 40%, #0a0716 70%, #05020d 100%);
+    }
+
     /* ---- Crazy Features cards ---- */
     .feature-card {
       position: relative;
@@ -301,15 +308,16 @@
       max-width: 100%;
       height: 150px;
       /* uniform size for every card */
-      border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      background: rgba(255, 255, 255, 0.015);
+      border-radius: 20px;
+      border: 1px solid rgba(196, 181, 253, 0.16);
+      background: rgba(21, 13, 46, 0.8);
       padding: 0.9rem 1rem;
       backdrop-filter: blur(4px);
       overflow: hidden;
     }
 
     .fc-icon {
+      position: relative;
       display: grid;
       place-items: center;
       width: 2.25rem;
@@ -318,7 +326,15 @@
       border-radius: 0.7rem;
       border: 1px solid rgba(255, 255, 255, 0.12);
       background: rgba(255, 255, 255, 0.04);
-      color: #A78BFA;
+      color: #d8c5ff;
+    }
+
+    .fc-icon-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 0.7rem;
+      background: rgba(168, 85, 247, 0.3);
+      filter: blur(8px);
     }
 
     .fc-title {
@@ -331,7 +347,7 @@
       margin-top: 0.35rem;
       font-size: 11px;
       line-height: 1.5;
-      color: rgba(216, 204, 228, 0.5);
+      color: rgba(184, 176, 208, 0.75);
     }
 
     /* dashed connector stubs toward the phone (desktop only) */
@@ -391,10 +407,10 @@
       left: 0;
       right: 0;
       top: 0;
-      height: 40px;
-      background: linear-gradient(to top, rgba(var(--edge-rgb), 0) 0%, rgba(var(--edge-rgb), 0.55) 100%);
+      height: min(200px, 28%);
+      background: linear-gradient(to top, rgba(var(--edge-rgb-top, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-top, var(--edge-rgb)), 1) 100%);
       pointer-events: none;
-      z-index: 30;
+      z-index: -1;
     }
 
     section::after {
@@ -403,10 +419,10 @@
       left: 0;
       right: 0;
       bottom: 0;
-      height: 40px;
-      background: linear-gradient(to bottom, rgba(var(--edge-rgb), 0) 0%, rgba(var(--edge-rgb), 0.55) 100%);
+      height: min(200px, 28%);
+      background: linear-gradient(to bottom, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 1) 100%);
       pointer-events: none;
-      z-index: 30;
+      z-index: -1;
     }
 
     /* ---- Section height safety net ----
@@ -436,7 +452,7 @@
     <div class="hero-bg absolute inset-0"></div>
 
     <!-- ---------- Navbar ---------- -->
-   <header class="relative z-20 border-b border-white/10 rounded-b-2xl" style="background: rgba(12,19,36,0.6); box-shadow: 0px 0px 40px 0px #8B5CF61A; backdrop-filter: blur(24px);">
+   <header class="relative z-20 border-b border-white/10 rounded-b-2xl" style="background: #0C132499; box-shadow: 0px 0px 40px 0px #8B5CF61A; backdrop-filter: blur(24px);">
       <div class="mx-auto flex max-w-shell items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
 
         <!-- Logo -->
@@ -552,8 +568,8 @@
 
   <!-- ===================== COURSES & SPECIALIZED PRACTICES ===================== -->
   <section
-    class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-10"
-    style="--edge-rgb: 21, 17, 30;">
+    class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-10"
+    style="--edge-rgb: 19, 16, 35;">
     <div class="w-full max-w-shell">
 
       <!-- Section heading -->
@@ -568,14 +584,17 @@
       </div>
 
       <!-- Feature card  (Figma: 1065 x 673, gap 50 — capped to viewport on desktop so the section never scrolls) -->
-     <div
-  class="relative mx-auto mt-8 flex min-h-[420px] w-full max-w-[1065px] items-center rounded-[24px] bg-gradient-to-br from-[#4b3d6b] via-[#3d3160] to-[#2f2547] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5 sm:rounded-[28px] sm:p-10 lg:h-[calc(100vh-230px)] lg:max-h-[673px] lg:p-14 overflow-hidden">
+     <div class="relative mx-auto mt-8 w-full max-w-[1065px] lg:h-[calc(100vh-230px)] lg:max-h-[673px]">
 
-  <!-- Award seal (top-right PNG placeholder) -->
-  <div class="absolute right-6 top-6 hidden h-16 w-16 sm:right-10 sm:top-8 md:flex items-center justify-center z-10">
+  <!-- Award seal (top-right PNG placeholder, sits outside the card's overflow-hidden so it isn't clipped) -->
+  <div class="absolute hidden h-[103px] w-[103px] md:flex items-center justify-center z-10"
+    style="top: -40px; right: 75px; opacity: 0.3;">
     <!-- Replace src with your PNG path -->
     <img src="badge.png" alt="Award Seal" class="h-full w-full object-contain" />
   </div>
+
+  <div
+    class="flex h-full min-h-[420px] w-full items-center overflow-hidden rounded-[24px] bg-gradient-to-br from-[#4b3d6b] via-[#3d3160] to-[#2f2547] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5 sm:rounded-[28px] sm:p-10 lg:p-14">
 
   <div class="flex w-full flex-col items-center gap-8 md:flex-row md:justify-between md:gap-[50px]">
 
@@ -611,20 +630,21 @@
 
   </div>
 </div>
+</div>
 
     </div>
   </section>
 
   <!-- ===================== CRAZY FEATURES ===================== -->
   <section
-    class="screen-section relative flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8"
-    style="--edge-rgb: 21, 17, 30;">
+    class="features-bg screen-section relative flex flex-col justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-8"
+    style="--edge-rgb: 5, 2, 13;">
     <!-- ambient purple glow (left-center, like the Figma) -->
     <div
-      class="pointer-events-none absolute left-[-100px] top-1/2 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-brand/10 blur-[130px]">
+      class="pointer-events-none absolute left-[-100px] top-1/2 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-[#c66fe0]/20 blur-[120px]">
     </div>
     <div
-      class="pointer-events-none absolute right-[-120px] bottom-0 h-[420px] w-[420px] rounded-full bg-brand/5 blur-[130px]">
+      class="pointer-events-none absolute right-[-120px] bottom-0 h-[420px] w-[420px] rounded-full bg-[#c66fe0]/20 blur-[120px]">
     </div>
 
     <div class="relative mx-auto w-full max-w-shell">
@@ -634,7 +654,7 @@
         <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
           Crazy Features of Ettazenn
         </h2>
-        <p class="mx-auto font-DM Sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
+        <p class="mx-auto font-DM Sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-[#b8b0d0]">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of minds.
         </p>
@@ -658,7 +678,8 @@
     <!-- Events & Retreats -->
     <div class="feature-card md:-translate-x-10">
       <div class="fc-icon">
-        <img src="events.png" alt="Events & Retreats" class="h-5 w-5" />
+        <span class="fc-icon-glow"></span>
+        <img src="events.png" alt="Events & Retreats" class="relative h-5 w-5" />
       </div>
       <h4 class="fc-title font-DM Sans">Events &amp; Retreats:</h4>
       <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
@@ -721,7 +742,8 @@
   </section>
 
   <!-- ===================== APP SHOWCASE (half phone rising) ===================== -->
-  <section class="dusk-bg relative h-[100dvh] min-h-[560px] w-full overflow-hidden" style="--edge-rgb: 25, 19, 37;">
+  <section class="dusk-bg relative h-[100dvh] min-h-[560px] w-full overflow-hidden"
+    style="--edge-rgb-top: 5, 2, 13; --edge-rgb-bottom: 19, 16, 35;">
 
     <!-- misty mountain silhouettes -->
     <svg class="absolute inset-x-0 bottom-0 h-[55%] w-full" viewBox="0 0 1440 400" preserveAspectRatio="none"
@@ -750,9 +772,9 @@
 
   </section>
 
-  <!-- ===================== SPECIALIZED PRACTICES (masterclass) ===================== -->
-  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8"
-    style="--edge-rgb: 21, 17, 30;">
+  <!-- =====================  SPECIALIZED PRACTICES(masterclass) ===================== -->
+  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-8"
+    style="--edge-rgb: 19, 16, 35;">
     <div class="mx-auto w-full max-w-shell">
 
       <!-- Heading -->
@@ -949,8 +971,8 @@
 
   <!-- ===================== CTA: JOIN COMMUNITY ===================== -->
   <section
-    class="screen-section flex items-center justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-16"
-    style="--edge-rgb: 18, 16, 31;">
+    class="screen-section flex items-center justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-16"
+    style="--edge-rgb: 19, 16, 35;">
     <div class="relative mx-auto w-full max-w-[1065px]">
 
       <!--
@@ -1079,8 +1101,8 @@
 </section>
 
   <!-- ===================== FAQ ===================== -->
-  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-10"
-    style="--edge-rgb: 18, 16, 31;">
+  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-10"
+    style="--edge-rgb: 19, 16, 35;">
     <div class="mx-auto flex w-full max-w-[1065px] flex-col items-center gap-10 sm:gap-[50px]">
 
       <!-- Heading -->
