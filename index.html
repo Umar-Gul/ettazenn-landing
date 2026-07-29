@@ -51,17 +51,31 @@
       max-width: 100%;
     }
 
-    /* Hero background — Figma artwork */
+    /* Hero background — Figma artwork, enhanced with a starfield, a warm glow
+       around the lit doorway, and a vignette for more depth/contrast */
     .hero-bg {
       background-image:
+        radial-gradient(1.5px 1.5px at 10% 12%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 20% 22%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1.5px 1.5px at 33% 9%, rgba(255, 255, 255, 0.85), transparent),
+        radial-gradient(1px 1px at 47% 16%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1.5px 1.5px at 63% 7%, rgba(255, 255, 255, 0.85), transparent),
+        radial-gradient(1px 1px at 76% 18%, rgba(255, 255, 255, 0.65), transparent),
+        radial-gradient(1.5px 1.5px at 88% 10%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 95% 23%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(30% 22% at 50% 58%, rgba(255, 196, 120, 0.4) 0%, rgba(255, 196, 120, 0) 70%),
+        radial-gradient(120% 90% at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(10, 6, 20, 0.6) 100%),
         linear-gradient(to bottom,
-          rgba(42, 31, 61, 0.25) 0%,
-          rgba(42, 31, 61, 0.05) 30%,
-          rgba(42, 31, 61, 0.55) 75%,
-          rgba(42, 31, 61, 0.85) 100%),
+          rgba(42, 31, 61, 0.2) 0%,
+          rgba(42, 31, 61, 0.05) 28%,
+          rgba(42, 31, 61, 0.55) 72%,
+          rgba(42, 31, 61, 0.88) 100%),
         url('hero.png');
       background-size: cover;
       background-position: center;
+      background-blend-mode:
+        normal, normal, normal, normal, normal, normal, normal, normal,
+        screen, multiply, normal, normal;
     }
 
     /* Fallback tint until hero.jpg exists so the page never looks broken */
@@ -304,16 +318,16 @@
     /* ---- Crazy Features cards ---- */
     .feature-card {
       position: relative;
-      width: 215px;
+      z-index: 1;
+      width: 200px;
       max-width: 100%;
-      height: 150px;
+      height: 140px;
       /* uniform size for every card */
-      border-radius: 20px;
+      border-radius: 18px;
       border: 1px solid rgba(196, 181, 253, 0.16);
       background: rgba(21, 13, 46, 0.8);
-      padding: 0.9rem 1rem;
+      padding: 0.85rem 1rem;
       backdrop-filter: blur(4px);
-      overflow: hidden;
     }
 
     .fc-icon {
@@ -348,16 +362,35 @@
       font-size: 11px;
       line-height: 1.5;
       color: rgba(184, 176, 208, 0.75);
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      overflow: hidden;
     }
 
-    /* dashed connector stubs toward the phone (desktop only) */
+    /* dashed connector stubs from each card toward the central spine (desktop only) */
     .fc-line-r,
     .fc-line-l {
       display: none;
       position: absolute;
       top: 50%;
-      width: 34px;
-      border-top: 1px dashed rgba(255, 255, 255, 0.18);
+      width: 64px;
+      border-top: 1.5px dashed rgba(216, 204, 240, 0.35);
+      z-index: 0;
+    }
+
+    /* connector dot at the end of each stub, where it meets the spine */
+    .fc-line-r::after,
+    .fc-line-l::after {
+      content: "";
+      position: absolute;
+      top: -3px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d8c5ff;
+      box-shadow: 0 0 8px 1px rgba(168, 85, 247, 0.7);
     }
 
     .fc-line-r {
@@ -365,15 +398,53 @@
       transform: translateX(100%);
     }
 
+    .fc-line-r::after {
+      right: -3px;
+    }
+
     .fc-line-l {
       left: 0;
       transform: translateX(-100%);
     }
 
+    .fc-line-l::after {
+      left: -3px;
+    }
+
+    /* central dashed spine (vertical + horizontal) behind the phone, tying every
+       connector stub together into one grid, like the Figma reference */
+    .fc-spine-v,
+    .fc-spine-h {
+      display: none;
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .fc-spine-v {
+      top: 4%;
+      bottom: 4%;
+      left: 50%;
+      width: 0;
+      border-left: 1.5px dashed rgba(216, 204, 240, 0.3);
+      transform: translateX(-50%);
+    }
+
+    .fc-spine-h {
+      top: 50%;
+      left: 12%;
+      right: 12%;
+      height: 0;
+      border-top: 1.5px dashed rgba(216, 204, 240, 0.3);
+      transform: translateY(-50%);
+    }
+
     @media (min-width: 768px) {
 
       .fc-line-r,
-      .fc-line-l {
+      .fc-line-l,
+      .fc-spine-v,
+      .fc-spine-h {
         display: block;
       }
     }
@@ -441,6 +512,8 @@
         overflow: hidden;
       }
     }
+
+    
   </style>
 </head>
 
@@ -460,6 +533,8 @@
           <span class="relative" style="width: 40.5px; height: 42.65px;">
             <img src="Vector.png" alt="Ettazenn logo" class="absolute object-contain"
               style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
+            <span class="absolute rounded-full bg-white"
+              style="width: 6px; height: 6px; top: 1px; left: 25px;"></span>
           </span>
           <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
         </a>
@@ -520,120 +595,130 @@
       </div>
     </header>
 
-    <!-- ---------- Hero copy (bottom-aligned, centered) ---------- -->
-    <div
-      class="relative z-10 flex min-h-[calc(100dvh-80px)] flex-col items-center justify-end pb-14 sm:pb-20 text-center">
-      <h1
-        class="max-w-3xl font-inter px-4 sm:px-6 text-[32px] sm:text-[44px] font-extrabold leading-[1.1] tracking-tight text-white md:text-[52px]">
-        Strengthen Your Body. Anytime.
-      </h1>
+    <!-- ---------- Hero copy (bottom-aligned, centered; Figma: 896 x 309, gap 20, px 24) ---------- -->
+<div class="relative z-10 mx-auto flex min-h-[calc(100vh-85px)] w-full max-w-[1000px] flex-col items-center justify-end px-4 pb-8 sm:pb-1 text-center">
 
-      <p class="mt-4 font-inter max-w-xl px-4 sm:px-6 text-[14px] sm:text-[15px] leading-relaxed text-lavender">
-        A sanctuary for the digital soul. Immerse yourself in guided practices
-        designed to align your body and spirit under the celestial canopy.
-      </p>
+  <!-- Heading forced in one line -->
+  <h1 class="mx-auto whitespace-nowrap font-inter text-[20px] font-bold leading-tight tracking-tight text-white sm:text-[32px] md:text-[40px] lg:text-[40px]">
+    Strengthen Your Body. Anytime.
+  </h1>
 
-      <!-- Store badges -->
-      <div class="mt-8 flex flex-row items-center justify-center gap-3 px-4 sm:gap-4">
-  <a href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455" target="_blank"
-    rel="noopener noreferrer" aria-label="Download on the App Store"
-    class="flex w-auto items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 ring-1 ring-black/15 transition hover:bg-black/5">
-    <svg viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6 text-black shrink-0">
-      <path
-        d="M16.365 1.43c0 1.14-.417 2.09-1.25 2.85-.83.76-1.79 1.2-2.79 1.12-.13-1.09.42-2.24 1.2-2.98.85-.8 2.02-1.32 2.84-1.36.02.12.02.24 0 .37zM20.5 17.2c-.55 1.27-.82 1.84-1.53 2.97-.99 1.57-2.39 3.53-4.12 3.55-1.54.01-1.94-1-4.03-.99-2.09.01-2.52 1.01-4.06.99-1.73-.02-3.05-1.79-4.04-3.36-2.77-4.39-3.06-9.54-1.35-12.28 1.21-1.95 3.13-3.09 4.93-3.09 1.83 0 2.98 1 4.5 1 1.47 0 2.36-1 4.48-1 1.6 0 3.3.87 4.51 2.38-3.96 2.17-3.32 7.82.71 9.83z" />
-    </svg>
-    <span class="text-left leading-none">
-      <span class="block text-[10px] text-black/70">Download on the</span>
-      <span class="block text-[15px] font-semibold text-black">App Store</span>
-    </span>
-  </a>
+  <!-- Description with controlled line breaking -->
+  <p class="mx-auto mt-4 max-w-[580px] font-DM Sans text-[13px] leading-relaxed text-purple-100/70 sm:text-[14px] md:text-[15px]">
+    A sanctuary for the digital soul. Immerse yourself in guided practices<br class="hidden sm:inline" />
+    designed to align your body and spirit under the celestial canopy.
+  </p>
 
-  <a href="https://play.google.com/store/apps/details?id=com.ettazenn.ettazen" target="_blank"
-    rel="noopener noreferrer" aria-label="Get it on Google Play"
-    class="flex w-auto items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 ring-1 ring-black/15 transition hover:bg-black/5">
-    <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0">
-      <path fill="#EA4335" d="M3.6 2.2 13.4 12 3.6 21.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1z" />
-      <path fill="#FBBC04" d="m17.2 8.3 3.1 1.8c1 .6 1 2.2 0 2.8l-3.1 1.8L14 12l3.2-3.7z" />
-      <path fill="#34A853" d="M3.6 21.8 13.4 12l3.8 2.7-11.1 6.4c-.9.5-1.9.3-2.5-.3z" />
-      <path fill="#4285F4" d="M3.6 2.2c.6-.6 1.6-.8 2.5-.3l11.1 6.4L13.4 12 3.6 2.2z" />
-    </svg>
-    <span class="text-left leading-none">
-      <span class="block text-[10px] text-black/70">GET IT ON</span>
-      <span class="block text-[15px] font-semibold text-black">Google Play</span>
-    </span>
-  </a>
+  <!-- Store Badges centered at the bottom -->
+  <div class="mt-6 flex flex-row items-center justify-center gap-3">
+    <!-- App Store Badge -->
+    <a href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       aria-label="Download on the App Store"
+       class="flex items-center justify-center gap-2 rounded-l bg-white px-3.5 py-1.5 ring-1 ring-white/10 transition hover:bg-white/90">
+      <svg viewBox="0 0 24 24" fill="currentColor" class="h-8 w-5 text-black shrink-0">
+        <path d="M16.365 1.43c0 1.14-.417 2.09-1.25 2.85-.83.76-1.79 1.2-2.79 1.12-.13-1.09.42-2.24 1.2-2.98.85-.8 2.02-1.32 2.84-1.36.02.12.02.24 0 .37zM20.5 17.2c-.55 1.27-.82 1.84-1.53 2.97-.99 1.57-2.39 3.53-4.12 3.55-1.54.01-1.94-1-4.03-.99-2.09.01-2.52 1.01-4.06.99-1.73-.02-3.05-1.79-4.04-3.36-2.77-4.39-3.06-9.54-1.35-12.28 1.21-1.95 3.13-3.09 4.93-3.09 1.83 0 2.98 1 4.5 1 1.47 0 2.36-1 4.48-1 1.6 0 3.3.87 4.51 2.38-3.96 2.17-3.32 7.82.71 9.83z" />
+      </svg>
+      <span class="text-left leading-none">
+        <span class="block text-[8px] font-medium uppercase tracking-tight text-black/70">Download on the</span>
+        <span class="block text-[13px] font-semibold tracking-tight text-black">App Store</span>
+      </span>
+    </a>
+
+    <!-- Google Play Badge -->
+    <a href="https://play.google.com/store/apps/details?id=com.ettazenn.ettazen" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       aria-label="Get it on Google Play"
+       class="flex items-center justify-center gap-2 rounded-l bg-white px-3.5 py-1.5 ring-1 ring-white/10 transition hover:bg-white/90">
+      <svg viewBox="0 0 24 24" class="h-8 w-5 shrink-0">
+        <path fill="#EA4335" d="M3.6 2.2 13.4 12 3.6 21.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1z" />
+        <path fill="#FBBC04" d="m17.2 8.3 3.1 1.8c1 .6 1 2.2 0 2.8l-3.1 1.8L14 12l3.2-3.7z" />
+        <path fill="#34A853" d="M3.6 21.8 13.4 12l3.8 2.7-11.1 6.4c-.9.5-1.9.3-2.5-.3z" />
+        <path fill="#4285F4" d="M3.6 2.2c.6-.6 1.6-.8 2.5-.3l11.1 6.4L13.4 12 3.6 2.2z" />
+      </svg>
+      <span class="text-left leading-none">
+        <span class="block text-[8px] font-medium uppercase tracking-tight text-black/70">GET IT ON</span>
+        <span class="block text-[13px] font-semibold tracking-tight text-black">Google Play</span>
+      </span>
+    </a>
+  </div>
+
 </div>
 
   </section>
 
-  <!-- ===================== COURSES & SPECIALIZED PRACTICES ===================== -->
-  <section
-    class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-10"
-    style="--edge-rgb: 19, 16, 35;">
-    <div class="w-full max-w-shell">
+<!-- ===================== COURSES & SPECIALIZED PRACTICES ===================== -->
+<section id="courses-check"
+  class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#0F0A1C] px-4 py-14 sm:px-6 lg:py-10"
+  style="--edge-rgb: 15, 10, 28;">
+  <div class="w-full max-w-shell">
 
-      <!-- Section heading -->
-      <div class="mx-auto max-w-xl text-center">
-        <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
-          Courses &amp; Specialized Practices
-        </h2>
-        <p class="mx-auto font-DM Sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
-          Master the ancient arts with modern instruction. From deep-flow Yoga to the
-          moving meditation of Tai Chi.
-        </p>
-      </div>
-
-      <!-- Feature card  (Figma: 1065 x 673, gap 50 — capped to viewport on desktop so the section never scrolls) -->
-     <div class="relative mx-auto mt-8 w-full max-w-[1065px] lg:h-[calc(100vh-230px)] lg:max-h-[673px]">
-
-  <!-- Award seal (top-right PNG placeholder, sits outside the card's overflow-hidden so it isn't clipped) -->
-  <div class="absolute hidden h-[103px] w-[103px] md:flex items-center justify-center z-10"
-    style="top: -40px; right: 75px; opacity: 0.3;">
-    <!-- Replace src with your PNG path -->
-    <img src="badge.png" alt="Award Seal" class="h-full w-full object-contain" />
-  </div>
-
-  <div
-    class="flex h-full min-h-[420px] w-full items-center overflow-hidden rounded-[24px] bg-gradient-to-br from-[#4b3d6b] via-[#3d3160] to-[#2f2547] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5 sm:rounded-[28px] sm:p-10 lg:p-14">
-
-  <div class="flex w-full flex-col items-center gap-8 md:flex-row md:justify-between md:gap-[50px]">
-
-    <!-- Left: copy -->
-    <div class="max-w-md text-center md:text-left">
-      <h3 class="text-[30px] sm:text-[38px] font-inter leading-[1.1] text-white md:text-[40px]">
-        Learn from<br />Experts.
-      </h3>
-      <p class="mt-5 font-DM Sans text-[13px] sm:text-[14px] leading-relaxed text-lavender/70">
-        Master the ancient arts with modern instruction.
-        From deep-flow Yoga to the moving meditation of minds.
+    <!-- Section Heading -->
+    <div class="mx-auto max-w-xl text-center">
+      <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
+        Courses &amp; Specialized Practices
+      </h2>
+      <p class="mx-auto font-DM Sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-purple-200/60">
+        Master the ancient arts with modern instruction. From deep-flow Yoga to the
+        moving meditation of Tai Chi.
       </p>
-      <a href="#"
-        class="mt-8 font-inter inline-block rounded-full border border-white/40 px-7 py-2.5 text-[14px] font-medium text-white transition hover:bg-white/10">
-        Explore Now
-      </a>
     </div>
 
-    <!-- Right: glowing meditation icon container (PNG placeholder) -->
-    <div class="shrink-0">
-      <div class="grid h-40 w-40 place-items-center rounded-full bg-white/[0.04] sm:h-52 sm:w-52">
-        <div class="grid h-32 w-32 place-items-center rounded-full bg-white/[0.05] sm:h-40 sm:w-40">
-          <div
-            class="grid h-24 w-24 place-items-center rounded-full bg-brand/25 shadow-[0_0_40px_-4px_rgba(139,92,246,0.6)] sm:h-28 sm:w-28 p-4">
-            
-            <!-- Replace src with your PNG path -->
-            <img src="events.png" alt="Meditation Icon" class="h-full w-full object-contain" />
+    <!-- Feature Card Container -->
+    <div class="relative mx-auto mt-8 w-full max-w-[1065px] lg:h-[calc(100vh-230px)] lg:max-h-[673px]">
 
+      <!-- Award Seal (top-right PNG, outside relative overflow) -->
+      <div class="absolute hidden h-[103px] w-[103px] md:flex items-center justify-center z-20"
+        style="top: -40px; right: 75px; opacity: 0.3;">
+        <img src="badge.png" alt="Award Seal" class="h-full w-full object-contain" />
+      </div>
+
+      <!-- Main Gradient Card Surface -->
+      <div
+        class="relative flex h-full min-h-[420px] w-full items-center overflow-hidden rounded-[28px] p-8 shadow-2xl shadow-black/50 ring-1 ring-white/10 sm:p-12 lg:p-16"
+        style="background: linear-gradient(88.01deg, #43366B 10.28%, #312357 104.01%);">
+
+        <div class="flex w-full flex-col items-center gap-10 md:flex-row md:justify-between md:gap-[60px] z-10">
+
+          <!-- Left: Text & CTA -->
+          <div class="max-w-md text-center md:text-left">
+            <h3 class="text-[32px] sm:text-[40px] font-inter font-medium leading-[1.15] text-white md:text-[44px]">
+              Learn from<br />Experts.
+            </h3>
+            <p class="mt-5 font-DM Sans text-[13px] sm:text-[14px] leading-relaxed text-purple-200/70">
+              Master the ancient arts with modern instruction.<br class="hidden sm:inline" />
+              From deep-flow Yoga to the moving meditation of minds.
+            </p>
+            <a href="#"
+              class="mt-8 font-inter inline-block rounded-full border border-purple-300/40 bg-white/5 px-8 py-3 text-[14px] font-medium text-white transition hover:bg-white/15 hover:border-white/60 active:scale-95">
+              Explore Now
+            </a>
           </div>
+
+          <!-- Right: Concentric Rings & Icon -->
+          <div class="shrink-0 relative flex items-center justify-center p-4">
+            <div class="grid h-56 w-56 place-items-center rounded-full bg-white/[0.02] sm:h-72 sm:w-72">
+              <div class="grid h-44 w-44 place-items-center rounded-full bg-white/[0.04] sm:h-56 sm:w-56">
+                <div class="grid h-32 w-32 place-items-center rounded-full bg-white/[0.06] shadow-[0_0_50px_10px_rgba(168,85,247,0.25)] sm:h-40 sm:w-40">
+                  
+                  <div class="flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24 p-2">
+                    <img src="events.png" alt="Meditation Icon" class="h-full w-full object-contain drop-shadow-[0_0_12px_rgba(216,180,254,0.8)]" />
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
+
     </div>
 
   </div>
-</div>
-</div>
-
-    </div>
-  </section>
+</section>
 
   <!-- ===================== CRAZY FEATURES ===================== -->
   <section
@@ -661,7 +746,11 @@
       </div>
 
       <!-- Cards fanned around the phone -->
-    <div class="mt-8 grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-8 lg:gap-10">
+    <div class="relative mt-8 grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-8 lg:gap-10">
+
+  <!-- Connector spine tying every card's dashed stub together (desktop only) -->
+  <span class="fc-spine-v"></span>
+  <span class="fc-spine-h"></span>
 
   <!-- LEFT column -->
   <div class="flex flex-col items-center gap-5 md:items-end">
@@ -699,7 +788,7 @@
   </div>
 
   <!-- PHONE (center) -->
-  <div class="order-first flex justify-center md:order-none">
+  <div class="relative z-10 order-first flex justify-center md:order-none">
     <img src="mobile.png" alt="Ettazenn app"
       class="h-[38vh] max-h-[420px] w-auto drop-shadow-2xl sm:h-[46vh] md:h-[54vh] md:max-h-[500px]" />
   </div>
