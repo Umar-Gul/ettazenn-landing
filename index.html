@@ -374,12 +374,15 @@
     }
 
     /* ---- Shadow at both the top and bottom edge of every section ----
-       Adds soft dark gradients hugging both edges of each section so
-       adjoining sections blend into one another with no visible seam.
-       Purely visual, non-interactive, and clipped by each section's
-       existing overflow so nothing else about layout/spacing changes. */
+       Each section sets --edge-rgb (via inline style) to the RGB components
+       of ITS OWN background color, so the shadow fades using the section's
+       own color instead of a generic black wash — this is what removes the
+       visible seam/line between adjoining sections. Purely visual,
+       non-interactive, and clipped by each section's existing overflow so
+       nothing else about layout/spacing changes. */
     section {
       position: relative;
+      --edge-rgb: 10, 8, 20;
     }
 
     section::before {
@@ -389,7 +392,7 @@
       right: 0;
       top: 0;
       height: 40px;
-      background: linear-gradient(to top, rgba(47, 34, 94, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
+      background: linear-gradient(to top, rgba(var(--edge-rgb), 0) 0%, rgba(var(--edge-rgb), 0.55) 100%);
       pointer-events: none;
       z-index: 30;
     }
@@ -401,7 +404,7 @@
       right: 0;
       bottom: 0;
       height: 40px;
-      background: linear-gradient(to bottom, rgba(57, 34, 84, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
+      background: linear-gradient(to bottom, rgba(var(--edge-rgb), 0) 0%, rgba(var(--edge-rgb), 0.55) 100%);
       pointer-events: none;
       z-index: 30;
     }
@@ -428,12 +431,12 @@
 <body class="font-sans antialiased bg-plum-900 text-white overflow-x-hidden">
 
   <!-- ===================== HERO ===================== -->
-  <section class="hero-fallback relative min-h-[100dvh] w-full overflow-hidden">
+  <section class="hero-fallback relative min-h-[100dvh] w-full overflow-hidden" style="--edge-rgb: 42, 31, 61;">
     <!-- image layer -->
     <div class="hero-bg absolute inset-0"></div>
 
     <!-- ---------- Navbar ---------- -->
-   <header class="relative z-20 border-b border-white/10 bg-[#0C1324]/60 backdrop-blur-md rounded-b-2xl">
+   <header class="relative z-20 border-b border-white/10 rounded-b-2xl" style="background: rgba(12,19,36,0.6); box-shadow: 0px 0px 40px 0px #8B5CF61A; backdrop-filter: blur(24px);">
       <div class="mx-auto flex max-w-shell items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
 
         <!-- Logo -->
@@ -549,7 +552,8 @@
 
   <!-- ===================== COURSES & SPECIALIZED PRACTICES ===================== -->
   <section
-    class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-10">
+    class="screen-section flex flex-col items-center justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-10"
+    style="--edge-rgb: 21, 17, 30;">
     <div class="w-full max-w-shell">
 
       <!-- Section heading -->
@@ -568,9 +572,9 @@
   class="relative mx-auto mt-8 flex min-h-[420px] w-full max-w-[1065px] items-center rounded-[24px] bg-gradient-to-br from-[#4b3d6b] via-[#3d3160] to-[#2f2547] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5 sm:rounded-[28px] sm:p-10 lg:h-[calc(100vh-230px)] lg:max-h-[673px] lg:p-14 overflow-hidden">
 
   <!-- Award seal (top-right PNG placeholder) -->
-  <div class="absolute right-6 -top-6 hidden h-14 w-14 sm:right-10 md:flex items-center justify-center">
+  <div class="absolute right-6 top-6 hidden h-16 w-16 sm:right-10 sm:top-8 md:flex items-center justify-center z-10">
     <!-- Replace src with your PNG path -->
-    <img src="badge.png" alt="Award Seal" class="h-full w-full object-contain opacity-20" />
+    <img src="badge.png" alt="Award Seal" class="h-full w-full object-contain" />
   </div>
 
   <div class="flex w-full flex-col items-center gap-8 md:flex-row md:justify-between md:gap-[50px]">
@@ -613,7 +617,8 @@
 
   <!-- ===================== CRAZY FEATURES ===================== -->
   <section
-    class="screen-section relative flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8">
+    class="screen-section relative flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8"
+    style="--edge-rgb: 21, 17, 30;">
     <!-- ambient purple glow (left-center, like the Figma) -->
     <div
       class="pointer-events-none absolute left-[-100px] top-1/2 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-brand/10 blur-[130px]">
@@ -716,7 +721,7 @@
   </section>
 
   <!-- ===================== APP SHOWCASE (half phone rising) ===================== -->
-  <section class="dusk-bg relative h-[100dvh] min-h-[560px] w-full overflow-hidden">
+  <section class="dusk-bg relative h-[100dvh] min-h-[560px] w-full overflow-hidden" style="--edge-rgb: 25, 19, 37;">
 
     <!-- misty mountain silhouettes -->
     <svg class="absolute inset-x-0 bottom-0 h-[55%] w-full" viewBox="0 0 1440 400" preserveAspectRatio="none"
@@ -746,7 +751,8 @@
   </section>
 
   <!-- ===================== SPECIALIZED PRACTICES (masterclass) ===================== -->
-  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8">
+  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#15111e] px-4 py-14 sm:px-6 lg:py-8"
+    style="--edge-rgb: 21, 17, 30;">
     <div class="mx-auto w-full max-w-shell">
 
       <!-- Heading -->
@@ -810,7 +816,8 @@
   </section>
 
   <!-- ===================== PERSONALIZED GUIDANCE ===================== -->
-  <section class="pg-section screen-section flex flex-col justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-8">
+  <section class="pg-section screen-section flex flex-col justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-8"
+    style="--edge-rgb: 19, 16, 35;">
     <div class="mx-auto w-full max-w-shell">
 
       <!-- Heading -->
@@ -888,7 +895,8 @@
 
   <!-- ===================== DAILY WISDOM DECK ===================== -->
   <section
-    class="deck-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6">
+    class="deck-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6"
+    style="--edge-rgb: 6, 4, 16;">
 
     <!-- faint feathers on the left (white bg knocked out via invert + screen) -->
     <img src="feathers.png" alt=""
@@ -947,7 +955,8 @@
 
   <!-- ===================== CTA: JOIN COMMUNITY ===================== -->
   <section
-    class="screen-section flex items-center justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-16">
+    class="screen-section flex items-center justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-16"
+    style="--edge-rgb: 18, 16, 31;">
     <div class="relative mx-auto w-full max-w-[1065px]">
 
       <!--
@@ -999,7 +1008,8 @@
 
   <!-- ===================== EXPERT MINDS ===================== -->
  <section
-  class="expert-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-10">
+  class="expert-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-10"
+  style="--edge-rgb: 13, 10, 28;">
   <!-- Internal contents (Figma: 1065 x 673, gap 50) -->
   <div class="mx-auto flex w-full max-w-[1065px] flex-col items-center gap-10 sm:gap-[50px]">
 
@@ -1075,7 +1085,8 @@
 </section>
 
   <!-- ===================== FAQ ===================== -->
-  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-10">
+  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#12101f] px-4 py-14 sm:px-6 lg:py-10"
+    style="--edge-rgb: 18, 16, 31;">
     <div class="mx-auto flex w-full max-w-[1065px] flex-col items-center gap-10 sm:gap-[50px]">
 
       <!-- Heading -->
