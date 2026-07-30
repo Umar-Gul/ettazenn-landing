@@ -958,8 +958,8 @@
         class="pg-panel mx-auto mt-10 grid min-h-[560px] w-full max-w-[1065px] gap-6 p-5 sm:p-6 md:grid-cols-[1fr_1.5fr] md:p-7 lg:h-[62vh] lg:max-h-[642px] lg:min-h-0">
 
         <!-- LEFT: tabs -->
-        <div class="flex flex-col justify-center gap-3">
-          <button class="pg-tab active">
+        <div id="pgTabs" class="flex flex-col justify-center gap-3">
+          <button class="pg-tab active" data-tab="coaches">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
               <rect x="3" y="4" width="18" height="12" rx="2" />
               <path d="M8 20h8M12 16v4" />
@@ -967,20 +967,20 @@
             </svg>
             Coaches
           </button>
-          <button class="pg-tab">
+          <button class="pg-tab" data-tab="wellness">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
               <path d="M12 20s-7-4.5-7-9.5A3.5 3.5 0 0112 8a3.5 3.5 0 017 2.5c0 5-7 9.5-7 9.5z" />
             </svg>
             Wellness Center's
           </button>
-          <button class="pg-tab">
+          <button class="pg-tab" data-tab="schools">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
               <path d="M3 9l9-5 9 5-9 5-9-5z" />
               <path d="M6 11v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5" />
             </svg>
             Schools
           </button>
-          <button class="pg-tab">
+          <button class="pg-tab" data-tab="partners">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
               <circle cx="8" cy="8" r="3" />
               <circle cx="17" cy="10" r="2.5" />
@@ -989,7 +989,7 @@
             Partners
           </button>
 
-          <a href="#"
+          <a id="pgExploreLink" href="#"
             class="mt-2 inline-flex w-fit items-center rounded-full border border-white/25 px-6 py-2.5 text-[13px] font-medium text-white transition hover:bg-white/10">
             Explore Now
           </a>
@@ -1001,9 +1001,9 @@
             class="absolute inset-0 h-full w-full object-cover object-center" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
 
-          <div class="absolute inset-x-0 bottom-0 p-5 sm:p-7">
-            <h4 class="text-[16px] sm:text-[17px] font-inter text-white">Coach &amp; Wellness centre's:</h4>
-            <p class="mt-2 max-w-md font-DM Sans text-[13px] leading-relaxed text-lavender/70">
+          <div id="pgPanelText" class="absolute inset-x-0 bottom-0 p-5 sm:p-7" style="transition: opacity .25s ease;">
+            <h4 id="pgHeading" class="text-[16px] sm:text-[17px] font-inter text-white">Coach &amp; Wellness centre's:</h4>
+            <p id="pgDesc" class="mt-2 max-w-md font-DM Sans text-[13px] leading-relaxed text-lavender/70">
               Journey inward with direct support from our master instructors. Our
               personalized sessions offer a serene path to wellness.
             </p>
@@ -1079,7 +1079,7 @@
   </section>
 
   <!-- ===================== CTA: JOIN COMMUNITY ===================== -->
-  <section
+  <section id="join-community"
     class="screen-section flex items-center justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-16"
     style="--edge-rgb: 19, 16, 35;">
     <div class="relative mx-auto w-full max-w-[1065px]">
@@ -1132,7 +1132,7 @@
   </section>
 
   <!-- ===================== EXPERT MINDS ===================== -->
- <section
+ <section id="expert-minds"
   class="expert-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-10"
   style="--edge-rgb: 13, 10, 28;">
   <!-- Internal contents (Figma: 1065 x 673, gap 50) -->
@@ -1567,6 +1567,84 @@
       if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
       if (leftWrap) leftWrap.addEventListener('click', function () { go(-1); });
       if (rightWrap) rightWrap.addEventListener('click', function () { go(1); });
+    })();
+
+    // Personalized Guidance - tab switching
+    (function () {
+      var tabsWrap = document.getElementById('pgTabs');
+      var panelText = document.getElementById('pgPanelText');
+      var heading = document.getElementById('pgHeading');
+      var desc = document.getElementById('pgDesc');
+      var exploreLink = document.getElementById('pgExploreLink');
+      if (!tabsWrap || !panelText || !heading || !desc) return;
+
+      var content = {
+        coaches: {
+          heading: 'Coach &amp; Wellness centre\'s:',
+          desc: 'Journey inward with direct support from our master instructors. Our personalized sessions offer a serene path to wellness.',
+          exploreLabel: 'Explore Coaches',
+          target: '#expert-minds'
+        },
+        wellness: {
+          heading: 'Wellness Centres:',
+          desc: 'Discover partnered wellness centres offering curated retreats, workshops, and community classes tailored to your practice.',
+          exploreLabel: 'Explore Wellness Centres',
+          target: '#join-community'
+        },
+        schools: {
+          heading: 'Accredited Schools:',
+          desc: 'Connect with schools teaching authentic yoga, tai chi, and meditation lineages, from beginner courses to teacher certification.',
+          exploreLabel: 'Explore Schools',
+          target: '#join-community'
+        },
+        partners: {
+          heading: 'Trusted Partners:',
+          desc: 'Explore our network of partner studios, brands, and practitioners collaborating to bring you a richer wellness journey.',
+          exploreLabel: 'Explore Partners',
+          target: '#join-community'
+        }
+      };
+
+      var tabs = Array.prototype.slice.call(tabsWrap.querySelectorAll('.pg-tab'));
+      var animating = false;
+      var activeTarget = content.coaches.target;
+
+      function activate(tab) {
+        var key = tab.getAttribute('data-tab');
+        var data = content[key];
+        if (!data || animating) return;
+        animating = true;
+
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+
+        panelText.style.opacity = '0';
+        window.setTimeout(function () {
+          heading.innerHTML = data.heading;
+          desc.textContent = data.desc;
+          if (exploreLink) {
+            exploreLink.textContent = data.exploreLabel;
+            exploreLink.setAttribute('href', data.target);
+          }
+          activeTarget = data.target;
+          panelText.style.opacity = '1';
+          animating = false;
+        }, 200);
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () { activate(tab); });
+      });
+
+      if (exploreLink) {
+        exploreLink.addEventListener('click', function (e) {
+          var el = document.querySelector(activeTarget);
+          if (el) {
+            e.preventDefault();
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
     })();
   </script>
 
