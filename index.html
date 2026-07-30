@@ -55,6 +55,48 @@
       max-width: 100%;
     }
 
+    /* ---- Scroll-entry reveal animations (crossfade + slight scale) ----
+       Applied via IntersectionObserver: element starts hidden/offset, then
+       eases into place the first time it enters the viewport. */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(28px) scale(0.96);
+      transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1), transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-up.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* "pop" variant for badges/icons — a snappier, slightly overshooting scale-in */
+    .reveal-pop {
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 380ms ease-in-out, transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .reveal-pop.is-visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Award Seal badge is a faint decorative watermark (0.3 resting opacity),
+       not a fully-opaque element — override the generic reveal-pop end state. */
+    #awardSealBadge.is-visible {
+      opacity: 0.3;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .reveal-up,
+      .reveal-pop {
+        transition: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+
     /* Hero background — Figma artwork, enhanced with a starfield, a warm glow
        around the lit doorway, and a vignette for more depth/contrast */
     .hero-bg {
@@ -726,14 +768,14 @@
     <div class="relative mx-auto mt-8 w-full max-w-[1065px] lg:h-[calc(100vh-230px)] lg:max-h-[673px]">
 
       <!-- Award Seal (top-right PNG, outside relative overflow) -->
-      <div class="absolute hidden h-[103px] w-[103px] md:flex items-center justify-center z-20"
-        style="top: -40px; right: 75px; opacity: 0.3;">
+      <div id="awardSealBadge" class="reveal-pop absolute hidden h-[103px] w-[103px] md:flex items-center justify-center z-20"
+        style="top: -40px; right: 75px; transition-delay: 180ms;">
         <img src="badge.png" alt="Award Seal" class="h-full w-full object-contain" />
       </div>
 
       <!-- Main Gradient Card Surface -->
       <div
-        class="relative flex h-full min-h-[420px] w-full items-center overflow-hidden rounded-[28px] p-8 shadow-2xl shadow-black/50 ring-1 ring-white/10 sm:p-12 lg:p-16"
+        class="reveal-up relative flex h-full min-h-[420px] w-full items-center overflow-hidden rounded-[28px] p-8 shadow-2xl shadow-black/50 ring-1 ring-white/10 sm:p-12 lg:p-16"
         style="background: linear-gradient(88.01deg, #43366B 10.28%, #312357 104.01%);">
 
         <div class="flex w-full flex-col items-center gap-10 md:flex-row md:justify-between md:gap-[60px] z-10">
@@ -786,6 +828,31 @@
     </div>
     <div
       class="pointer-events-none absolute right-[-120px] bottom-0 h-[420px] w-[420px] rounded-full bg-[#c66fe0]/20 blur-[120px]">
+    </div>
+
+    <!-- Etta Points (floating card, far left edge) -->
+    <div class="feature-card hidden xl:block" style="position: absolute; top: 60%; left: 9%; transform: translateY(-50%);">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
+          <path d="M12 3.5l2.47 5.24 5.78.63-4.32 3.93 1.16 5.7L12 15.98l-5.09 3.02 1.16-5.7-4.32-3.93 5.78-.63L12 3.5z"
+            stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <h4 class="fc-title font-DM Sans">Etta Points:</h4>
+      <p class="fc-body font-DM Sans">Earn Etta Points with every session and unlock exclusive rewards along the
+        way.</p>
+    </div>
+
+    <!-- Etta XP (floating card, far right edge) -->
+    <div class="feature-card hidden xl:block" style="position: absolute; top: 60%; right: 9%; transform: translateY(-50%);">
+      <div class="fc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
+          <path d="M13 3L4 14h6l-1 7 9-11h-6l1-7z" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <h4 class="fc-title font-DM Sans">Etta XP:</h4>
+      <p class="fc-body font-DM Sans">Level up your practice as Etta XP builds with every class, streak, and
+        milestone.</p>
     </div>
 
     <div class="relative mx-auto w-full max-w-shell">
@@ -907,7 +974,7 @@
     <!-- phone: bottom-centered, lower part clipped so it shows down to "Recommended For You" -->
     <div class="absolute bottom-0 left-1/2 z-10 -translate-x-1/2 translate-y-[28%]">
       <img src="mobile.png" alt="Ettazenn app"
-        class="h-[100dvh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:h-[110dvh] lg:h-[116vh]" />
+        class="reveal-up h-[100dvh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:h-[110dvh] lg:h-[116vh]" />
     </div>
 
     <!-- black shadow rising from the bottom edge -->
@@ -937,7 +1004,7 @@
       <div class="mt-10 grid min-h-[520px] gap-5 md:grid-cols-[1.7fr_1fr] lg:h-[58vh] lg:max-h-[420px] lg:min-h-0">
 
         <!-- LEFT: masterclass image card -->
-        <div class="mc-card relative min-h-[260px] overflow-hidden rounded-[24px] ring-1 ring-white/5">
+        <div class="reveal-up mc-card relative min-h-[260px] overflow-hidden rounded-[24px] ring-1 ring-white/5">
           <!-- image (swap in masterclass.jpg); hides itself if missing so the gradient shows -->
           <img src="Container.png" alt="" onerror="this.style.display='none'"
             class="absolute inset-0 h-full w-full object-cover"
@@ -959,8 +1026,7 @@
         <div class="flex flex-col gap-5">
 
           <!-- Morning Yoga Flow -->
-<!-- Morning Yoga Flow -->
-<div class="side-card flex flex-1 flex-col justify-center p-6">
+<div class="reveal-up side-card flex flex-1 flex-col justify-center p-6" style="transition-delay: 90ms;">
   <img src="yoga.png" alt="Morning Yoga Icon" class="mb-3 h-8 w-8 object-contain" />
   <h4 class="text-[18px] font-inter text-white">Morning Yoga Flow</h4>
   <p class="mt-2 text-[13px] font-DM Sans leading-relaxed text-lavender/50">
@@ -969,7 +1035,7 @@
 </div>
 
 <!-- Advance Yoga Treat -->
-<div class="side-card flex flex-1 flex-col justify-center p-6">
+<div class="reveal-up side-card flex flex-1 flex-col justify-center p-6" style="transition-delay: 180ms;">
   <img src="yoga.png" alt="Advance Yoga Icon" class="mb-3 h-8 w-8 object-contain" />
   <h4 class="text-[18px] font-inter text-white">Advance Yoga Treat</h4>
   <p class="mt-2 text-[13px] font-DM Sans leading-relaxed text-lavender/50">
@@ -1378,6 +1444,29 @@
   </footer>
 
   <script>
+    // Scroll-entry reveal animations (.reveal-up / .reveal-pop) - crossfade + scale
+    // the first time each element enters the viewport.
+    (function () {
+      var targets = document.querySelectorAll('.reveal-up, .reveal-pop');
+      if (!targets.length) return;
+
+      if (typeof IntersectionObserver === 'undefined') {
+        targets.forEach(function (el) { el.classList.add('is-visible'); });
+        return;
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      targets.forEach(function (el) { observer.observe(el); });
+    })();
+
     // Mobile nav drawer toggle
     (function () {
       var navToggle = document.getElementById('navToggle');
@@ -1492,25 +1581,32 @@
         if (rightRating) rightRating.innerHTML = Math.round(right.rating) + '<span class="text-amber-400">★</span>';
       }
 
-      function setWrapStyle(x, rotate, opacity, useTransition) {
-        cardWrap.style.transition = useTransition ? 'transform .3s ease, opacity .3s ease' : 'none';
-        cardWrap.style.transform = 'translateX(' + x + 'px) rotate(' + rotate + 'deg)';
+      var CARD_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+      var CARD_DURATION = 380;
+
+      function setWrapStyle(x, rotate, opacity, scale, useTransition) {
+        cardWrap.style.transition = useTransition
+          ? 'transform ' + CARD_DURATION + 'ms ' + CARD_EASE + ', opacity ' + CARD_DURATION + 'ms ' + CARD_EASE
+          : 'none';
+        cardWrap.style.transform = 'translateX(' + x + 'px) rotate(' + rotate + 'deg) scale(' + scale + ')';
         cardWrap.style.opacity = String(opacity);
       }
 
       function go(direction) {
         if (animating) return;
         animating = true;
-        setWrapStyle(direction * -90, direction * -6, 0, true);
+        // outgoing card slides out, fades, and scales down slightly
+        setWrapStyle(direction * -90, direction * -6, 0, 0.94, true);
 
         window.setTimeout(function () {
           index = (index + direction + experts.length) % experts.length;
           render();
-          setWrapStyle(direction * 90, direction * 6, 0, false);
+          // incoming card starts from the opposite side, scaled down, then eases to center at 100%
+          setWrapStyle(direction * 90, direction * 6, 0, 0.94, false);
           void cardWrap.offsetWidth;
-          setWrapStyle(0, 0, 1, true);
+          setWrapStyle(0, 0, 1, 1, true);
           animating = false;
-        }, 300);
+        }, CARD_DURATION);
       }
 
       if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
@@ -1537,7 +1633,7 @@
       function onPointerMove(e) {
         if (!dragging) return;
         var dx = e.clientX - startX;
-        setWrapStyle(dx, dx * 0.03, Math.max(1 - Math.abs(dx) / 400, 0.4), false);
+        setWrapStyle(dx, dx * 0.03, Math.max(1 - Math.abs(dx) / 400, 0.4), 1, false);
       }
 
       function onPointerUp(e) {
@@ -1548,7 +1644,7 @@
         if (Math.abs(dx) > 70) {
           go(dx < 0 ? 1 : -1);
         } else {
-          setWrapStyle(0, 0, 1, true);
+          setWrapStyle(0, 0, 1, 1, true);
         }
       }
 
