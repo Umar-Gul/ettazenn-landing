@@ -894,10 +894,10 @@
         <div class="mc-card relative min-h-[260px] overflow-hidden rounded-[24px] ring-1 ring-white/5">
           <!-- image (swap in masterclass.jpg); hides itself if missing so the gradient shows -->
           <img src="Container.png" alt="" onerror="this.style.display='none'"
-            class="absolute inset-0 h-full w-full object-cover" />
-          <!-- readability overlay + cool purple tint to match the Figma mood -->
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/20"></div>
-          <div class="absolute inset-0 bg-[#1a1030]/35 mix-blend-multiply"></div>
+            class="absolute inset-0 h-full w-full object-cover"
+            style="filter: brightness(1.35) contrast(1.08) saturate(1.15);" />
+          <!-- readability overlay: just enough for the text at the bottom to stay legible -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"></div>
 
           <div class="relative flex h-full flex-col justify-end p-6 sm:p-8">
             <span class="mc-pill font-DM Sans mb-4">MASTERCLASS</span>
