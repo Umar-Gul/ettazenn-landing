@@ -258,6 +258,16 @@
       padding: 30px 32px;
     }
 
+    .deck-layer {
+      cursor: grab;
+      touch-action: pan-y;
+      will-change: transform, opacity;
+    }
+
+    .deck-layer:active {
+      cursor: grabbing;
+    }
+
     .deck-quote {
       font-family: Georgia, 'Times New Roman', serif;
       font-style: italic;
@@ -1027,12 +1037,22 @@
       </div>
 
       <!-- Card deck (Figma card: 320 x 480, radius 26, 2° tilt) -->
-      <div class="relative w-[260px] h-[390px] sm:w-[300px] sm:h-[450px] md:w-[320px] md:h-[480px]">
-        <div class="deck-card absolute inset-0" style="transform: rotate(6deg) translateX(14px); opacity:.55;"></div>
-        <div class="deck-card absolute inset-0" style="transform: rotate(-4deg) translateX(-11px); opacity:.8;"></div>
-        <div class="deck-card deck-front absolute inset-0" style="transform: rotate(2deg);">
-          <!-- meditation icon -->
-        <img src="events.png" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+      <div id="wisdomDeck" class="relative w-[260px] h-[390px] sm:w-[300px] sm:h-[450px] md:w-[320px] md:h-[480px] select-none">
+        <div class="deck-card deck-front deck-layer absolute inset-0"
+          style="transform: rotate(6deg) translateX(14px); opacity:.55; z-index:1;">
+          <img src="events.png" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+          <p class="deck-quote">“You are not a drop in the ocean. You are the entire ocean in a drop.”</p>
+          <span class="deck-label">REFLECTION</span>
+        </div>
+        <div class="deck-card deck-front deck-layer absolute inset-0"
+          style="transform: rotate(-4deg) translateX(-11px); opacity:.8; z-index:2;">
+          <img src="events.png" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+          <p class="deck-quote">“Breath is the bridge which connects life to consciousness.”</p>
+          <span class="deck-label">BREATHWORK</span>
+        </div>
+        <div class="deck-card deck-front deck-layer absolute inset-0"
+          style="transform: rotate(2deg); opacity:1; z-index:3;">
+          <img src="events.png" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
           <p class="deck-quote">“The soul always knows what to do to heal itself. The challenge is to silence the mind.”
           </p>
           <span class="deck-label">MEDITATION</span>
@@ -1041,14 +1061,14 @@
 
       <!-- Swipe -->
       <div class="swipe-text">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4 shrink-0">
+        <svg id="swipePrev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4 shrink-0 cursor-pointer" role="button" aria-label="Previous card">
           <path
             d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2"
             stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <span class="text-center">SWIPE TO EXPLORE</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"
-          class="h-4 w-4 shrink-0 -scale-x-100">
+        <svg id="swipeNext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"
+          class="h-4 w-4 shrink-0 -scale-x-100 cursor-pointer" role="button" aria-label="Next card">
           <path
             d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2"
             stroke-linecap="round" stroke-linejoin="round" />
@@ -1130,39 +1150,39 @@
     <!-- Card row (Figma: 1065 x 478) -->
     <div class="relative flex w-full items-center justify-center">
 
-      <!-- LEFT peeking coach (Replace src with your image path) -->
-      <div class="absolute left-[2%] top-1/2 hidden -translate-y-1/2 lg:left-[7%] xl:block">
+      <!-- LEFT peeking coach -->
+      <div id="leftCoachWrap" class="absolute left-[2%] top-1/2 hidden -translate-y-1/2 lg:left-[7%] xl:block cursor-pointer">
         <div class="relative h-28 w-28 xl:h-36 xl:w-36">
-          <img src="expert3f.png" alt="Left Coach"
+          <img id="leftCoachImg" src="expert3f.png" alt="Left Coach"
             class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
-          <span class="rating-badge">5<span class="text-amber-400">★</span></span>
+          <span id="leftCoachRating" class="rating-badge">5<span class="text-amber-400">★</span></span>
         </div>
       </div>
 
-      <!-- RIGHT peeking coach (Replace src with your image path) -->
-      <div class="absolute right-[2%] top-1/2 hidden -translate-y-1/2 lg:right-[7%] xl:block">
+      <!-- RIGHT peeking coach -->
+      <div id="rightCoachWrap" class="absolute right-[2%] top-1/2 hidden -translate-y-1/2 lg:right-[7%] xl:block cursor-pointer">
         <div class="relative h-28 w-28 xl:h-36 xl:w-36">
-          <img src="expert2.png" alt="Right Coach"
+          <img id="rightCoachImg" src="expert2.png" alt="Right Coach"
             class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
-          <span class="rating-badge">5<span class="text-amber-400">★</span></span>
+          <span id="rightCoachRating" class="rating-badge">5<span class="text-amber-400">★</span></span>
         </div>
       </div>
 
       <!-- CENTER testimonial card -->
       <div class="relative w-[460px] max-w-full">
-        <!-- avatar overlapping the top (Replace src with your main image path) -->
+        <!-- avatar overlapping the top -->
         <div class="absolute left-1/2 top-0 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2">
-          <img src="expert1.png" alt="Zayn Omar"
+          <img id="expertAvatar" src="expert1.png" alt="Zayn Omar"
             class="h-full w-full rounded-full object-cover ring-4 ring-[#160f2c]" />
         </div>
 
-        <div class="expert-card px-6 pb-8 pt-16 text-center sm:px-8">
-          <h3 class="text-[18px] sm:text-[20px] font-inter text-white">Zayn Omar</h3>
+        <div id="expertContent" class="expert-card px-6 pb-8 pt-16 text-center sm:px-8" style="transition: opacity .25s ease;">
+          <h3 id="expertName" class="text-[18px] sm:text-[20px] font-inter text-white">Zayn Omar</h3>
           <div class="mt-2 flex items-center justify-center gap-2 text-amber-400">
-            <span class="text-[13px] tracking-tight">★★★★<span class="text-white/25">★</span></span>
-            <span class="text-[12px] text-lavender/60">4.9</span>
+            <span id="expertStars" class="text-[13px] tracking-tight">★★★★<span class="text-white/25">★</span></span>
+            <span id="expertRatingNum" class="text-[12px] text-lavender/60">4.9</span>
           </div>
-          <p class="mt-4 text-[13px] leading-relaxed text-lavender/60">
+          <p id="expertBio" class="mt-4 text-[13px] leading-relaxed text-lavender/60">
             I'm a yoga coach dedicated to helping people build strength, flexibility, and inner
             balance through mindful movement and breathwork. My approach focuses on simple,
             effective practices that fit into everyday life, guiding students toward better
@@ -1171,15 +1191,15 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Nav buttons -->
     <div class="flex items-center gap-4">
-      <button class="nav-btn" aria-label="Previous">
+      <button id="expertPrevBtn" class="nav-btn" aria-label="Previous">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5">
           <path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </button>
-      <button class="nav-btn" aria-label="Next">
+      <button id="expertNextBtn" class="nav-btn" aria-label="Next">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-5 w-5">
           <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
@@ -1324,6 +1344,229 @@
           });
         });
       }
+    })();
+
+    // Daily Wisdom Deck - swipeable 3-card stack
+    (function () {
+      var deck = document.getElementById('wisdomDeck');
+      var prevBtn = document.getElementById('swipePrev');
+      var nextBtn = document.getElementById('swipeNext');
+      if (!deck) return;
+
+      var layers = Array.prototype.slice.call(deck.querySelectorAll('.deck-layer'));
+      if (layers.length < 3) return;
+      // DOM order is [back, mid, front] - normalize to [front, mid, back]
+      var order = [layers[2], layers[1], layers[0]];
+
+      var cards = [
+        { quote: '“The soul always knows what to do to heal itself. The challenge is to silence the mind.”', label: 'MEDITATION' },
+        { quote: '“Breath is the bridge which connects life to consciousness.”', label: 'BREATHWORK' },
+        { quote: '“You are not a drop in the ocean. You are the entire ocean in a drop.”', label: 'REFLECTION' },
+        { quote: '“Stillness is where creativity and solutions to problems are found.”', label: 'MINDFULNESS' },
+        { quote: '“The quieter you become, the more you are able to hear.”', label: 'SILENCE' },
+      ];
+
+      var SLOTS = [
+        { x: 0, y: 0, rot: 2, opacity: 1, z: 3 },
+        { x: -11, y: 0, rot: -4, opacity: .8, z: 2 },
+        { x: 14, y: 0, rot: 6, opacity: .55, z: 1 },
+      ];
+      var DURATION = 320;
+
+      var index = 0;
+      var animating = false;
+      var dragging = false;
+      var dragEl = null;
+      var startX = 0;
+      var startY = 0;
+
+      function setContent(el, card) {
+        var q = el.querySelector('.deck-quote');
+        var l = el.querySelector('.deck-label');
+        if (q) q.textContent = card.quote;
+        if (l) l.textContent = card.label;
+      }
+
+      function applySlot(el, slot, useTransition) {
+        el.style.transition = useTransition ? 'transform .32s ease, opacity .32s ease' : 'none';
+        el.style.transform = 'translate(' + slot.x + 'px,' + slot.y + 'px) rotate(' + slot.rot + 'deg)';
+        el.style.opacity = String(slot.opacity);
+        el.style.zIndex = String(slot.z);
+      }
+
+      // sync initial content to match the card queue exactly
+      setContent(order[0], cards[0]);
+      setContent(order[1], cards[1]);
+      setContent(order[2], cards[2]);
+
+      function goTo(direction) {
+        if (animating) return;
+        animating = true;
+
+        if (direction === 1) {
+          var outgoing = order[0];
+          outgoing.style.transition = 'transform .32s ease, opacity .32s ease';
+          outgoing.style.transform = 'translate(-460px,-14px) rotate(-18deg)';
+          outgoing.style.opacity = '0';
+          applySlot(order[1], SLOTS[0], true);
+          applySlot(order[2], SLOTS[1], true);
+
+          window.setTimeout(function () {
+            index = (index + 1) % cards.length;
+            setContent(outgoing, cards[(index + 2) % cards.length]);
+            applySlot(outgoing, SLOTS[2], false);
+            void outgoing.offsetWidth;
+            order = [order[1], order[2], outgoing];
+            animating = false;
+          }, DURATION);
+        } else {
+          var incoming = order[2];
+          setContent(incoming, cards[(index - 1 + cards.length) % cards.length]);
+          applySlot(incoming, { x: 460, y: -14, rot: 22, opacity: 0, z: 4 }, false);
+          void incoming.offsetWidth;
+          applySlot(incoming, SLOTS[0], true);
+          applySlot(order[0], SLOTS[1], true);
+          applySlot(order[1], SLOTS[2], true);
+
+          window.setTimeout(function () {
+            index = (index - 1 + cards.length) % cards.length;
+            order = [incoming, order[0], order[1]];
+            animating = false;
+          }, DURATION);
+        }
+      }
+
+      function onPointerDown(e) {
+        if (animating) return;
+        var top = order[0];
+        if (top !== e.target && !top.contains(e.target)) return;
+        dragging = true;
+        dragEl = top;
+        startX = e.clientX;
+        startY = e.clientY;
+        if (dragEl.setPointerCapture) {
+          try { dragEl.setPointerCapture(e.pointerId); } catch (err) { }
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!dragging || !dragEl) return;
+        var dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+        dragEl.style.transition = 'none';
+        dragEl.style.transform = 'translate(' + dx + 'px,' + (dy * 0.15) + 'px) rotate(' + (2 + dx * 0.05) + 'deg)';
+        dragEl.style.opacity = String(Math.max(1 - Math.abs(dx) / 320, 0.25));
+      }
+
+      function onPointerUp(e) {
+        if (!dragging || !dragEl) return;
+        dragging = false;
+        var el = dragEl;
+        dragEl = null;
+        var dx = e.clientX - startX;
+        if (Math.abs(dx) > 70) {
+          goTo(dx < 0 ? 1 : -1);
+        } else {
+          applySlot(el, SLOTS[0], true);
+        }
+      }
+
+      deck.addEventListener('pointerdown', onPointerDown);
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+      document.addEventListener('pointercancel', onPointerUp);
+
+      if (prevBtn) prevBtn.addEventListener('click', function () { goTo(-1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { goTo(1); });
+    })();
+
+    // Expert Minds - carousel
+    (function () {
+      var avatar = document.getElementById('expertAvatar');
+      var content = document.getElementById('expertContent');
+      var nameEl = document.getElementById('expertName');
+      var starsEl = document.getElementById('expertStars');
+      var ratingNumEl = document.getElementById('expertRatingNum');
+      var bioEl = document.getElementById('expertBio');
+      var leftImg = document.getElementById('leftCoachImg');
+      var leftRating = document.getElementById('leftCoachRating');
+      var leftWrap = document.getElementById('leftCoachWrap');
+      var rightImg = document.getElementById('rightCoachImg');
+      var rightRating = document.getElementById('rightCoachRating');
+      var rightWrap = document.getElementById('rightCoachWrap');
+      var prevBtn = document.getElementById('expertPrevBtn');
+      var nextBtn = document.getElementById('expertNextBtn');
+      if (!avatar || !content || !nameEl) return;
+
+      var experts = [
+        {
+          avatar: 'expert1.png', name: 'Zayn Omar', rating: 4.9,
+          bio: 'I’m a yoga coach dedicated to helping people build strength, flexibility, and inner balance through mindful movement and breathwork. My approach focuses on simple, effective practices that fit into everyday life, guiding students toward better posture, reduced stress, and a deeper connection between body and mind.'
+        },
+        {
+          avatar: 'expert2.png', name: 'Amira Cole', rating: 4.8,
+          bio: 'A tai chi and mindfulness coach guiding students through slow, deliberate movement to build balance, focus, and calm. I blend traditional forms with modern breathing techniques to help you find steadiness in both body and mind, one session at a time.'
+        },
+        {
+          avatar: 'expert3f.png', name: 'Malik Hassan', rating: 5.0,
+          bio: 'A breathwork and meditation specialist helping clients release tension and reconnect with stillness. My sessions combine guided breathing, sound, and quiet reflection to leave you calmer, more centered, and better equipped for daily life.'
+        },
+      ];
+
+      var index = 0;
+      var animating = false;
+
+      function starsHtml(rating) {
+        var filled = Math.max(0, Math.min(5, Math.round(rating)));
+        var html = '';
+        for (var i = 0; i < filled; i++) html += '★';
+        if (filled < 5) {
+          html += '<span class="text-white/25">';
+          for (var j = filled; j < 5; j++) html += '★';
+          html += '</span>';
+        }
+        return html;
+      }
+
+      function render() {
+        var center = experts[index];
+        var left = experts[(index + experts.length - 1) % experts.length];
+        var right = experts[(index + 1) % experts.length];
+
+        avatar.src = center.avatar;
+        avatar.alt = center.name;
+        nameEl.textContent = center.name;
+        starsEl.innerHTML = starsHtml(center.rating);
+        ratingNumEl.textContent = center.rating.toFixed(1);
+        bioEl.textContent = center.bio;
+
+        if (leftImg) { leftImg.src = left.avatar; leftImg.alt = left.name; }
+        if (leftRating) leftRating.innerHTML = Math.round(left.rating) + '<span class="text-amber-400">★</span>';
+
+        if (rightImg) { rightImg.src = right.avatar; rightImg.alt = right.name; }
+        if (rightRating) rightRating.innerHTML = Math.round(right.rating) + '<span class="text-amber-400">★</span>';
+      }
+
+      function go(direction) {
+        if (animating) return;
+        animating = true;
+        avatar.style.transition = 'opacity .25s ease';
+        content.style.opacity = '0';
+        avatar.style.opacity = '0';
+
+        window.setTimeout(function () {
+          index = (index + direction + experts.length) % experts.length;
+          render();
+          content.style.opacity = '1';
+          avatar.style.opacity = '1';
+          animating = false;
+        }, 250);
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
+      if (leftWrap) leftWrap.addEventListener('click', function () { go(-1); });
+      if (rightWrap) rightWrap.addEventListener('click', function () { go(1); });
     })();
   </script>
 
