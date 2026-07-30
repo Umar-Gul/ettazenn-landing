@@ -9,6 +9,10 @@
   <!-- Tailwind (CDN for preview; swap for a build step in production) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Swiper.js - powers the Daily Wisdom Deck card-swipe (same library/effect used on tokenology.mubien.com) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
   <!-- Poppins matches the rounded geometric sans in the Figma -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -258,14 +262,10 @@
       padding: 30px 32px;
     }
 
-    .deck-layer {
-      cursor: grab;
-      touch-action: pan-y;
-      will-change: transform, opacity;
-    }
-
-    .deck-layer:active {
-      cursor: grabbing;
+    /* Swiper "cards" effect slides use .deck-card + .deck-front for the visual design */
+    #wisdomSwiper .swiper-slide {
+      border-radius: 26px;
+      overflow: hidden;
     }
 
     .deck-quote {
@@ -541,10 +541,8 @@
         <!-- Logo -->
         <a href="#" class="relative flex shrink-0 items-center gap-2">
           <span class="relative" style="width: 40.5px; height: 42.65px;">
-            <img src="Vector.png" alt="Ettazenn logo" class="absolute object-contain"
+            <img src="vector.svg" alt="Ettazenn logo" class="absolute object-contain"
               style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
-            <span class="absolute rounded-full bg-white"
-              style="width: 6px; height: 6px; top: 1px; left: 25px;"></span>
           </span>
           <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
         </a>
@@ -701,7 +699,7 @@
               Master the ancient arts with modern instruction.<br class="hidden sm:inline" />
               From deep-flow Yoga to the moving meditation of minds.
             </p>
-            <a href="#"
+            <a id="coursesExploreLink" href="#specialized-practices"
               class="mt-8 font-inter inline-block rounded-full border border-purple-300/40 bg-white/5 px-8 py-3 text-[14px] font-medium text-white transition hover:bg-white/15 hover:border-white/60 active:scale-95">
               Explore Now
             </a>
@@ -714,7 +712,7 @@
                 <div class="grid h-32 w-32 place-items-center rounded-full bg-white/[0.06] shadow-[0_0_50px_10px_rgba(168,85,247,0.25)] sm:h-40 sm:w-40">
                   
                   <div class="flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24 p-2">
-                    <img src="events.png" alt="Meditation Icon" class="h-full w-full object-contain drop-shadow-[0_0_12px_rgba(216,180,254,0.8)]" />
+                    <img src="events.svg" alt="Meditation Icon" class="h-full w-full object-contain drop-shadow-[0_0_12px_rgba(216,180,254,0.8)]" />
                   </div>
 
                 </div>
@@ -778,7 +776,7 @@
     <div class="feature-card md:-translate-x-10">
       <div class="fc-icon">
         <span class="fc-icon-glow"></span>
-        <img src="events.png" alt="Events & Retreats" class="relative h-5 w-5" />
+        <img src="events.svg" alt="Events & Retreats" class="relative h-5 w-5" />
       </div>
       <h4 class="fc-title font-DM Sans">Events &amp; Retreats:</h4>
       <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
@@ -872,7 +870,7 @@
   </section>
 
   <!-- =====================  SPECIALIZED PRACTICES(masterclass) ===================== -->
-  <section class="screen-section flex flex-col justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-8"
+  <section id="specialized-practices" class="screen-section flex flex-col justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-8"
     style="--edge-rgb: 19, 16, 35;">
     <div class="mx-auto w-full max-w-shell">
 
@@ -1036,26 +1034,36 @@
         </p>
       </div>
 
-      <!-- Card deck (Figma card: 320 x 480, radius 26, 2° tilt) -->
-      <div id="wisdomDeck" class="relative w-[260px] h-[390px] sm:w-[300px] sm:h-[450px] md:w-[320px] md:h-[480px] select-none">
-        <div class="deck-card deck-front deck-layer absolute inset-0"
-          style="transform: rotate(6deg) translateX(14px); opacity:.55; z-index:1;">
-          <img src="events.png" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
-          <p class="deck-quote">“You are not a drop in the ocean. You are the entire ocean in a drop.”</p>
-          <span class="deck-label">REFLECTION</span>
-        </div>
-        <div class="deck-card deck-front deck-layer absolute inset-0"
-          style="transform: rotate(-4deg) translateX(-11px); opacity:.8; z-index:2;">
-          <img src="events.png" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
-          <p class="deck-quote">“Breath is the bridge which connects life to consciousness.”</p>
-          <span class="deck-label">BREATHWORK</span>
-        </div>
-        <div class="deck-card deck-front deck-layer absolute inset-0"
-          style="transform: rotate(2deg); opacity:1; z-index:3;">
-          <img src="events.png" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
-          <p class="deck-quote">“The soul always knows what to do to heal itself. The challenge is to silence the mind.”
-          </p>
-          <span class="deck-label">MEDITATION</span>
+      <!-- Card deck (Figma card: 320 x 480, radius 26, 2° tilt) — Swiper "cards" effect, same technique as tokenology.mubien.com -->
+      <div class="relative w-[260px] h-[390px] sm:w-[300px] sm:h-[450px] md:w-[320px] md:h-[480px]">
+        <div id="wisdomSwiper" class="swiper h-full w-full">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide deck-card deck-front">
+              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <p class="deck-quote">“The soul always knows what to do to heal itself. The challenge is to silence the mind.”</p>
+              <span class="deck-label">MEDITATION</span>
+            </div>
+            <div class="swiper-slide deck-card deck-front">
+              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <p class="deck-quote">“Breath is the bridge which connects life to consciousness.”</p>
+              <span class="deck-label">BREATHWORK</span>
+            </div>
+            <div class="swiper-slide deck-card deck-front">
+              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <p class="deck-quote">“You are not a drop in the ocean. You are the entire ocean in a drop.”</p>
+              <span class="deck-label">REFLECTION</span>
+            </div>
+            <div class="swiper-slide deck-card deck-front">
+              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <p class="deck-quote">“Stillness is where creativity and solutions to problems are found.”</p>
+              <span class="deck-label">MINDFULNESS</span>
+            </div>
+            <div class="swiper-slide deck-card deck-front">
+              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <p class="deck-quote">“The quieter you become, the more you are able to hear.”</p>
+              <span class="deck-label">SILENCE</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1169,14 +1177,14 @@
       </div>
 
       <!-- CENTER testimonial card -->
-      <div class="relative w-[460px] max-w-full">
+      <div id="expertCardWrap" class="relative w-[460px] max-w-full select-none" style="cursor: grab; touch-action: pan-y;">
         <!-- avatar overlapping the top -->
         <div class="absolute left-1/2 top-0 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2">
           <img id="expertAvatar" src="expert1.png" alt="Zayn Omar"
             class="h-full w-full rounded-full object-cover ring-4 ring-[#160f2c]" />
         </div>
 
-        <div id="expertContent" class="expert-card px-6 pb-8 pt-16 text-center sm:px-8" style="transition: opacity .25s ease;">
+        <div id="expertContent" class="expert-card px-6 pb-8 pt-16 text-center sm:px-8">
           <h3 id="expertName" class="text-[18px] sm:text-[20px] font-inter text-white">Zayn Omar</h3>
           <div class="mt-2 flex items-center justify-center gap-2 text-amber-400">
             <span id="expertStars" class="text-[13px] tracking-tight">★★★★<span class="text-white/25">★</span></span>
@@ -1480,8 +1488,9 @@
       if (nextBtn) nextBtn.addEventListener('click', function () { goTo(1); });
     })();
 
-    // Expert Minds - carousel
+    // Expert Minds - swipeable testimonial carousel
     (function () {
+      var cardWrap = document.getElementById('expertCardWrap');
       var avatar = document.getElementById('expertAvatar');
       var content = document.getElementById('expertContent');
       var nameEl = document.getElementById('expertName');
@@ -1496,7 +1505,7 @@
       var rightWrap = document.getElementById('rightCoachWrap');
       var prevBtn = document.getElementById('expertPrevBtn');
       var nextBtn = document.getElementById('expertNextBtn');
-      if (!avatar || !content || !nameEl) return;
+      if (!cardWrap || !avatar || !content || !nameEl) return;
 
       var experts = [
         {
@@ -1547,26 +1556,70 @@
         if (rightRating) rightRating.innerHTML = Math.round(right.rating) + '<span class="text-amber-400">★</span>';
       }
 
+      function setWrapStyle(x, rotate, opacity, useTransition) {
+        cardWrap.style.transition = useTransition ? 'transform .3s ease, opacity .3s ease' : 'none';
+        cardWrap.style.transform = 'translateX(' + x + 'px) rotate(' + rotate + 'deg)';
+        cardWrap.style.opacity = String(opacity);
+      }
+
       function go(direction) {
         if (animating) return;
         animating = true;
-        avatar.style.transition = 'opacity .25s ease';
-        content.style.opacity = '0';
-        avatar.style.opacity = '0';
+        setWrapStyle(direction * -90, direction * -6, 0, true);
 
         window.setTimeout(function () {
           index = (index + direction + experts.length) % experts.length;
           render();
-          content.style.opacity = '1';
-          avatar.style.opacity = '1';
+          setWrapStyle(direction * 90, direction * 6, 0, false);
+          void cardWrap.offsetWidth;
+          setWrapStyle(0, 0, 1, true);
           animating = false;
-        }, 250);
+        }, 300);
       }
 
       if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
       if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
       if (leftWrap) leftWrap.addEventListener('click', function () { go(-1); });
       if (rightWrap) rightWrap.addEventListener('click', function () { go(1); });
+
+      // Drag / touch swipe on the testimonial card itself
+      var dragging = false;
+      var startX = 0;
+      var startY = 0;
+
+      function onPointerDown(e) {
+        if (animating) return;
+        dragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        cardWrap.style.cursor = 'grabbing';
+        if (cardWrap.setPointerCapture) {
+          try { cardWrap.setPointerCapture(e.pointerId); } catch (err) { }
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!dragging) return;
+        var dx = e.clientX - startX;
+        setWrapStyle(dx, dx * 0.03, Math.max(1 - Math.abs(dx) / 400, 0.4), false);
+      }
+
+      function onPointerUp(e) {
+        if (!dragging) return;
+        dragging = false;
+        cardWrap.style.cursor = 'grab';
+        var dx = e.clientX - startX;
+        if (Math.abs(dx) > 70) {
+          go(dx < 0 ? 1 : -1);
+        } else {
+          setWrapStyle(0, 0, 1, true);
+        }
+      }
+
+      cardWrap.addEventListener('pointerdown', onPointerDown);
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+      document.addEventListener('pointercancel', onPointerUp);
     })();
 
     // Personalized Guidance - tab switching
@@ -1645,6 +1698,19 @@
           }
         });
       }
+    })();
+
+    // Courses & Specialized Practices - Explore Now scrolls to the course cards
+    (function () {
+      var link = document.getElementById('coursesExploreLink');
+      if (!link) return;
+      link.addEventListener('click', function (e) {
+        var target = document.getElementById('specialized-practices');
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
     })();
   </script>
 
