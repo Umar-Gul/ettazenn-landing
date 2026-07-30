@@ -459,6 +459,72 @@
       }
     }
 
+    /* ---- Crazy Features: fit inside a single mobile screen (desktop untouched) ---- */
+    @media (max-width: 767px) {
+      #crazyFeatures {
+        height: 100dvh;
+        min-height: 100dvh;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+      }
+
+      #crazyFeatures #fcGrid {
+        margin-top: 0.6rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.45rem;
+      }
+
+      /* let each column's 3 cards become direct items of #fcGrid, so all 6
+         cards flow into one clean 2-column x 3-row grid */
+      #crazyFeatures .fc-col {
+        display: contents;
+      }
+
+      #crazyFeatures #fcPhoneWrap {
+        grid-column: 1 / -1;
+      }
+
+      #crazyFeatures .feature-card {
+        width: 100%;
+        height: auto;
+        padding: 0.55rem 0.65rem;
+        border-radius: 14px;
+      }
+
+      #crazyFeatures .fc-body {
+        margin-top: 0.2rem;
+        font-size: 10px;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        overflow: hidden;
+      }
+
+      #crazyFeatures .fc-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-bottom: 0.3rem;
+        border-radius: 0.5rem;
+      }
+
+      #crazyFeatures .fc-icon img {
+        width: 0.75rem;
+        height: 0.75rem;
+      }
+
+      #crazyFeatures .fc-title {
+        font-size: 11px;
+      }
+
+      #crazyFeatures img[alt="Ettazenn app"] {
+        height: 14vh;
+        max-height: 120px;
+      }
+    }
+
     /* ---- Mobile nav drawer (added for responsiveness; visual style matches existing navbar) ---- */
     .mobile-nav-panel {
       max-height: 0;
@@ -729,7 +795,7 @@
 </section>
 
   <!-- ===================== CRAZY FEATURES ===================== -->
-  <section
+  <section id="crazyFeatures"
     class="features-bg screen-section relative flex flex-col justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-8"
     style="--edge-rgb: 5, 2, 13;">
     <!-- ambient purple glow (left-center, like the Figma) -->
@@ -754,14 +820,14 @@
       </div>
 
       <!-- Cards fanned around the phone -->
-    <div class="relative mt-8 grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-8 lg:gap-10">
+    <div id="fcGrid" class="relative mt-8 grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-8 lg:gap-10">
 
   <!-- Connector spine tying every card's dashed stub together (desktop only) -->
   <span class="fc-spine-v"></span>
   <span class="fc-spine-h"></span>
 
   <!-- LEFT column -->
-  <div class="flex flex-col items-center gap-5 md:items-end">
+  <div class="fc-col flex flex-col items-center gap-5 md:items-end">
     <!-- Sessions -->
     <div class="feature-card md:translate-x-2">
       <div class="fc-icon">
@@ -796,13 +862,13 @@
   </div>
 
   <!-- PHONE (center) -->
-  <div class="relative z-10 order-first flex justify-center md:order-none">
+  <div id="fcPhoneWrap" class="relative z-10 order-first flex justify-center md:order-none">
     <img src="mobile.png" alt="Ettazenn app"
       class="h-[38vh] max-h-[420px] w-auto drop-shadow-2xl sm:h-[46vh] md:h-[54vh] md:max-h-[500px]" />
   </div>
 
   <!-- RIGHT column -->
-  <div class="flex flex-col items-center gap-5 md:items-start">
+  <div class="fc-col flex flex-col items-center gap-5 md:items-start">
     <!-- Courses -->
     <div class="feature-card md:-translate-x-2">
       <div class="fc-icon">
@@ -1291,7 +1357,7 @@
         <!-- Logo -->
         <a href="#" class="flex shrink-0 items-center gap-2">
           <span class="grid h-8 w-8 place-items-center rounded-full bg-brand/20 text-brand-light">
-            <img src="Vector.png" alt="Ettazenn logo" class="h-5 w-5 object-contain" />
+            <img src="vector.svg" alt="Ettazenn logo" class="h-5 w-5 object-contain" />
           </span>
           <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
         </a>
