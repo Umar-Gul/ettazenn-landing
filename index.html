@@ -1118,7 +1118,7 @@
 
       <!-- Content: in normal flow now, so it sets the container's real height -->
       <div class="relative z-10 flex flex-col items-center justify-center px-6 py-14 text-center sm:py-16 lg:py-20">
-        <p class="text-[11px] sm:text-[13px] font-inter uppercase tracking-[0.3em] text-[#251b47]">Are You Ready?</p>
+        <p class="text-[11px] sm:text-[13px] font-inter uppercase tracking-[0.3em] text-white/80">Are You Ready?</p>
 
         <h2 class="mt-4 font-inter text-[24px] sm:text-[30px] font-bold leading-[1.15] text-white md:text-[36px]">
           Be A Part Of The<br />Ettazenn Community
@@ -1354,138 +1354,26 @@
       }
     })();
 
-    // Daily Wisdom Deck - swipeable 3-card stack
+    // Daily Wisdom Deck - Swiper "cards" effect (same swipe technique as tokenology.mubien.com)
     (function () {
-      var deck = document.getElementById('wisdomDeck');
+      var el = document.getElementById('wisdomSwiper');
       var prevBtn = document.getElementById('swipePrev');
       var nextBtn = document.getElementById('swipeNext');
-      if (!deck) return;
+      if (!el || typeof Swiper === 'undefined') return;
 
-      var layers = Array.prototype.slice.call(deck.querySelectorAll('.deck-layer'));
-      if (layers.length < 3) return;
-      // DOM order is [back, mid, front] - normalize to [front, mid, back]
-      var order = [layers[2], layers[1], layers[0]];
+      var wisdomSwiper = new Swiper('#wisdomSwiper', {
+        effect: 'cards',
+        grabCursor: true,
+        loop: true,
+        cardsEffect: {
+          perSlideRotate: 4,
+          perSlideOffset: 9,
+          slideShadows: false,
+        },
+      });
 
-      var cards = [
-        { quote: '“The soul always knows what to do to heal itself. The challenge is to silence the mind.”', label: 'MEDITATION' },
-        { quote: '“Breath is the bridge which connects life to consciousness.”', label: 'BREATHWORK' },
-        { quote: '“You are not a drop in the ocean. You are the entire ocean in a drop.”', label: 'REFLECTION' },
-        { quote: '“Stillness is where creativity and solutions to problems are found.”', label: 'MINDFULNESS' },
-        { quote: '“The quieter you become, the more you are able to hear.”', label: 'SILENCE' },
-      ];
-
-      var SLOTS = [
-        { x: 0, y: 0, rot: 2, opacity: 1, z: 3 },
-        { x: -11, y: 0, rot: -4, opacity: .8, z: 2 },
-        { x: 14, y: 0, rot: 6, opacity: .55, z: 1 },
-      ];
-      var DURATION = 320;
-
-      var index = 0;
-      var animating = false;
-      var dragging = false;
-      var dragEl = null;
-      var startX = 0;
-      var startY = 0;
-
-      function setContent(el, card) {
-        var q = el.querySelector('.deck-quote');
-        var l = el.querySelector('.deck-label');
-        if (q) q.textContent = card.quote;
-        if (l) l.textContent = card.label;
-      }
-
-      function applySlot(el, slot, useTransition) {
-        el.style.transition = useTransition ? 'transform .32s ease, opacity .32s ease' : 'none';
-        el.style.transform = 'translate(' + slot.x + 'px,' + slot.y + 'px) rotate(' + slot.rot + 'deg)';
-        el.style.opacity = String(slot.opacity);
-        el.style.zIndex = String(slot.z);
-      }
-
-      // sync initial content to match the card queue exactly
-      setContent(order[0], cards[0]);
-      setContent(order[1], cards[1]);
-      setContent(order[2], cards[2]);
-
-      function goTo(direction) {
-        if (animating) return;
-        animating = true;
-
-        if (direction === 1) {
-          var outgoing = order[0];
-          outgoing.style.transition = 'transform .32s ease, opacity .32s ease';
-          outgoing.style.transform = 'translate(-460px,-14px) rotate(-18deg)';
-          outgoing.style.opacity = '0';
-          applySlot(order[1], SLOTS[0], true);
-          applySlot(order[2], SLOTS[1], true);
-
-          window.setTimeout(function () {
-            index = (index + 1) % cards.length;
-            setContent(outgoing, cards[(index + 2) % cards.length]);
-            applySlot(outgoing, SLOTS[2], false);
-            void outgoing.offsetWidth;
-            order = [order[1], order[2], outgoing];
-            animating = false;
-          }, DURATION);
-        } else {
-          var incoming = order[2];
-          setContent(incoming, cards[(index - 1 + cards.length) % cards.length]);
-          applySlot(incoming, { x: 460, y: -14, rot: 22, opacity: 0, z: 4 }, false);
-          void incoming.offsetWidth;
-          applySlot(incoming, SLOTS[0], true);
-          applySlot(order[0], SLOTS[1], true);
-          applySlot(order[1], SLOTS[2], true);
-
-          window.setTimeout(function () {
-            index = (index - 1 + cards.length) % cards.length;
-            order = [incoming, order[0], order[1]];
-            animating = false;
-          }, DURATION);
-        }
-      }
-
-      function onPointerDown(e) {
-        if (animating) return;
-        var top = order[0];
-        if (top !== e.target && !top.contains(e.target)) return;
-        dragging = true;
-        dragEl = top;
-        startX = e.clientX;
-        startY = e.clientY;
-        if (dragEl.setPointerCapture) {
-          try { dragEl.setPointerCapture(e.pointerId); } catch (err) { }
-        }
-      }
-
-      function onPointerMove(e) {
-        if (!dragging || !dragEl) return;
-        var dx = e.clientX - startX;
-        var dy = e.clientY - startY;
-        dragEl.style.transition = 'none';
-        dragEl.style.transform = 'translate(' + dx + 'px,' + (dy * 0.15) + 'px) rotate(' + (2 + dx * 0.05) + 'deg)';
-        dragEl.style.opacity = String(Math.max(1 - Math.abs(dx) / 320, 0.25));
-      }
-
-      function onPointerUp(e) {
-        if (!dragging || !dragEl) return;
-        dragging = false;
-        var el = dragEl;
-        dragEl = null;
-        var dx = e.clientX - startX;
-        if (Math.abs(dx) > 70) {
-          goTo(dx < 0 ? 1 : -1);
-        } else {
-          applySlot(el, SLOTS[0], true);
-        }
-      }
-
-      deck.addEventListener('pointerdown', onPointerDown);
-      document.addEventListener('pointermove', onPointerMove);
-      document.addEventListener('pointerup', onPointerUp);
-      document.addEventListener('pointercancel', onPointerUp);
-
-      if (prevBtn) prevBtn.addEventListener('click', function () { goTo(-1); });
-      if (nextBtn) nextBtn.addEventListener('click', function () { goTo(1); });
+      if (prevBtn) prevBtn.addEventListener('click', function () { wisdomSwiper.slidePrev(); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { wisdomSwiper.slideNext(); });
     })();
 
     // Expert Minds - swipeable testimonial carousel
