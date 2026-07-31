@@ -13,10 +13,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-  <!-- Poppins matches the rounded geometric sans in the Figma -->
+  <!-- Poppins (base sans), Inter (headings/CTAs), DM Sans (body copy) - matches the Figma type spec -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
 
   <!--
@@ -30,6 +31,8 @@
         extend: {
           fontFamily: {
             sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            inter: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            'dm-sans': ['"DM Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           },
           colors: {
             brand: { DEFAULT: '#8B5CF6', light: '#A78BFA', deep: '#7C4DDF' },
@@ -42,579 +45,7 @@
     };
   </script>
 
-  <style>
-    /* Global overflow safety: prevent any fixed-width element from creating horizontal scroll */
-    html,
-    body {
-      overflow-x: hidden;
-      width: 100%;
-    }
-
-    img,
-    svg {
-      max-width: 100%;
-    }
-
-    /* ---- Scroll-entry reveal animations (crossfade + slight scale) ----
-       Applied via IntersectionObserver: element starts hidden/offset, then
-       eases into place the first time it enters the viewport. */
-    .reveal-up {
-      opacity: 0;
-      transform: translateY(28px) scale(0.96);
-      transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1), transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .reveal-up.is-visible {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    /* "pop" variant for badges/icons — a snappier, slightly overshooting scale-in */
-    .reveal-pop {
-      opacity: 0;
-      transform: scale(0.5);
-      transition: opacity 380ms ease-in-out, transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .reveal-pop.is-visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    /* Award Seal badge is a faint decorative watermark (0.3 resting opacity),
-       not a fully-opaque element — override the generic reveal-pop end state. */
-    #awardSealBadge.is-visible {
-      opacity: 0.3;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-
-      .reveal-up,
-      .reveal-pop {
-        transition: none;
-        opacity: 1;
-        transform: none;
-      }
-    }
-
-    /* Hero background — Figma artwork, enhanced with a starfield, a warm glow
-       around the lit doorway, and a vignette for more depth/contrast */
-    .hero-bg {
-      background-image:
-        radial-gradient(1.5px 1.5px at 10% 12%, rgba(255, 255, 255, 0.9), transparent),
-        radial-gradient(1px 1px at 20% 22%, rgba(255, 255, 255, 0.7), transparent),
-        radial-gradient(1.5px 1.5px at 33% 9%, rgba(255, 255, 255, 0.85), transparent),
-        radial-gradient(1px 1px at 47% 16%, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(1.5px 1.5px at 63% 7%, rgba(255, 255, 255, 0.85), transparent),
-        radial-gradient(1px 1px at 76% 18%, rgba(255, 255, 255, 0.65), transparent),
-        radial-gradient(1.5px 1.5px at 88% 10%, rgba(255, 255, 255, 0.8), transparent),
-        radial-gradient(1px 1px at 95% 23%, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(30% 22% at 50% 58%, rgba(255, 196, 120, 0.4) 0%, rgba(255, 196, 120, 0) 70%),
-        radial-gradient(120% 90% at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(10, 6, 20, 0.6) 100%),
-        linear-gradient(to bottom,
-          rgba(42, 31, 61, 0.2) 0%,
-          rgba(42, 31, 61, 0.05) 28%,
-          rgba(42, 31, 61, 0.55) 72%,
-          rgba(42, 31, 61, 0.88) 100%),
-        url('hero.png');
-      background-size: cover;
-      background-position: center;
-      background-blend-mode:
-        normal, normal, normal, normal, normal, normal, normal, normal,
-        screen, multiply, normal, normal;
-    }
-
-    /* Fallback tint until hero.jpg exists so the page never looks broken */
-    .hero-fallback {
-      background:
-        radial-gradient(120% 90% at 50% 0%, #6B4A86 0%, #40305A 45%, #2A1F3D 100%);
-    }
-
-    /* ---- Dusk mountain showcase background ---- */
-    .dusk-bg {
-      background:
-        radial-gradient(55% 38% at 50% 40%, rgba(206, 188, 232, 0.22) 0%, rgba(206, 188, 232, 0) 60%),
-        linear-gradient(to bottom, rgba(9, 6, 20, 0.7) 0%, rgba(30, 20, 45, 0.5) 55%, rgba(15, 11, 24, 0.92) 100%),
-        url('dusk-mountains.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    /* ---- Personalized Guidance ---- */
-    .pg-section {
-      background: linear-gradient(180deg, rgba(28, 22, 53, 0.53) 0%, #131023 100%);
-    }
-
-    .pg-panel {
-      border-radius: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%);
-      backdrop-filter: blur(8px);
-    }
-
-    .pg-tab {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      border-radius: 0.85rem;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      background: rgba(255, 255, 255, 0.02);
-      padding: 0.8rem 1rem;
-      font-size: 14px;
-      color: rgba(216, 204, 228, 0.7);
-      transition: all 0.2s;
-    }
-
-    .pg-tab:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-    }
-
-    .pg-tab.active {
-      background: rgba(255, 255, 255, 0.10);
-      border-color: rgba(255, 255, 255, 0.16);
-      color: #fff;
-    }
-
-    /* glowing-brain placeholder until brain.jpg is exported from Figma */
-    .brain-bg {
-      background: radial-gradient(circle at 50% 42%, #5a3a92 0%, #33215e 34%, #1a1130 62%, #0d0918 100%);
-    }
-
-    /* ---- FAQ ---- */
-    .faq-item {
-      width: 885px;
-      max-width: 100%;
-      border-radius: 14px;
-      border: 0.98px solid rgba(255, 255, 255, 0.10);
-      background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.47) -5.62%, rgba(33, 26, 59, 0.5) 111.1%);
-      backdrop-filter: blur(6px);
-      overflow: hidden;
-    }
-
-    .faq-summary {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      min-height: 69px;
-      padding: 14px 20px;
-      cursor: pointer;
-      list-style: none;
-      font-size: 14px;
-      color: #fff;
-    }
-
-    .faq-summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .faq-chev {
-      height: 20px;
-      width: 20px;
-      flex: none;
-      color: rgba(255, 255, 255, 0.7);
-      transition: transform 0.25s;
-    }
-
-    details[open] .faq-chev {
-      transform: rotate(180deg);
-    }
-
-    .faq-answer {
-      padding: 0 20px 18px;
-      font-size: 13px;
-      line-height: 1.6;
-      color: rgba(216, 204, 228, 0.6);
-    }
-
-    /* ---- Expert Minds ---- */
-    .expert-bg {
-      background:
-        linear-gradient(to bottom, rgba(13, 10, 28, 0.8) 0%, rgba(37, 27, 68, 0.55) 40%, rgba(13, 10, 28, 0.85) 100%),
-        url('expert-bg.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .expert-card {
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%);
-      backdrop-filter: blur(6px);
-    }
-
-    .rating-badge {
-      position: absolute;
-      left: 50%;
-      bottom: -10px;
-      transform: translateX(-50%);
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      border-radius: 9999px;
-      background: #1c1533;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .nav-btn {
-      display: grid;
-      place-items: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 9999px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #fff;
-      transition: background 0.2s;
-    }
-
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* ---- Daily Wisdom Deck ---- */
-    .deck-bg {
-      background:
-        linear-gradient(to bottom, rgba(6, 4, 16, 0.55) 0%, rgba(6, 4, 16, 0.4) 45%, rgba(6, 4, 16, 0.75) 100%),
-        url('bg 3.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .deck-card {
-      border-radius: 26px;
-      border: 0.75px solid rgba(255, 255, 255, 0.28);
-      background: linear-gradient(160deg, #7d5fd6 0%, #5c40b0 100%);
-      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
-    }
-
-    .deck-front {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 30px 32px;
-    }
-
-    /* Swiper "cards" effect slides use .deck-card + .deck-front for the visual design */
-    #wisdomSwiper .swiper-slide {
-      border-radius: 26px;
-      overflow: hidden;
-    }
-
-    .deck-quote {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-style: italic;
-      font-size: 17px;
-      line-height: 1.65;
-      color: #fff;
-    }
-
-    .deck-label {
-      margin-top: 18px;
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .swipe-text {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      color: rgba(255, 255, 255, 0.55);
-    }
-
-    /* ---- Masterclass / specialized practices ---- */
-    .mc-card {
-      background: radial-gradient(120% 95% at 62% 18%, #2c2547 0%, #16121f 62%, #0b0910 100%);
-    }
-
-    .side-card {
-      position: relative;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .mc-pill {
-      display: inline-flex;
-      width: -moz-fit-content;
-      width: fit-content;
-      align-items: center;
-      border-radius: 9999px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(255, 255, 255, 0.06);
-      padding: 4px 12px;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(216, 204, 228, 0.85);
-    }
-
-    /* ---- Crazy Features section background ---- */
-    .features-bg {
-      background: radial-gradient(ellipse 75% 65% at 50% 48%, #35204f 0%, #170f2e 40%, #0a0716 70%, #05020d 100%);
-    }
-
-    /* ---- Crazy Features cards ---- */
-    .feature-card {
-      position: relative;
-      z-index: 1;
-      width: 200px;
-      max-width: 100%;
-      height: 140px;
-      /* uniform size for every card */
-      border-radius: 18px;
-      border: 1px solid rgba(196, 181, 253, 0.16);
-      background: rgba(21, 13, 46, 0.8);
-      padding: 0.85rem 1rem;
-      backdrop-filter: blur(4px);
-    }
-
-    .fc-icon {
-      position: relative;
-      display: grid;
-      place-items: center;
-      width: 2.25rem;
-      height: 2.25rem;
-      margin-bottom: 0.55rem;
-      border-radius: 0.7rem;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.04);
-      color: #d8c5ff;
-    }
-
-    .fc-icon-glow {
-      position: absolute;
-      inset: 0;
-      border-radius: 0.7rem;
-      background: rgba(168, 85, 247, 0.3);
-      filter: blur(8px);
-    }
-
-    .fc-title {
-      font-size: 12.5px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .fc-body {
-      margin-top: 0.35rem;
-      font-size: 11px;
-      line-height: 1.5;
-      color: rgba(184, 176, 208, 0.75);
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      overflow: hidden;
-    }
-
-    /* dashed connector stubs from each card toward the central spine (desktop only) */
-    .fc-line-r,
-    .fc-line-l {
-      display: none;
-      position: absolute;
-      top: 50%;
-      width: 64px;
-      border-top: 1.5px dashed rgba(216, 204, 240, 0.35);
-      z-index: 0;
-    }
-
-    /* connector dot at the end of each stub, where it meets the spine */
-    .fc-line-r::after,
-    .fc-line-l::after {
-      content: "";
-      position: absolute;
-      top: -3px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #d8c5ff;
-      box-shadow: 0 0 8px 1px rgba(168, 85, 247, 0.7);
-    }
-
-    .fc-line-r {
-      right: 0;
-      transform: translateX(100%);
-    }
-
-    .fc-line-r::after {
-      right: -3px;
-    }
-
-    .fc-line-l {
-      left: 0;
-      transform: translateX(-100%);
-    }
-
-    .fc-line-l::after {
-      left: -3px;
-    }
-
-    /* central dashed spine (vertical + horizontal) behind the phone, tying every
-       connector stub together into one grid, like the Figma reference */
-    .fc-spine-v,
-    .fc-spine-h {
-      display: none;
-      position: absolute;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .fc-spine-v {
-      top: 4%;
-      bottom: 4%;
-      left: 50%;
-      width: 0;
-      border-left: 1.5px dashed rgba(216, 204, 240, 0.3);
-      transform: translateX(-50%);
-    }
-
-    .fc-spine-h {
-      top: 50%;
-      left: 12%;
-      right: 12%;
-      height: 0;
-      border-top: 1.5px dashed rgba(216, 204, 240, 0.3);
-      transform: translateY(-50%);
-    }
-
-    @media (min-width: 768px) {
-
-      .fc-line-r,
-      .fc-line-l,
-      .fc-spine-v,
-      .fc-spine-h {
-        display: block;
-      }
-    }
-
-    /* ---- Crazy Features: fit inside a single mobile screen (desktop untouched) ---- */
-    @media (max-width: 767px) {
-      #crazyFeatures {
-        height: 100dvh;
-        min-height: 100dvh;
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
-      }
-
-      #crazyFeatures #fcGrid {
-        margin-top: 0.6rem;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.45rem;
-      }
-
-      /* let each column's 3 cards become direct items of #fcGrid, so all 6
-         cards flow into one clean 2-column x 3-row grid */
-      #crazyFeatures .fc-col {
-        display: contents;
-      }
-
-      #crazyFeatures #fcPhoneWrap {
-        grid-column: 1 / -1;
-      }
-
-      #crazyFeatures .feature-card {
-        width: 100%;
-        height: auto;
-        padding: 0.55rem 0.65rem;
-        border-radius: 14px;
-      }
-
-      #crazyFeatures .fc-body {
-        margin-top: 0.2rem;
-        font-size: 10px;
-        line-height: 1.35;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        overflow: hidden;
-      }
-
-      #crazyFeatures .fc-icon {
-        width: 1.5rem;
-        height: 1.5rem;
-        margin-bottom: 0.3rem;
-        border-radius: 0.5rem;
-      }
-
-      #crazyFeatures .fc-icon img {
-        width: 0.75rem;
-        height: 0.75rem;
-      }
-
-      #crazyFeatures .fc-title {
-        font-size: 11px;
-      }
-
-      #crazyFeatures img[alt="Ettazenn app"] {
-        height: 14vh;
-        max-height: 120px;
-      }
-    }
-
-    /* ---- Mobile nav drawer (added for responsiveness; visual style matches existing navbar) ---- */
-    .mobile-nav-panel {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-    }
-
-    .mobile-nav-panel.open {
-      max-height: 400px;
-    }
-
-    /* ---- Shadow at both the top and bottom edge of every section ----
-       Each section sets --edge-rgb (via inline style) to the RGB components
-       of ITS OWN background color, so the shadow fades using the section's
-       own color instead of a generic black wash — this is what removes the
-       visible seam/line between adjoining sections. Purely visual,
-       non-interactive, and clipped by each section's existing overflow so
-       nothing else about layout/spacing changes. */
-    section {
-      position: relative;
-      --edge-rgb: 10, 8, 20;
-    }
-
-    section::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: min(200px, 28%);
-      background: linear-gradient(to top, rgba(var(--edge-rgb-top, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-top, var(--edge-rgb)), 1) 100%);
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    section::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: min(200px, 28%);
-      background: linear-gradient(to bottom, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 1) 100%);
-      pointer-events: none;
-      z-index: -1;
-    }
-
-  </style>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body class="font-sans antialiased bg-plum-900 text-white overflow-x-hidden h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth">
@@ -631,14 +62,14 @@
         <!-- Logo -->
         <a href="#" class="relative flex shrink-0 items-center gap-2">
           <span class="relative" style="width: 40.5px; height: 42.65px;">
-            <img src="vector.svg" alt="Ettazenn logo" class="absolute object-contain"
+            <img src="images/vector.svg" alt="Ettazenn logo" class="absolute object-contain"
               style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
           </span>
           <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
         </a>
 
         <!-- Nav links (desktop) -->
-        <nav class="hidden font-DM Sans items-center gap-9 text-[15px] text-white/85 lg:flex">
+        <nav class="hidden font-dm-sans items-center gap-9 text-[15px] text-white/85 lg:flex">
           <a href="#" class="font-medium text-white">Home</a>
           <a href="#" class="transition hover:text-white">Features</a>
           <a href="#" class="transition hover:text-white">Explore</a>
@@ -649,8 +80,8 @@
         <div class="flex items-center gap-2 sm:gap-4">
           <div
             class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
-            <button class="rounded-full font-DM Sans bg-white/15 px-3 py-1 font-medium text-white">EN</button>
-            <button class="rounded-full font-DM Sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
+            <button class="rounded-full font-dm-sans bg-white/15 px-3 py-1 font-medium text-white">EN</button>
+            <button class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
           </div>
           <a href="#"
             class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20">
@@ -702,7 +133,7 @@
   </h1>
 
   <!-- Description with controlled line breaking -->
-  <p class="mx-auto mt-4 max-w-[580px] font-DM Sans text-[13px] leading-relaxed text-purple-100/70 sm:text-[14px] md:text-[15px]">
+  <p class="mx-auto mt-4 max-w-[580px] font-dm-sans text-[13px] leading-relaxed text-purple-100/70 sm:text-[14px] md:text-[15px]">
     A sanctuary for the digital soul. Immerse yourself in guided practices<br class="hidden sm:inline" />
     designed to align your body and spirit under the celestial canopy.
   </p>
@@ -758,7 +189,7 @@
       <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
         Courses &amp; Specialized Practices
       </h2>
-      <p class="mx-auto font-DM Sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-purple-200/60">
+      <p class="mx-auto font-dm-sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-purple-200/60">
         Master the ancient arts with modern instruction. From deep-flow Yoga to the
         moving meditation of Tai Chi.
       </p>
@@ -770,51 +201,81 @@
       <!-- Award Seal (top-right PNG, outside relative overflow) -->
       <div id="awardSealBadge" class="reveal-pop absolute hidden h-[103px] w-[103px] md:flex items-center justify-center z-20"
         style="top: -40px; right: 75px; transition-delay: 180ms;">
-        <img src="badge.png" alt="Award Seal" class="h-full w-full object-contain" />
+        <img src="images/badge.png" alt="Award Seal" class="h-full w-full object-contain" />
       </div>
 
-      <!-- Main Gradient Card Surface -->
-      <div
-        class="reveal-up relative flex h-full min-h-[420px] w-full items-center overflow-hidden rounded-[28px] p-8 shadow-2xl shadow-black/50 ring-1 ring-white/10 sm:p-12 lg:p-16"
-        style="background: linear-gradient(88.01deg, #43366B 10.28%, #312357 104.01%);">
+      <!-- Card stack: overflow-hidden clips the rising card while it's still below;
+           shadow/ring/rounded live here since box-shadow isn't clipped by the
+           element's own overflow. -->
+      <div id="courseStage" class="reveal-up relative h-full min-h-[420px] w-full overflow-hidden rounded-[28px] shadow-2xl shadow-black/50 ring-1 ring-white/10">
 
-        <div class="flex w-full flex-col items-center gap-10 md:flex-row md:justify-between md:gap-[60px] z-10">
-
-          <!-- Left: Text & CTA -->
-          <div class="max-w-md text-center md:text-left">
-            <h3 class="text-[32px] sm:text-[40px] font-inter font-medium leading-[1.15] text-white md:text-[44px]">
-              Learn from<br />Experts.
-            </h3>
-            <p class="mt-5 font-DM Sans text-[13px] sm:text-[14px] leading-relaxed text-purple-200/70">
-              Master the ancient arts with modern instruction.<br class="hidden sm:inline" />
-              From deep-flow Yoga to the moving meditation of minds.
-            </p>
-            <a id="coursesExploreLink" href="#specialized-practices"
-              class="mt-8 font-inter inline-block rounded-full border border-purple-300/40 bg-white/5 px-8 py-3 text-[14px] font-medium text-white transition hover:bg-white/15 hover:border-white/60 active:scale-95">
-              Explore Now
-            </a>
-          </div>
-
-          <!-- Right: Concentric Rings & Icon -->
-          <div class="shrink-0 relative flex items-center justify-center p-4">
-            <div class="grid h-56 w-56 place-items-center rounded-full sm:h-[272px] sm:w-[272px]"
-              style="background: linear-gradient(107.67deg, rgba(170, 166, 179, 0.08) 0.59%, rgba(74, 51, 133, 0.08) 133.76%);">
-              <div class="grid h-44 w-44 place-items-center rounded-full sm:h-56 sm:w-56"
+        <!-- Base card: always static, shows whatever is currently active. Gets
+             covered from the bottom up by the rising card during a switch. -->
+        <div id="courseCardBase" class="course-card absolute inset-0 flex items-center p-8 sm:p-12 lg:p-16"
+          style="background: linear-gradient(88.01deg, #43366B 10.28%, #312357 104.01%);">
+          <div class="flex w-full flex-col items-center gap-10 md:flex-row md:justify-between md:gap-[60px] z-10">
+            <div class="max-w-md text-center md:text-left">
+              <h3 class="course-title text-[32px] sm:text-[40px] font-inter font-medium leading-[1.15] text-white md:text-[44px]">
+                Learn from<br />Experts.
+              </h3>
+              <p class="course-desc mt-5 font-dm-sans text-[13px] sm:text-[14px] leading-relaxed text-purple-200/70">
+                Master the ancient arts with modern instruction.<br class="hidden sm:inline" />
+                From deep-flow Yoga to the moving meditation of minds.
+              </p>
+              <a href="#specialized-practices" class="course-explore-link mt-8 font-inter inline-block rounded-full border border-purple-300/40 bg-white/5 px-8 py-3 text-[14px] font-medium text-white transition hover:bg-white/15 hover:border-white/60 active:scale-95">
+                Explore Now
+              </a>
+            </div>
+            <div class="shrink-0 relative flex items-center justify-center p-4">
+              <div class="grid h-56 w-56 place-items-center rounded-full sm:h-72 sm:w-72"
                 style="background: linear-gradient(107.67deg, rgba(170, 166, 179, 0.08) 0.59%, rgba(74, 51, 133, 0.08) 133.76%);">
-                <div class="grid h-32 w-32 place-items-center rounded-full shadow-[0_0_50px_10px_rgba(168,85,247,0.25)] sm:h-40 sm:w-40"
-                  style="background: linear-gradient(107.67deg, rgba(170, 166, 179, 0.2) 0.59%, rgba(74, 51, 133, 0.2) 133.76%);">
-                  
-                  <div class="flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24 p-2">
-                    <img src="events.svg" alt="Meditation Icon" class="h-full w-full object-contain drop-shadow-[0_0_12px_rgba(216,180,254,0.8)]" />
+                <div class="grid h-44 w-44 place-items-center rounded-full sm:h-56 sm:w-56"
+                  style="background: linear-gradient(107.67deg, rgba(170, 166, 179, 0.08) 0.59%, rgba(74, 51, 133, 0.08) 133.76%);">
+                  <div class="grid h-32 w-32 place-items-center rounded-full shadow-[0_0_50px_10px_rgba(168,85,247,0.25)] sm:h-40 sm:w-40"
+                    style="background: linear-gradient(107.67deg, rgba(170, 166, 179, 0.2) 0.59%, rgba(74, 51, 133, 0.2) 133.76%);">
+                    <div class="flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24 p-2">
+                      <img class="course-icon h-full w-full object-contain drop-shadow-[0_0_12px_rgba(216,180,254,0.8)]" src="images/events.svg" alt="Meditation Icon" />
+                    </div>
                   </div>
-
                 </div>
               </div>
             </div>
           </div>
-
         </div>
+
+        <!-- Rising card: hidden below at rest; slides straight up to cover the base
+             card when switching, like a page being pulled up from a stack. -->
+        <div id="courseCardRising" class="course-card course-card-rising absolute inset-0 flex items-center p-8 sm:p-12 lg:p-16"
+          style="background: linear-gradient(88.01deg, #43366B 10.28%, #312357 104.01%);">
+          <div class="flex w-full flex-col items-center gap-10 md:flex-row md:justify-between md:gap-[60px] z-10">
+            <div class="max-w-md text-center md:text-left">
+              <h3 class="course-title text-[32px] sm:text-[40px] font-inter font-medium leading-[1.15] text-white md:text-[44px]"></h3>
+              <p class="course-desc mt-5 font-dm-sans text-[13px] sm:text-[14px] leading-relaxed text-purple-200/70"></p>
+              <a href="#specialized-practices" class="course-explore-link mt-8 font-inter inline-block rounded-full border border-purple-300/40 bg-white/5 px-8 py-3 text-[14px] font-medium text-white transition hover:bg-white/15 hover:border-white/60 active:scale-95">
+                Explore Now
+              </a>
+            </div>
+            <div class="shrink-0 relative flex items-center justify-center p-4">
+              <div class="grid h-56 w-56 place-items-center rounded-full sm:h-72 sm:w-72"
+                style="background: linear-gradient(107.67deg, rgba(170, 166, 179, 0.08) 0.59%, rgba(74, 51, 133, 0.08) 133.76%);">
+                <div class="grid h-44 w-44 place-items-center rounded-full sm:h-56 sm:w-56"
+                  style="background: linear-gradient(107.67deg, rgba(170, 166, 179, 0.08) 0.59%, rgba(74, 51, 133, 0.08) 133.76%);">
+                  <div class="grid h-32 w-32 place-items-center rounded-full shadow-[0_0_50px_10px_rgba(168,85,247,0.25)] sm:h-40 sm:w-40"
+                    style="background: linear-gradient(107.67deg, rgba(170, 166, 179, 0.2) 0.59%, rgba(74, 51, 133, 0.2) 133.76%);">
+                    <div class="flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24 p-2">
+                      <img class="course-icon h-full w-full object-contain drop-shadow-[0_0_12px_rgba(216,180,254,0.8)]" src="" alt="" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      <!-- Category dots: static, outside the card stack, doesn't ride the slide -->
+      <div id="courseDots" class="mt-5 flex items-center justify-center gap-2" role="tablist" aria-label="Course categories"></div>
 
     </div>
 
@@ -841,8 +302,8 @@
             stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
-      <h4 class="fc-title font-DM Sans">Etta Points:</h4>
-      <p class="fc-body font-DM Sans">Earn Etta Points with every session and unlock exclusive rewards along the
+      <h4 class="fc-title font-dm-sans">Etta Points:</h4>
+      <p class="fc-body font-dm-sans">Earn Etta Points with every session and unlock exclusive rewards along the
         way.</p>
     </div>
 
@@ -853,8 +314,8 @@
           <path d="M13 3L4 14h6l-1 7 9-11h-6l1-7z" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
-      <h4 class="fc-title font-DM Sans">Etta XP:</h4>
-      <p class="fc-body font-DM Sans">Level up your practice as Etta XP builds with every class, streak, and
+      <h4 class="fc-title font-dm-sans">Etta XP:</h4>
+      <p class="fc-body font-dm-sans">Level up your practice as Etta XP builds with every class, streak, and
         milestone.</p>
     </div>
 
@@ -865,7 +326,7 @@
         <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
           Crazy Features of Ettazenn
         </h2>
-        <p class="mx-auto font-DM Sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-[#b8b0d0]">
+        <p class="mx-auto font-dm-sans mt-3 max-w-md text-[13px] sm:text-[14px] leading-relaxed text-[#b8b0d0]">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of minds.
         </p>
@@ -883,10 +344,10 @@
     <!-- Sessions -->
     <div class="feature-card md:translate-x-2">
       <div class="fc-icon">
-        <img src="session.png" alt="Sessions" class="h-5 w-5" />
+        <img src="images/session.png" alt="Sessions" class="h-5 w-5" />
       </div>
-      <h4 class="fc-title font-DM Sans">Sessions:</h4>
-      <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+      <h4 class="fc-title font-dm-sans">Sessions:</h4>
+      <p class="fc-body font-dm-sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
         moving meditation of minds.</p>
       <span class="fc-line-r"></span>
     </div>
@@ -894,20 +355,20 @@
     <div class="feature-card md:-translate-x-10">
       <div class="fc-icon">
         <span class="fc-icon-glow"></span>
-        <img src="events.svg" alt="Events & Retreats" class="relative h-5 w-5" />
+        <img src="images/events.svg" alt="Events & Retreats" class="relative h-5 w-5" />
       </div>
-      <h4 class="fc-title font-DM Sans">Events &amp; Retreats:</h4>
-      <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+      <h4 class="fc-title font-dm-sans">Events &amp; Retreats:</h4>
+      <p class="fc-body font-dm-sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
         moving meditation of minds.</p>
       <span class="fc-line-r"></span>
     </div>
     <!-- Music Hub -->
     <div class="feature-card md:translate-x-2">
       <div class="fc-icon">
-        <img src="music hub.png" alt="Music Hub" class="h-5 w-5" />
+        <img src="images/music hub.png" alt="Music Hub" class="h-5 w-5" />
       </div>
-      <h4 class="fc-title font-DM Sans">Music Hub:</h4>
-      <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+      <h4 class="fc-title font-dm-sans">Music Hub:</h4>
+      <p class="fc-body font-dm-sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
         moving meditation of minds.</p>
       <span class="fc-line-r"></span>
     </div>
@@ -915,7 +376,7 @@
 
   <!-- PHONE (center) -->
   <div id="fcPhoneWrap" class="relative z-10 order-first flex justify-center md:order-none">
-    <img src="mobile.png" alt="Ettazenn app"
+    <img src="images/mobile.png" alt="Ettazenn app"
       class="h-[38vh] max-h-[420px] w-auto drop-shadow-2xl sm:h-[46vh] md:h-[54vh] md:max-h-[500px]" />
   </div>
 
@@ -924,30 +385,30 @@
     <!-- Courses -->
     <div class="feature-card md:-translate-x-2">
       <div class="fc-icon">
-        <img src="courses.png" alt="Courses" class="h-5 w-5" />
+        <img src="images/courses.png" alt="Courses" class="h-5 w-5" />
       </div>
-      <h4 class="fc-title font-DM Sans">Courses:</h4>
-      <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+      <h4 class="fc-title font-dm-sans">Courses:</h4>
+      <p class="fc-body font-dm-sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
         moving meditation of minds.</p>
       <span class="fc-line-l"></span>
     </div>
     <!-- Community -->
     <div class="feature-card md:translate-x-10">
       <div class="fc-icon">
-        <img src="community.png" alt="Community" class="h-5 w-5" />
+        <img src="images/community.png" alt="Community" class="h-5 w-5" />
       </div>
-      <h4 class="fc-title font-DM Sans">Community:</h4>
-      <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+      <h4 class="fc-title font-dm-sans">Community:</h4>
+      <p class="fc-body font-dm-sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
         moving meditation of minds.</p>
       <span class="fc-line-l"></span>
     </div>
     <!-- Ettazenn Hub -->
     <div class="feature-card md:-translate-x-2">
       <div class="fc-icon">
-        <img src="moon-stars.png" alt="Ettazenn Hub" class="h-5 w-5" />
+        <img src="images/moon-stars.png" alt="Ettazenn Hub" class="h-5 w-5" />
       </div>
-      <h4 class="fc-title font-DM Sans">Ettazenn Hub:</h4>
-      <p class="fc-body font-DM Sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
+      <h4 class="fc-title font-dm-sans">Ettazenn Hub:</h4>
+      <p class="fc-body font-dm-sans">Master the ancient arts with modern instruction. From deep-flow Yoga to the
         moving meditation of minds.</p>
       <span class="fc-line-l"></span>
     </div>
@@ -976,7 +437,7 @@
 
     <!-- phone: bottom-centered, lower part clipped so it shows down to "Recommended For You" -->
     <div class="absolute bottom-0 left-1/2 z-10 -translate-x-1/2 translate-y-[28%]">
-      <img src="mobile.png" alt="Ettazenn app"
+      <img src="images/mobile.png" alt="Ettazenn app"
         class="reveal-up h-[100dvh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:h-[110dvh] lg:h-[116vh]" />
     </div>
 
@@ -997,7 +458,7 @@
         <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
           Courses &amp; Specialized Practices
         </h2>
-        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
+        <p class="mx-auto mt-3 max-w-md font-dm-sans text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of Tai Chi.
         </p>
@@ -1009,16 +470,16 @@
         <!-- LEFT: masterclass image card -->
         <div class="reveal-up mc-card relative min-h-[260px] overflow-hidden rounded-[24px] ring-1 ring-white/5">
           <!-- image (swap in masterclass.jpg); hides itself if missing so the gradient shows -->
-          <img src="Container.png" alt="" onerror="this.style.display='none'"
+          <img src="images/Container.png" alt="" onerror="this.style.display='none'"
             class="absolute inset-0 h-full w-full object-cover"
             style="filter: brightness(1.35) contrast(1.08) saturate(1.15);" />
           <!-- readability overlay: just enough for the text at the bottom to stay legible -->
           <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"></div>
 
           <div class="relative flex h-full flex-col justify-end p-6 sm:p-8">
-            <span class="mc-pill font-DM Sans mb-4">MASTERCLASS</span>
+            <span class="mc-pill font-dm-sans mb-4">MASTERCLASS</span>
             <h3 class="text-[20px] sm:text-[24px] font-inter text-white">Lunar Vinyasa &amp; Tai Chi</h3>
-            <p class="mt-2 max-w-sm font-DM Sans text-[13px] leading-relaxed text-lavender/60">
+            <p class="mt-2 max-w-sm font-dm-sans text-[13px] leading-relaxed text-lavender/60">
               Our signature 8-week series blending the fluid strength of Vinyasa with the
               grounding energy of Tai Chi.
             </p>
@@ -1030,18 +491,18 @@
 
           <!-- Morning Yoga Flow -->
 <div class="reveal-up side-card flex flex-1 flex-col justify-center p-6" style="transition-delay: 90ms;">
-  <img src="yoga.png" alt="Morning Yoga Icon" class="mb-3 h-8 w-8 object-contain" />
+  <img src="images/yoga.png" alt="Morning Yoga Icon" class="mb-3 h-8 w-8 object-contain" />
   <h4 class="text-[18px] font-inter text-white">Morning Yoga Flow</h4>
-  <p class="mt-2 text-[13px] font-DM Sans leading-relaxed text-lavender/50">
+  <p class="mt-2 text-[13px] font-dm-sans leading-relaxed text-lavender/50">
     Pranayama techniques designed to oxygenate the body and clear the mind for deep sleep.
   </p>
 </div>
 
 <!-- Advance Yoga Treat -->
 <div class="reveal-up side-card flex flex-1 flex-col justify-center p-6" style="transition-delay: 180ms;">
-  <img src="yoga.png" alt="Advance Yoga Icon" class="mb-3 h-8 w-8 object-contain" />
+  <img src="images/yoga.png" alt="Advance Yoga Icon" class="mb-3 h-8 w-8 object-contain" />
   <h4 class="text-[18px] font-inter text-white">Advance Yoga Treat</h4>
-  <p class="mt-2 text-[13px] font-DM Sans leading-relaxed text-lavender/50">
+  <p class="mt-2 text-[13px] font-dm-sans leading-relaxed text-lavender/50">
     Pranayama techniques designed to oxygenate the body and clear the mind for deep sleep.
   </p>
 </div>
@@ -1061,7 +522,7 @@
         <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">
           Personalized Guidance
         </h2>
-        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
+        <p class="mx-auto mt-3 max-w-md font-dm-sans text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
           Journey inward with direct support from our master instructors. Our
           personalized sessions offer a serene path to wellness.
         </p>
@@ -1112,13 +573,13 @@
 
         <!-- RIGHT: image card -->
         <div class="brain-bg relative min-h-[300px] overflow-hidden rounded-2xl ring-1 ring-white/5">
-          <img src="brain.png" alt="Glowing brain" onerror="this.style.display='none'"
+          <img src="images/brain.png" alt="Glowing brain" onerror="this.style.display='none'"
             class="absolute inset-0 h-full w-full object-cover object-center" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
 
           <div id="pgPanelText" class="absolute inset-x-0 bottom-0 p-5 sm:p-7" style="transition: opacity .25s ease;">
             <h4 id="pgHeading" class="text-[16px] sm:text-[17px] font-inter text-white">Coach &amp; Wellness centre's:</h4>
-            <p id="pgDesc" class="mt-2 max-w-md font-DM Sans text-[13px] leading-relaxed text-lavender/70">
+            <p id="pgDesc" class="mt-2 max-w-md font-dm-sans text-[13px] leading-relaxed text-lavender/70">
               Journey inward with direct support from our master instructors. Our
               personalized sessions offer a serene path to wellness.
             </p>
@@ -1135,7 +596,7 @@
     style="--edge-rgb: 6, 4, 16;">
 
     <!-- faint feathers on the left (white bg knocked out via invert + screen) -->
-    <img src="feathers.png" alt=""
+    <img src="images/feathers.png" alt=""
       class="pointer-events-none absolute left-0 top-[54%] hidden w-[360px] max-w-[45vw] -translate-y-1/2 select-none md:block"
       style="mix-blend-mode: screen; filter: invert(1); opacity: 0.55;" />
 
@@ -1151,32 +612,32 @@
         </p>
       </div>
 
-      <!-- Card deck (Figma card: 320 x 480, radius 26, 2° tilt) — Swiper "cards" effect, same technique as tokenology.mubien.com -->
+      <!-- Card deck -->
       <div class="relative w-[260px] h-[390px] sm:w-[300px] sm:h-[450px] md:w-[320px] md:h-[480px]">
         <div id="wisdomSwiper" class="swiper h-full w-full">
           <div class="swiper-wrapper">
             <div class="swiper-slide deck-card deck-front">
-              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
               <p class="deck-quote">“The soul always knows what to do to heal itself. The challenge is to silence the mind.”</p>
               <span class="deck-label">MEDITATION</span>
             </div>
             <div class="swiper-slide deck-card deck-front">
-              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
               <p class="deck-quote">“Breath is the bridge which connects life to consciousness.”</p>
               <span class="deck-label">BREATHWORK</span>
             </div>
             <div class="swiper-slide deck-card deck-front">
-              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
               <p class="deck-quote">“You are not a drop in the ocean. You are the entire ocean in a drop.”</p>
               <span class="deck-label">REFLECTION</span>
             </div>
             <div class="swiper-slide deck-card deck-front">
-              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
               <p class="deck-quote">“Stillness is where creativity and solutions to problems are found.”</p>
               <span class="deck-label">MINDFULNESS</span>
             </div>
             <div class="swiper-slide deck-card deck-front">
-              <img src="events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
+              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
               <p class="deck-quote">“The quieter you become, the more you are able to hear.”</p>
               <span class="deck-label">SILENCE</span>
             </div>
@@ -1266,7 +727,7 @@
     <!-- Heading -->
     <div class="text-center">
       <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">Expert Minds</h2>
-      <p class="mx-auto mt-3 font-DM Sans max-w-md text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
+      <p class="mx-auto mt-3 font-dm-sans max-w-md text-[13px] sm:text-[14px] leading-relaxed text-lavender/60">
         Master the ancient arts with modern instruction. From deep-flow Yoga to the
         moving meditation of Tai Chi.
       </p>
@@ -1278,7 +739,7 @@
       <!-- LEFT peeking coach -->
       <div id="leftCoachWrap" class="absolute left-[2%] top-1/2 hidden -translate-y-1/2 lg:left-[7%] xl:block cursor-pointer">
         <div class="relative h-28 w-28 xl:h-36 xl:w-36">
-          <img id="leftCoachImg" src="expert3f.png" alt="Left Coach"
+          <img id="leftCoachImg" src="images/expert3f.png" alt="Left Coach"
             class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
           <span id="leftCoachRating" class="rating-badge">5<span class="text-amber-400">★</span></span>
         </div>
@@ -1287,7 +748,7 @@
       <!-- RIGHT peeking coach -->
       <div id="rightCoachWrap" class="absolute right-[2%] top-1/2 hidden -translate-y-1/2 lg:right-[7%] xl:block cursor-pointer">
         <div class="relative h-28 w-28 xl:h-36 xl:w-36">
-          <img id="rightCoachImg" src="expert2.png" alt="Right Coach"
+          <img id="rightCoachImg" src="images/expert2.png" alt="Right Coach"
             class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
           <span id="rightCoachRating" class="rating-badge">5<span class="text-amber-400">★</span></span>
         </div>
@@ -1297,7 +758,7 @@
       <div id="expertCardWrap" class="relative w-[460px] max-w-full select-none" style="cursor: grab; touch-action: pan-y;">
         <!-- avatar overlapping the top -->
         <div class="absolute left-1/2 top-0 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2">
-          <img id="expertAvatar" src="expert1.png" alt="Zayn Omar"
+          <img id="expertAvatar" src="images/expert1.png" alt="Zayn Omar"
             class="h-full w-full rounded-full object-cover ring-4 ring-[#160f2c]" />
         </div>
 
@@ -1343,7 +804,7 @@
       <div class="text-center">
         <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white md:text-[36px]">Frequently Asked
           Questions</h2>
-        <p class="mx-auto mt-3 max-w-md font-DM Sans text-[12px] sm:text-[13px] leading-relaxed text-lavender/60">
+        <p class="mx-auto mt-3 max-w-md font-dm-sans text-[12px] sm:text-[13px] leading-relaxed text-lavender/60">
           Master the ancient arts with modern instruction. From deep-flow Yoga to the
           moving meditation of Tai Chi.
         </p>
@@ -1408,7 +869,7 @@
         <!-- Logo -->
         <a href="#" class="flex shrink-0 items-center gap-2">
           <span class="grid h-8 w-8 place-items-center rounded-full bg-brand/20 text-brand-light">
-            <img src="vector.svg" alt="Ettazenn logo" class="h-5 w-5 object-contain" />
+            <img src="images/vector.svg" alt="Ettazenn logo" class="h-5 w-5 object-contain" />
           </span>
           <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
         </a>
@@ -1446,308 +907,7 @@
     </div>
   </footer>
 
-  <script>
-    // Scroll-entry reveal animations (.reveal-up / .reveal-pop) - crossfade + scale
-    // the first time each element enters the viewport.
-    (function () {
-      var targets = document.querySelectorAll('.reveal-up, .reveal-pop');
-      if (!targets.length) return;
-
-      if (typeof IntersectionObserver === 'undefined') {
-        targets.forEach(function (el) { el.classList.add('is-visible'); });
-        return;
-      }
-
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.2 });
-
-      targets.forEach(function (el) { observer.observe(el); });
-    })();
-
-    // Mobile nav drawer toggle
-    (function () {
-      var navToggle = document.getElementById('navToggle');
-      var mobilePanel = document.getElementById('mobileNavPanel');
-      var iconOpen = document.getElementById('navIconOpen');
-      var iconClose = document.getElementById('navIconClose');
-      if (navToggle && mobilePanel) {
-        navToggle.addEventListener('click', function () {
-          var isOpen = mobilePanel.classList.toggle('open');
-          iconOpen.classList.toggle('hidden', isOpen);
-          iconClose.classList.toggle('hidden', !isOpen);
-          navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        });
-        mobilePanel.querySelectorAll('a').forEach(function (link) {
-          link.addEventListener('click', function () {
-            mobilePanel.classList.remove('open');
-            iconOpen.classList.remove('hidden');
-            iconClose.classList.add('hidden');
-            navToggle.setAttribute('aria-expanded', 'false');
-          });
-        });
-      }
-    })();
-
-    // Daily Wisdom Deck - Swiper "cards" effect (same swipe technique as tokenology.mubien.com)
-    (function () {
-      var el = document.getElementById('wisdomSwiper');
-      var prevBtn = document.getElementById('swipePrev');
-      var nextBtn = document.getElementById('swipeNext');
-      if (!el || typeof Swiper === 'undefined') return;
-
-      var wisdomSwiper = new Swiper('#wisdomSwiper', {
-        effect: 'cards',
-        grabCursor: true,
-        loop: true,
-        cardsEffect: {
-          perSlideRotate: 4,
-          perSlideOffset: 9,
-          slideShadows: false,
-        },
-      });
-
-      if (prevBtn) prevBtn.addEventListener('click', function () { wisdomSwiper.slidePrev(); });
-      if (nextBtn) nextBtn.addEventListener('click', function () { wisdomSwiper.slideNext(); });
-    })();
-
-    // Expert Minds - swipeable testimonial carousel
-    (function () {
-      var cardWrap = document.getElementById('expertCardWrap');
-      var avatar = document.getElementById('expertAvatar');
-      var content = document.getElementById('expertContent');
-      var nameEl = document.getElementById('expertName');
-      var starsEl = document.getElementById('expertStars');
-      var ratingNumEl = document.getElementById('expertRatingNum');
-      var bioEl = document.getElementById('expertBio');
-      var leftImg = document.getElementById('leftCoachImg');
-      var leftRating = document.getElementById('leftCoachRating');
-      var leftWrap = document.getElementById('leftCoachWrap');
-      var rightImg = document.getElementById('rightCoachImg');
-      var rightRating = document.getElementById('rightCoachRating');
-      var rightWrap = document.getElementById('rightCoachWrap');
-      var prevBtn = document.getElementById('expertPrevBtn');
-      var nextBtn = document.getElementById('expertNextBtn');
-      if (!cardWrap || !avatar || !content || !nameEl) return;
-
-      var experts = [
-        {
-          avatar: 'expert1.png', name: 'Zayn Omar', rating: 4.9,
-          bio: 'I’m a yoga coach dedicated to helping people build strength, flexibility, and inner balance through mindful movement and breathwork. My approach focuses on simple, effective practices that fit into everyday life, guiding students toward better posture, reduced stress, and a deeper connection between body and mind.'
-        },
-        {
-          avatar: 'expert2.png', name: 'Amira Cole', rating: 4.8,
-          bio: 'A tai chi and mindfulness coach guiding students through slow, deliberate movement to build balance, focus, and calm. I blend traditional forms with modern breathing techniques to help you find steadiness in both body and mind, one session at a time.'
-        },
-        {
-          avatar: 'expert3f.png', name: 'Malik Hassan', rating: 5.0,
-          bio: 'A breathwork and meditation specialist helping clients release tension and reconnect with stillness. My sessions combine guided breathing, sound, and quiet reflection to leave you calmer, more centered, and better equipped for daily life.'
-        },
-      ];
-
-      var index = 0;
-      var animating = false;
-
-      function starsHtml(rating) {
-        var filled = Math.max(0, Math.min(5, Math.round(rating)));
-        var html = '';
-        for (var i = 0; i < filled; i++) html += '★';
-        if (filled < 5) {
-          html += '<span class="text-white/25">';
-          for (var j = filled; j < 5; j++) html += '★';
-          html += '</span>';
-        }
-        return html;
-      }
-
-      function render() {
-        var center = experts[index];
-        var left = experts[(index + experts.length - 1) % experts.length];
-        var right = experts[(index + 1) % experts.length];
-
-        avatar.src = center.avatar;
-        avatar.alt = center.name;
-        nameEl.textContent = center.name;
-        starsEl.innerHTML = starsHtml(center.rating);
-        ratingNumEl.textContent = center.rating.toFixed(1);
-        bioEl.textContent = center.bio;
-
-        if (leftImg) { leftImg.src = left.avatar; leftImg.alt = left.name; }
-        if (leftRating) leftRating.innerHTML = Math.round(left.rating) + '<span class="text-amber-400">★</span>';
-
-        if (rightImg) { rightImg.src = right.avatar; rightImg.alt = right.name; }
-        if (rightRating) rightRating.innerHTML = Math.round(right.rating) + '<span class="text-amber-400">★</span>';
-      }
-
-      var CARD_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
-      var CARD_DURATION = 380;
-
-      function setWrapStyle(x, rotate, opacity, scale, useTransition) {
-        cardWrap.style.transition = useTransition
-          ? 'transform ' + CARD_DURATION + 'ms ' + CARD_EASE + ', opacity ' + CARD_DURATION + 'ms ' + CARD_EASE
-          : 'none';
-        cardWrap.style.transform = 'translateX(' + x + 'px) rotate(' + rotate + 'deg) scale(' + scale + ')';
-        cardWrap.style.opacity = String(opacity);
-      }
-
-      function go(direction) {
-        if (animating) return;
-        animating = true;
-        // outgoing card slides out, fades, and scales down slightly
-        setWrapStyle(direction * -90, direction * -6, 0, 0.94, true);
-
-        window.setTimeout(function () {
-          index = (index + direction + experts.length) % experts.length;
-          render();
-          // incoming card starts from the opposite side, scaled down, then eases to center at 100%
-          setWrapStyle(direction * 90, direction * 6, 0, 0.94, false);
-          void cardWrap.offsetWidth;
-          setWrapStyle(0, 0, 1, 1, true);
-          animating = false;
-        }, CARD_DURATION);
-      }
-
-      if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
-      if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
-      if (leftWrap) leftWrap.addEventListener('click', function () { go(-1); });
-      if (rightWrap) rightWrap.addEventListener('click', function () { go(1); });
-
-      // Drag / touch swipe on the testimonial card itself
-      var dragging = false;
-      var startX = 0;
-      var startY = 0;
-
-      function onPointerDown(e) {
-        if (animating) return;
-        dragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        cardWrap.style.cursor = 'grabbing';
-        if (cardWrap.setPointerCapture) {
-          try { cardWrap.setPointerCapture(e.pointerId); } catch (err) { }
-        }
-      }
-
-      function onPointerMove(e) {
-        if (!dragging) return;
-        var dx = e.clientX - startX;
-        setWrapStyle(dx, dx * 0.03, Math.max(1 - Math.abs(dx) / 400, 0.4), 1, false);
-      }
-
-      function onPointerUp(e) {
-        if (!dragging) return;
-        dragging = false;
-        cardWrap.style.cursor = 'grab';
-        var dx = e.clientX - startX;
-        if (Math.abs(dx) > 70) {
-          go(dx < 0 ? 1 : -1);
-        } else {
-          setWrapStyle(0, 0, 1, 1, true);
-        }
-      }
-
-      cardWrap.addEventListener('pointerdown', onPointerDown);
-      document.addEventListener('pointermove', onPointerMove);
-      document.addEventListener('pointerup', onPointerUp);
-      document.addEventListener('pointercancel', onPointerUp);
-    })();
-
-    // Personalized Guidance - tab switching
-    (function () {
-      var tabsWrap = document.getElementById('pgTabs');
-      var panelText = document.getElementById('pgPanelText');
-      var heading = document.getElementById('pgHeading');
-      var desc = document.getElementById('pgDesc');
-      var exploreLink = document.getElementById('pgExploreLink');
-      if (!tabsWrap || !panelText || !heading || !desc) return;
-
-      var content = {
-        coaches: {
-          heading: 'Coach &amp; Wellness centre\'s:',
-          desc: 'Journey inward with direct support from our master instructors. Our personalized sessions offer a serene path to wellness.',
-          exploreLabel: 'Explore Coaches',
-          target: '#expert-minds'
-        },
-        wellness: {
-          heading: 'Wellness Centres:',
-          desc: 'Discover partnered wellness centres offering curated retreats, workshops, and community classes tailored to your practice.',
-          exploreLabel: 'Explore Wellness Centres',
-          target: '#join-community'
-        },
-        schools: {
-          heading: 'Accredited Schools:',
-          desc: 'Connect with schools teaching authentic yoga, tai chi, and meditation lineages, from beginner courses to teacher certification.',
-          exploreLabel: 'Explore Schools',
-          target: '#join-community'
-        },
-        partners: {
-          heading: 'Trusted Partners:',
-          desc: 'Explore our network of partner studios, brands, and practitioners collaborating to bring you a richer wellness journey.',
-          exploreLabel: 'Explore Partners',
-          target: '#join-community'
-        }
-      };
-
-      var tabs = Array.prototype.slice.call(tabsWrap.querySelectorAll('.pg-tab'));
-      var animating = false;
-      var activeTarget = content.coaches.target;
-
-      function activate(tab) {
-        var key = tab.getAttribute('data-tab');
-        var data = content[key];
-        if (!data || animating) return;
-        animating = true;
-
-        tabs.forEach(function (t) { t.classList.remove('active'); });
-        tab.classList.add('active');
-
-        panelText.style.opacity = '0';
-        window.setTimeout(function () {
-          heading.innerHTML = data.heading;
-          desc.textContent = data.desc;
-          if (exploreLink) {
-            exploreLink.textContent = data.exploreLabel;
-            exploreLink.setAttribute('href', data.target);
-          }
-          activeTarget = data.target;
-          panelText.style.opacity = '1';
-          animating = false;
-        }, 200);
-      }
-
-      tabs.forEach(function (tab) {
-        tab.addEventListener('click', function () { activate(tab); });
-      });
-
-      if (exploreLink) {
-        exploreLink.addEventListener('click', function (e) {
-          var el = document.querySelector(activeTarget);
-          if (el) {
-            e.preventDefault();
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
-      }
-    })();
-
-    // Courses & Specialized Practices - Explore Now scrolls to the course cards
-    (function () {
-      var link = document.getElementById('coursesExploreLink');
-      if (!link) return;
-      link.addEventListener('click', function (e) {
-        var target = document.getElementById('specialized-practices');
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    })();
-  </script>
+  <script src="js/index.js"></script>
 
 </body>
 

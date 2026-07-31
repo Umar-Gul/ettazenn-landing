@@ -1,0 +1,613 @@
+/* Global overflow safety: prevent any fixed-width element from creating horizontal scroll */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+/* ---- Scroll-entry reveal animations (crossfade + slight scale) ----
+   Applied via IntersectionObserver: element starts hidden/offset, then
+   eases into place the first time it enters the viewport. */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(28px) scale(0.96);
+  transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1), transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-up.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* "pop" variant for badges/icons — a snappier, slightly overshooting scale-in */
+.reveal-pop {
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 380ms ease-in-out, transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.reveal-pop.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Award Seal badge is a faint decorative watermark (0.3 resting opacity),
+   not a fully-opaque element — override the generic reveal-pop end state. */
+#awardSealBadge.is-visible {
+  opacity: 0.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .reveal-up,
+  .reveal-pop {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero background — Figma artwork, enhanced with a starfield, a warm glow
+   around the lit doorway, and a vignette for more depth/contrast */
+.hero-bg {
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 12%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 20% 22%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 33% 9%, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 47% 16%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 63% 7%, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 76% 18%, rgba(255, 255, 255, 0.65), transparent),
+    radial-gradient(1.5px 1.5px at 88% 10%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 95% 23%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(30% 22% at 50% 58%, rgba(255, 196, 120, 0.4) 0%, rgba(255, 196, 120, 0) 70%),
+    radial-gradient(120% 90% at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(10, 6, 20, 0.6) 100%),
+    linear-gradient(to bottom,
+      rgba(42, 31, 61, 0.2) 0%,
+      rgba(42, 31, 61, 0.05) 28%,
+      rgba(42, 31, 61, 0.55) 72%,
+      rgba(42, 31, 61, 0.88) 100%),
+    url('../images/hero.png');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode:
+    normal, normal, normal, normal, normal, normal, normal, normal,
+    screen, multiply, normal, normal;
+}
+
+/* Fallback tint until hero.jpg exists so the page never looks broken */
+.hero-fallback {
+  background:
+    radial-gradient(120% 90% at 50% 0%, #6B4A86 0%, #40305A 45%, #2A1F3D 100%);
+}
+
+/* ---- Dusk mountain showcase background ---- */
+.dusk-bg {
+  background:
+    radial-gradient(55% 38% at 50% 40%, rgba(206, 188, 232, 0.22) 0%, rgba(206, 188, 232, 0) 60%),
+    linear-gradient(to bottom, rgba(9, 6, 20, 0.7) 0%, rgba(30, 20, 45, 0.5) 55%, rgba(15, 11, 24, 0.92) 100%),
+    url('../images/dusk-mountains.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ---- Personalized Guidance ---- */
+.pg-section {
+  background: linear-gradient(180deg, rgba(28, 22, 53, 0.53) 0%, #131023 100%);
+}
+
+.pg-panel {
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%);
+  backdrop-filter: blur(8px);
+}
+
+.pg-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.8rem 1rem;
+  font-size: 14px;
+  color: rgba(216, 204, 228, 0.7);
+  transition: all 0.2s;
+}
+
+.pg-tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.pg-tab.active {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+/* glowing-brain placeholder until brain.jpg is exported from Figma */
+.brain-bg {
+  background: radial-gradient(circle at 50% 42%, #5a3a92 0%, #33215e 34%, #1a1130 62%, #0d0918 100%);
+}
+
+/* ---- FAQ ---- */
+.faq-item {
+  width: 885px;
+  max-width: 100%;
+  border-radius: 14px;
+  border: 0.98px solid rgba(255, 255, 255, 0.10);
+  background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.47) -5.62%, rgba(33, 26, 59, 0.5) 111.1%);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+.faq-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 69px;
+  padding: 14px 20px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  color: #fff;
+}
+
+.faq-summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-chev {
+  height: 20px;
+  width: 20px;
+  flex: none;
+  color: rgba(255, 255, 255, 0.7);
+  transition: transform 0.25s;
+}
+
+details[open] .faq-chev {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  padding: 0 20px 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(216, 204, 228, 0.6);
+}
+
+/* ---- Expert Minds ---- */
+.expert-bg {
+  background:
+    linear-gradient(to bottom, rgba(13, 10, 28, 0.8) 0%, rgba(37, 27, 68, 0.55) 40%, rgba(13, 10, 28, 0.85) 100%),
+    url('../images/expert-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.expert-card {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%);
+  backdrop-filter: blur(6px);
+}
+
+.rating-badge {
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border-radius: 9999px;
+  background: #1c1533;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.nav-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  transition: background 0.2s;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ---- Daily Wisdom Deck ---- */
+.deck-bg {
+  background:
+    linear-gradient(to bottom, rgba(6, 4, 16, 0.55) 0%, rgba(6, 4, 16, 0.4) 45%, rgba(6, 4, 16, 0.75) 100%),
+    url('../images/bg 3.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.deck-card {
+  border-radius: 26px;
+  border: 0.75px solid rgba(255, 255, 255, 0.28);
+  background: linear-gradient(160deg, #7d5fd6 0%, #5c40b0 100%);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+}
+
+.deck-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px 32px;
+}
+
+/* Swiper "cards" effect slides use .deck-card + .deck-front for the visual design */
+#wisdomSwiper .swiper-slide {
+  border-radius: 26px;
+  overflow: hidden;
+}
+
+.deck-quote {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.65;
+  color: #fff;
+}
+
+.deck-label {
+  margin-top: 18px;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.swipe-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---- Masterclass / specialized practices ---- */
+.mc-card {
+  background: radial-gradient(120% 95% at 62% 18%, #2c2547 0%, #16121f 62%, #0b0910 100%);
+}
+
+.side-card {
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.mc-pill {
+  display: inline-flex;
+  width: -moz-fit-content;
+  width: fit-content;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(216, 204, 228, 0.85);
+}
+
+/* ---- Courses & Specialized Practices: stacked-card slide-up replace ----
+   Two full cards sit exactly on top of one another. The base card is always
+   static; the rising card sits hidden below it and, on switch, slides
+   straight up to physically cover the base - like a page being pulled up
+   from a stack, seen from the bottom. */
+.course-card {
+  z-index: 1;
+}
+
+.course-card-rising {
+  z-index: 2;
+  transform: translateY(100%);
+  transition: transform 500ms ease-in-out;
+}
+
+.course-card-rising.is-up {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .course-card-rising {
+    transition: none;
+  }
+}
+
+.course-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 0.25s, transform 0.25s, width 0.25s;
+}
+
+.course-dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.course-dot.active {
+  width: 22px;
+  background: #fff;
+}
+
+/* ---- Crazy Features section background ---- */
+.features-bg {
+  background: radial-gradient(ellipse 75% 65% at 50% 48%, #35204f 0%, #170f2e 40%, #0a0716 70%, #05020d 100%);
+}
+
+/* ---- Crazy Features cards ---- */
+.feature-card {
+  position: relative;
+  z-index: 1;
+  width: 200px;
+  max-width: 100%;
+  height: 140px;
+  /* uniform size for every card */
+  border-radius: 18px;
+  border: 1px solid rgba(196, 181, 253, 0.16);
+  background: rgba(21, 13, 46, 0.8);
+  padding: 0.85rem 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.fc-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: 0.55rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #d8c5ff;
+}
+
+.fc-icon-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.7rem;
+  background: rgba(168, 85, 247, 0.3);
+  filter: blur(8px);
+}
+
+.fc-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.fc-body {
+  margin-top: 0.35rem;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(184, 176, 208, 0.75);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+/* dashed connector stubs from each card toward the central spine (desktop only) */
+.fc-line-r,
+.fc-line-l {
+  display: none;
+  position: absolute;
+  top: 50%;
+  width: 64px;
+  border-top: 1.5px dashed rgba(216, 204, 240, 0.35);
+  z-index: 0;
+}
+
+/* connector dot at the end of each stub, where it meets the spine */
+.fc-line-r::after,
+.fc-line-l::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d8c5ff;
+  box-shadow: 0 0 8px 1px rgba(168, 85, 247, 0.7);
+}
+
+.fc-line-r {
+  right: 0;
+  transform: translateX(100%);
+}
+
+.fc-line-r::after {
+  right: -3px;
+}
+
+.fc-line-l {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+.fc-line-l::after {
+  left: -3px;
+}
+
+/* central dashed spine (vertical + horizontal) behind the phone, tying every
+   connector stub together into one grid, like the Figma reference */
+.fc-spine-v,
+.fc-spine-h {
+  display: none;
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.fc-spine-v {
+  top: 4%;
+  bottom: 4%;
+  left: 50%;
+  width: 0;
+  border-left: 1.5px dashed rgba(216, 204, 240, 0.3);
+  transform: translateX(-50%);
+}
+
+.fc-spine-h {
+  top: 50%;
+  left: 12%;
+  right: 12%;
+  height: 0;
+  border-top: 1.5px dashed rgba(216, 204, 240, 0.3);
+  transform: translateY(-50%);
+}
+
+@media (min-width: 768px) {
+
+  .fc-line-r,
+  .fc-line-l,
+  .fc-spine-v,
+  .fc-spine-h {
+    display: block;
+  }
+}
+
+/* ---- Crazy Features: fit inside a single mobile screen (desktop untouched) ---- */
+@media (max-width: 767px) {
+  #crazyFeatures {
+    height: 100dvh;
+    min-height: 100dvh;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  #crazyFeatures #fcGrid {
+    margin-top: 0.6rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  /* let each column's 3 cards become direct items of #fcGrid, so all 6
+     cards flow into one clean 2-column x 3-row grid */
+  #crazyFeatures .fc-col {
+    display: contents;
+  }
+
+  #crazyFeatures #fcPhoneWrap {
+    grid-column: 1 / -1;
+  }
+
+  #crazyFeatures .feature-card {
+    width: 100%;
+    height: auto;
+    padding: 0.55rem 0.65rem;
+    border-radius: 14px;
+  }
+
+  #crazyFeatures .fc-body {
+    margin-top: 0.2rem;
+    font-size: 10px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  #crazyFeatures .fc-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 0.3rem;
+    border-radius: 0.5rem;
+  }
+
+  #crazyFeatures .fc-icon img {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  #crazyFeatures .fc-title {
+    font-size: 11px;
+  }
+
+  #crazyFeatures img[alt="Ettazenn app"] {
+    height: 14vh;
+    max-height: 120px;
+  }
+}
+
+/* ---- Mobile nav drawer (added for responsiveness; visual style matches existing navbar) ---- */
+.mobile-nav-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.mobile-nav-panel.open {
+  max-height: 400px;
+}
+
+/* ---- Shadow at both the top and bottom edge of every section ----
+   Each section sets --edge-rgb (via inline style) to the RGB components
+   of ITS OWN background color, so the shadow fades using the section's
+   own color instead of a generic black wash — this is what removes the
+   visible seam/line between adjoining sections. Purely visual,
+   non-interactive, and clipped by each section's existing overflow so
+   nothing else about layout/spacing changes. */
+section {
+  position: relative;
+  --edge-rgb: 10, 8, 20;
+}
+
+section::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: min(200px, 28%);
+  background: linear-gradient(to top, rgba(var(--edge-rgb-top, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-top, var(--edge-rgb)), 1) 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(200px, 28%);
+  background: linear-gradient(to bottom, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 1) 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
