@@ -194,6 +194,54 @@ details[open] .faq-chev {
   background-repeat: no-repeat;
 }
 
+/* ---- Expert Minds: avatar circles into place on next/prev; the card body
+   and peek photos stay put - only the avatar image and the name/bio text
+   (via a plain opacity crossfade set inline) change. ---- */
+.avatar-circle-out {
+  animation: avatarCircleOut 320ms cubic-bezier(0.4, 0, 0.7, 0.4) forwards;
+}
+
+.avatar-circle-in {
+  animation: avatarCircleIn 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes avatarCircleOut {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(var(--arc-x, 46px), -22px) rotate(var(--arc-rot, 200deg)) scale(0.25);
+    opacity: 0;
+  }
+}
+
+@keyframes avatarCircleIn {
+  0% {
+    transform: translate(var(--arc-x, -46px), -22px) rotate(var(--arc-rot, -200deg)) scale(0.25);
+    opacity: 0;
+  }
+
+  65% {
+    transform: translate(calc(var(--arc-x, -46px) * -0.08), -8px) rotate(calc(var(--arc-rot, -200deg) * -0.04)) scale(1.08);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .avatar-circle-out,
+  .avatar-circle-in {
+    animation: none;
+  }
+}
+
 .expert-card {
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -244,19 +292,139 @@ details[open] .faq-chev {
 }
 
 .deck-card {
+  position: relative;
   border-radius: 26px;
   border: 0.75px solid rgba(255, 255, 255, 0.28);
   background: linear-gradient(160deg, #7d5fd6 0%, #5c40b0 100%);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 40px -8px rgba(168, 85, 247, 0.35);
+}
+
+/* holographic sheen sweeping across the card, on a loop */
+.deck-card::after {
+  content: "";
+  position: absolute;
+  inset: -60% -20%;
+  background: linear-gradient(115deg,
+      transparent 38%,
+      rgba(255, 255, 255, 0.22) 49%,
+      rgba(255, 255, 255, 0.04) 53%,
+      transparent 64%);
+  transform: translateX(-130%);
+  animation: deckShimmer 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes deckShimmer {
+
+  0%,
+  35% {
+    transform: translateX(-130%);
+  }
+
+  60%,
+  100% {
+    transform: translateX(130%);
+  }
 }
 
 .deck-front {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 30px 32px;
+}
+
+/* separate from .swiper-slide so the tilt transform below never fights
+   Swiper's own transform on the slide element */
+.deck-tilt {
+  height: 100%;
+  width: 100%;
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.deck-icon {
+  filter: drop-shadow(0 0 10px rgba(216, 180, 254, 0.75));
+  animation: deckIconGlow 3.2s ease-in-out infinite;
+}
+
+@keyframes deckIconGlow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(216, 180, 254, 0.55));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 16px rgba(216, 180, 254, 0.95));
+  }
+}
+
+/* twinkling star sparkles scattered on each card */
+.deck-sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 0 6px 1.5px rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  animation: deckTwinkle 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes deckTwinkle {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ambient glow breathing behind the whole deck */
+.deck-glow {
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(124, 77, 223, 0.14) 45%, transparent 72%);
+  filter: blur(20px);
+  animation: deckGlowPulse 4.5s ease-in-out infinite;
+}
+
+@keyframes deckGlowPulse {
+
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .deck-card::after,
+  .deck-icon,
+  .deck-sparkle,
+  .deck-glow {
+    animation: none;
+  }
+
+  .deck-tilt {
+    transition: none;
+  }
 }
 
 /* Swiper "cards" effect slides use .deck-card + .deck-front for the visual design */

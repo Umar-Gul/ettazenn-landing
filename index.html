@@ -591,7 +591,7 @@
   </section>
 
   <!-- ===================== DAILY WISDOM DECK ===================== -->
-  <section
+  <section id="wisdom-deck"
     class="deck-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6 h-screen w-full snap-start snap-always shrink-0 overflow-y-auto"
     style="--edge-rgb: 6, 4, 16;">
 
@@ -604,7 +604,7 @@
     <div class="relative z-10 flex w-[447px] max-w-full flex-col items-center gap-10 sm:gap-[50px]">
 
       <!-- Heading -->
-      <div class="text-center">
+      <div class="reveal-up text-center">
         <h2 class="text-[26px] sm:text-[30px] font-inter tracking-tight text-white lg:text-[34px]">Daily Wisdom Deck
         </h2>
         <p class="mx-auto font-inter mt-3 max-w-sm text-[13px] leading-relaxed text-lavender/60">
@@ -613,40 +613,68 @@
       </div>
 
       <!-- Card deck -->
-      <div class="relative w-[260px] h-[390px] sm:w-[300px] sm:h-[450px] md:w-[320px] md:h-[480px]">
+      <div class="reveal-pop relative w-[260px] h-[390px] sm:w-[300px] sm:h-[450px] md:w-[320px] md:h-[480px]" style="transition-delay: 120ms;">
+        <!-- ambient glow breathing behind the deck -->
+        <div class="deck-glow pointer-events-none absolute inset-[-15%] -z-10"></div>
+
         <div id="wisdomSwiper" class="swiper h-full w-full">
           <div class="swiper-wrapper">
-            <div class="swiper-slide deck-card deck-front">
-              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
-              <p class="deck-quote">“The soul always knows what to do to heal itself. The challenge is to silence the mind.”</p>
-              <span class="deck-label">MEDITATION</span>
+            <div class="swiper-slide deck-card">
+              <div class="deck-front deck-tilt">
+                <span class="deck-sparkle" style="top:14%;left:16%;animation-delay:0s;"></span>
+                <span class="deck-sparkle" style="top:22%;right:14%;animation-delay:.9s;"></span>
+                <span class="deck-sparkle" style="bottom:20%;left:22%;animation-delay:1.7s;"></span>
+                <img src="images/events.svg" alt="Icon" class="deck-icon mb-7 h-8 w-8 object-contain" />
+                <p class="deck-quote">“The soul always knows what to do to heal itself. The challenge is to silence the mind.”</p>
+                <span class="deck-label">MEDITATION</span>
+              </div>
             </div>
-            <div class="swiper-slide deck-card deck-front">
-              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
-              <p class="deck-quote">“Breath is the bridge which connects life to consciousness.”</p>
-              <span class="deck-label">BREATHWORK</span>
+            <div class="swiper-slide deck-card">
+              <div class="deck-front deck-tilt">
+                <span class="deck-sparkle" style="top:14%;left:16%;animation-delay:.3s;"></span>
+                <span class="deck-sparkle" style="top:22%;right:14%;animation-delay:1.2s;"></span>
+                <span class="deck-sparkle" style="bottom:20%;left:22%;animation-delay:2s;"></span>
+                <img src="images/events.svg" alt="Icon" class="deck-icon mb-7 h-8 w-8 object-contain" />
+                <p class="deck-quote">“Breath is the bridge which connects life to consciousness.”</p>
+                <span class="deck-label">BREATHWORK</span>
+              </div>
             </div>
-            <div class="swiper-slide deck-card deck-front">
-              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
-              <p class="deck-quote">“You are not a drop in the ocean. You are the entire ocean in a drop.”</p>
-              <span class="deck-label">REFLECTION</span>
+            <div class="swiper-slide deck-card">
+              <div class="deck-front deck-tilt">
+                <span class="deck-sparkle" style="top:14%;left:16%;animation-delay:.6s;"></span>
+                <span class="deck-sparkle" style="top:22%;right:14%;animation-delay:1.5s;"></span>
+                <span class="deck-sparkle" style="bottom:20%;left:22%;animation-delay:2.3s;"></span>
+                <img src="images/events.svg" alt="Icon" class="deck-icon mb-7 h-8 w-8 object-contain" />
+                <p class="deck-quote">“You are not a drop in the ocean. You are the entire ocean in a drop.”</p>
+                <span class="deck-label">REFLECTION</span>
+              </div>
             </div>
-            <div class="swiper-slide deck-card deck-front">
-              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
-              <p class="deck-quote">“Stillness is where creativity and solutions to problems are found.”</p>
-              <span class="deck-label">MINDFULNESS</span>
+            <div class="swiper-slide deck-card">
+              <div class="deck-front deck-tilt">
+                <span class="deck-sparkle" style="top:14%;left:16%;animation-delay:.9s;"></span>
+                <span class="deck-sparkle" style="top:22%;right:14%;animation-delay:1.8s;"></span>
+                <span class="deck-sparkle" style="bottom:20%;left:22%;animation-delay:2.6s;"></span>
+                <img src="images/events.svg" alt="Icon" class="deck-icon mb-7 h-8 w-8 object-contain" />
+                <p class="deck-quote">“Stillness is where creativity and solutions to problems are found.”</p>
+                <span class="deck-label">MINDFULNESS</span>
+              </div>
             </div>
-            <div class="swiper-slide deck-card deck-front">
-              <img src="images/events.svg" alt="Icon" class="mb-7 h-8 w-8 object-contain" />
-              <p class="deck-quote">“The quieter you become, the more you are able to hear.”</p>
-              <span class="deck-label">SILENCE</span>
+            <div class="swiper-slide deck-card">
+              <div class="deck-front deck-tilt">
+                <span class="deck-sparkle" style="top:14%;left:16%;animation-delay:1.2s;"></span>
+                <span class="deck-sparkle" style="top:22%;right:14%;animation-delay:2.1s;"></span>
+                <span class="deck-sparkle" style="bottom:20%;left:22%;animation-delay:2.9s;"></span>
+                <img src="images/events.svg" alt="Icon" class="deck-icon mb-7 h-8 w-8 object-contain" />
+                <p class="deck-quote">“The quieter you become, the more you are able to hear.”</p>
+                <span class="deck-label">SILENCE</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Swipe -->
-      <div class="swipe-text">
+      <div class="reveal-up swipe-text" style="transition-delay: 220ms;">
         <svg id="swipePrev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-4 w-4 shrink-0 cursor-pointer" role="button" aria-label="Previous card">
           <path
             d="M8 11V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11V6.5a1.5 1.5 0 013 0V13c0 3-2 6-5 6h-1c-2 0-3-1-4-2l-3-3a1.4 1.4 0 012-2l2 2"

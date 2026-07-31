@@ -52,19 +52,90 @@
   var nextBtn = document.getElementById('swipeNext');
   if (!el || typeof Swiper === 'undefined') return;
 
+  var reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
   var wisdomSwiper = new Swiper('#wisdomSwiper', {
     effect: 'cards',
     grabCursor: true,
-    loop: true,
+    loop: false,
     cardsEffect: {
-      perSlideRotate: 4,
-      perSlideOffset: 9,
-      slideShadows: false,
+      perSlideRotate: 5,
+      perSlideOffset: 10,
+      slideShadows: true,
+    },
+    autoplay: reducedMotion ? false : {
+      delay: 4800,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true,
     },
   });
 
   if (prevBtn) prevBtn.addEventListener('click', function () { wisdomSwiper.slidePrev(); });
   if (nextBtn) nextBtn.addEventListener('click', function () { wisdomSwiper.slideNext(); });
+
+  // 3D tilt-on-hover: applied to an inner wrapper (.deck-tilt) inside the
+  // active slide, kept separate from Swiper's own transform on the slide
+  // element itself so the two never fight each other.
+  if (!reducedMotion) {
+    var TILT_MAX = 10; // degrees
+    el.addEventListener('mousemove', function (e) {
+      var activeTilt = el.querySelector('.swiper-slide-active .deck-tilt');
+      if (!activeTilt) return;
+      var rect = activeTilt.getBoundingClientRect();
+      var px = (e.clientX - rect.left) / rect.width;
+      var py = (e.clientY - rect.top) / rect.height;
+      var rotateY = (px - 0.5) * TILT_MAX * 2;
+      var rotateX = (0.5 - py) * TILT_MAX * 2;
+      activeTilt.style.transform = 'perspective(700px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg) scale3d(1.02, 1.02, 1.02)';
+    });
+
+    el.addEventListener('mouseleave', function () {
+      var activeTilt = el.querySelector('.swiper-slide-active .deck-tilt');
+      if (activeTilt) activeTilt.style.transform = '';
+    });
+  }
+
+  // Scroll-hijack: while this section is the one currently in view, mouse-wheel
+  // scrolling draws through the cards first. Only once the user has scrolled
+  // past the last card (or before the first) does the wheel event fall through
+  // and let the page's own scroll-snap move to the next/previous section.
+  var sectionEl = document.getElementById('wisdom-deck');
+  var sectionActive = false;
+  var wheelCooldown = false;
+
+  if (sectionEl && typeof IntersectionObserver !== 'undefined') {
+    var sectionObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        sectionActive = entry.isIntersecting && entry.intersectionRatio > 0.6;
+      });
+    }, { threshold: [0, 0.6, 1] });
+    sectionObserver.observe(sectionEl);
+
+    sectionEl.addEventListener('wheel', function (e) {
+      if (!sectionActive) return;
+
+      var atLast = wisdomSwiper.isEnd;
+      var atFirst = wisdomSwiper.isBeginning;
+
+      if (e.deltaY > 0 && !atLast) {
+        e.preventDefault();
+        if (!wheelCooldown) {
+          wheelCooldown = true;
+          wisdomSwiper.slideNext();
+          window.setTimeout(function () { wheelCooldown = false; }, 550);
+        }
+      } else if (e.deltaY < 0 && !atFirst) {
+        e.preventDefault();
+        if (!wheelCooldown) {
+          wheelCooldown = true;
+          wisdomSwiper.slidePrev();
+          window.setTimeout(function () { wheelCooldown = false; }, 550);
+        }
+      }
+      // else: already at the boundary card in this direction - let the event
+      // through so the page can scroll to the next/previous section.
+    }, { passive: false });
+  }
 })();
 
 // Expert Minds - swipeable testimonial carousel
@@ -135,32 +206,44 @@
     if (rightRating) rightRating.innerHTML = Math.round(right.rating) + '<span class="text-amber-400">★</span>';
   }
 
-  var CARD_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
-  var CARD_DURATION = 380;
+  var ARC_OUT_MS = 320;
+  var ARC_IN_MS = 420;
+  var TEXT_FADE_MS = 220;
 
-  function setWrapStyle(x, rotate, opacity, scale, useTransition) {
-    cardWrap.style.transition = useTransition
-      ? 'transform ' + CARD_DURATION + 'ms ' + CARD_EASE + ', opacity ' + CARD_DURATION + 'ms ' + CARD_EASE
-      : 'none';
-    cardWrap.style.transform = 'translateX(' + x + 'px) rotate(' + rotate + 'deg) scale(' + scale + ')';
-    cardWrap.style.opacity = String(opacity);
-  }
-
+  // The card body and peek photos never move. Only the avatar circles out
+  // (arcing toward the side of travel) then circles back in from the
+  // opposite side with the new expert's photo, while the name/bio crossfade
+  // in place via a plain opacity transition.
   function go(direction) {
     if (animating) return;
     animating = true;
-    // outgoing card slides out, fades, and scales down slightly
-    setWrapStyle(direction * -90, direction * -6, 0, 0.94, true);
+
+    avatar.style.setProperty('--arc-x', (direction * 46) + 'px');
+    avatar.style.setProperty('--arc-rot', (direction * 200) + 'deg');
+    avatar.classList.remove('avatar-circle-in');
+    void avatar.offsetWidth; // restart the animation cleanly
+    avatar.classList.add('avatar-circle-out');
+
+    content.style.transition = 'opacity ' + TEXT_FADE_MS + 'ms ease';
+    content.style.opacity = '0';
 
     window.setTimeout(function () {
       index = (index + direction + experts.length) % experts.length;
       render();
-      // incoming card starts from the opposite side, scaled down, then eases to center at 100%
-      setWrapStyle(direction * 90, direction * 6, 0, 0.94, false);
-      void cardWrap.offsetWidth;
-      setWrapStyle(0, 0, 1, 1, true);
-      animating = false;
-    }, CARD_DURATION);
+
+      avatar.style.setProperty('--arc-x', (direction * -46) + 'px');
+      avatar.style.setProperty('--arc-rot', (direction * -200) + 'deg');
+      avatar.classList.remove('avatar-circle-out');
+      void avatar.offsetWidth;
+      avatar.classList.add('avatar-circle-in');
+
+      content.style.opacity = '1';
+
+      window.setTimeout(function () {
+        avatar.classList.remove('avatar-circle-in');
+        animating = false;
+      }, ARC_IN_MS);
+    }, ARC_OUT_MS);
   }
 
   if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
@@ -168,26 +251,19 @@
   if (leftWrap) leftWrap.addEventListener('click', function () { go(-1); });
   if (rightWrap) rightWrap.addEventListener('click', function () { go(1); });
 
-  // Drag / touch swipe on the testimonial card itself
+  // Drag / touch swipe: the card stays anchored (no live slide-follow) - a
+  // swipe past the threshold triggers the same circle-in/out transition.
   var dragging = false;
   var startX = 0;
-  var startY = 0;
 
   function onPointerDown(e) {
     if (animating) return;
     dragging = true;
     startX = e.clientX;
-    startY = e.clientY;
     cardWrap.style.cursor = 'grabbing';
     if (cardWrap.setPointerCapture) {
       try { cardWrap.setPointerCapture(e.pointerId); } catch (err) { }
     }
-  }
-
-  function onPointerMove(e) {
-    if (!dragging) return;
-    var dx = e.clientX - startX;
-    setWrapStyle(dx, dx * 0.03, Math.max(1 - Math.abs(dx) / 400, 0.4), 1, false);
   }
 
   function onPointerUp(e) {
@@ -197,13 +273,10 @@
     var dx = e.clientX - startX;
     if (Math.abs(dx) > 70) {
       go(dx < 0 ? 1 : -1);
-    } else {
-      setWrapStyle(0, 0, 1, 1, true);
     }
   }
 
   cardWrap.addEventListener('pointerdown', onPointerDown);
-  document.addEventListener('pointermove', onPointerMove);
   document.addEventListener('pointerup', onPointerUp);
   document.addEventListener('pointercancel', onPointerUp);
 })();
