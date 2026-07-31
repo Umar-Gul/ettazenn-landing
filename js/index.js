@@ -541,3 +541,124 @@
     }, { passive: false });
   }
 })();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const halfPhone = document.getElementById("stage-half-phone");
+  const glassCard = document.getElementById("stage-glass-card");
+  const showcaseContainer = document.getElementById("app-showcase-container");
+  const section = document.getElementById("app-showcase-section");
+
+  if (!halfPhone || !glassCard || !showcaseContainer) return;
+
+  // Helper delay function
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  async function runShowcaseSequence() {
+    // 1. Explicitly ensure Stage 1 (Half Phone) is visible on load
+    halfPhone.style.display = "block";
+    halfPhone.style.opacity = "1";
+    halfPhone.style.transform = "translate(-50%, 28%)";
+
+    glassCard.style.display = "none";
+    glassCard.style.opacity = "0";
+
+    // 2. Hold half-phone visible for 2 seconds
+    await sleep(2000);
+
+    // 3. Start fade-down animation of half-phone
+    halfPhone.style.opacity = "0";
+    halfPhone.style.transform = "translate(-50%, 45%)";
+
+    // 4. Wait for the 700ms transition to complete, then remove from flow
+    await sleep(700);
+    halfPhone.style.display = "none";
+
+    // 5. Reveal Stage 2 (Glass Card)
+    glassCard.style.display = "block";
+    
+    // Tiny frame delay so the browser registers display: block before animating opacity
+    await sleep(50);
+    glassCard.style.opacity = "1";
+    glassCard.style.transform = "scale(1)";
+
+    // 6. Start side-swapping loop
+    startSideSwapSequence();
+  }
+
+  function startSideSwapSequence() {
+    let isSwapped = false;
+
+    const phoneBlock = document.getElementById("app-phone-block");
+    const textBlock = document.getElementById("app-text-block");
+    const coursesBadge = document.getElementById("badge-courses");
+    const focusBadge = document.getElementById("badge-focus");
+    if (!phoneBlock || !textBlock || !coursesBadge || !focusBadge) return;
+
+    const SOFT_CLASSES = [
+      "soft-exit-left", "soft-exit-right",
+      "soft-enter-left", "soft-enter-right",
+      "soft-badge-out", "soft-badge-in",
+    ];
+    const clearSoft = (el) => el.classList.remove(...SOFT_CLASSES);
+
+    setInterval(() => {
+      // Phone and text fade + drift toward opposite sides, then ease back in
+      // from their new sides; badges fade + scale on the same beat.
+      const goingReverse = !isSwapped;
+      const phoneExit = goingReverse ? "soft-exit-right" : "soft-exit-left";
+      const textExit = goingReverse ? "soft-exit-left" : "soft-exit-right";
+      const phoneEnter = goingReverse ? "soft-enter-left" : "soft-enter-right";
+      const textEnter = goingReverse ? "soft-enter-right" : "soft-enter-left";
+
+      [phoneBlock, textBlock, coursesBadge, focusBadge].forEach(clearSoft);
+      void phoneBlock.offsetWidth; // restart animations cleanly
+
+      phoneBlock.classList.add(phoneExit);
+      textBlock.classList.add(textExit);
+      coursesBadge.classList.add("soft-badge-out");
+      focusBadge.classList.add("soft-badge-out");
+
+      setTimeout(() => {
+        if (goingReverse) {
+          showcaseContainer.classList.remove("md:flex-row");
+          showcaseContainer.classList.add("md:flex-row-reverse");
+        } else {
+          showcaseContainer.classList.remove("md:flex-row-reverse");
+          showcaseContainer.classList.add("md:flex-row");
+        }
+        glassCard.classList.toggle("badges-swapped", goingReverse);
+        isSwapped = !isSwapped;
+
+        [phoneBlock, textBlock, coursesBadge, focusBadge].forEach(clearSoft);
+        void phoneBlock.offsetWidth;
+
+        phoneBlock.classList.add(phoneEnter);
+        textBlock.classList.add(textEnter);
+        coursesBadge.classList.add("soft-badge-in");
+        focusBadge.classList.add("soft-badge-in");
+      }, 260); // matches the soft-exit animation duration
+    }, 3500);
+  }
+
+  // Start the sequence only once this section actually scrolls into view,
+  // not unconditionally at page load. The section sits behind Courses (which
+  // has its own scroll-hijack requiring several gestures) and Crazy Features,
+  // so a page-load-timed sequence can finish entirely before the user ever
+  // scrolls this far - they'd land on the already-swapped glass card and
+  // never see the half-phone hold at all.
+  if (section && typeof IntersectionObserver !== "undefined") {
+    let started = false;
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !started) {
+          started = true;
+          runShowcaseSequence();
+          sectionObserver.unobserve(section);
+        }
+      });
+    }, { threshold: 0.5 });
+    sectionObserver.observe(section);
+  } else {
+    runShowcaseSequence();
+  }
+});
