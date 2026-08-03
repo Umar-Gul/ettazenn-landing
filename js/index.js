@@ -378,6 +378,9 @@
   var baseCard = document.getElementById('courseCardBase');
   var risingCard = document.getElementById('courseCardRising');
   var dotsWrap = document.getElementById('courseDots');
+  var badgeIcon = document.getElementById('badge-icon');
+  var awardSealImg = document.getElementById('awardSealImg');
+
   if (!stage || !baseCard || !risingCard || !dotsWrap) return;
 
   var categories = [
@@ -385,29 +388,33 @@
       title: 'Learn from<br />Experts.',
       desc: 'Master the ancient arts with modern instruction.<br class="hidden sm:inline" />From deep-flow Yoga to the moving meditation of minds.',
       icon: 'images/events.svg',
+      badgeIcon: 'images/badge.png', // Badge image for this state
       alt: 'Yoga Icon',
-      bg: 'linear-gradient(88.01deg, #43366B 10.28%, #312357 104.01%)'
+      bg: 'linear-gradient(135deg, #43336B 0%, #2F2154 100%)'
     },
     {
-      title: 'Learn from<br />Tai Chi Masters.',
-      desc: 'Our signature series blends the fluid strength of Vinyasa<br class="hidden sm:inline" />with the grounding energy of Tai Chi.',
-      icon: 'images/moon-stars.png',
-      alt: 'Tai Chi Icon',
-      bg: 'linear-gradient(88.01deg, #3E3A5E 10.28%, #262042 104.01%)'
+      title: "Gym & Wellness<br />Center's.",
+      desc: 'Master the ancient arts with modern instruction.<br class="hidden sm:inline" />From deep-flow Yoga to the moving meditation of minds.',
+      icon: 'images/gym-main.svg',
+      badgeIcon: 'images/gym-badge.png',
+      alt: 'Gym Icon',
+      bg: 'linear-gradient(135deg, #2D273A 0%, #1D1828 100%)'
     },
     {
-      title: 'Learn from<br />Meditation Guides.',
-      desc: 'Guided breathwork and stillness practices to align<br class="hidden sm:inline" />your body and spirit under the celestial canopy.',
-      icon: 'images/brain.png',
-      alt: 'Meditation Icon',
-      bg: 'linear-gradient(88.01deg, #6B4A72 10.28%, #3D2A52 104.01%)'
+      title: 'Amazing<br />Ettazenn HUB.',
+      desc: 'Master the ancient arts with modern instruction.<br class="hidden sm:inline" />From deep-flow Yoga to the moving meditation of minds.',
+      icon: 'images/amazing-hub-main.svg',
+      // badgeIcon: 'images/amazing-hub-badge.svg',
+      alt: 'Ettazenn Hub Icon',
+      bg: 'url("images/amazing-bg1.svg") center/cover no-repeat'
     },
     {
-      title: 'Learn from<br />Master Coaches.',
-      desc: 'Real coaches, personalized to your pace —<br class="hidden sm:inline" />not just pre-recorded clips.',
-      icon: 'images/session.png',
-      alt: 'Coaching Icon',
-      bg: 'linear-gradient(88.01deg, #4A3B7C 10.28%, #241C42 104.01%)'
+      title: 'Listen Meditation<br />Music.',
+      desc: 'Master the ancient arts with modern instruction.<br class="hidden sm:inline" />From deep-flow Yoga to the moving meditation of minds.',
+      icon: 'images/music-main.svg',
+      badgeIcon: 'images/music-badge.svg',
+      alt: 'Meditation Music Icon',
+      bg: 'linear-gradient(135deg, #2C263A 0%, #1E1A2B 100%)'
     }
   ];
 
@@ -449,10 +456,18 @@
     icon.alt = cat.alt;
   }
 
-  // Rising card slides straight up from below, covering the static base card -
-  // like a page being pulled up from a stack. Once it fully covers the base,
-  // we copy its content into the base and instantly reset the rising card
-  // back below (invisibly, with transitions disabled for that one step).
+  // Helper to change badge icon smoothly along with card transitions
+  function updateBadgeIcon(cat) {
+    if (!badgeIcon) return;
+    badgeIcon.style.opacity = '0';
+    setTimeout(function () {
+      if (awardSealImg && cat.badgeIcon) {
+        awardSealImg.src = cat.badgeIcon;
+      }
+      badgeIcon.style.opacity = '1';
+    }, 300);
+  }
+
   function goTo(newIndex) {
     if (animating || newIndex === index) return;
     animating = true;
@@ -461,6 +476,7 @@
     index = newIndex;
     populateCard(risingCard, categories[index]);
     updateDots();
+    updateBadgeIcon(categories[index]);
 
     risingCard.classList.add('is-up');
 
@@ -469,7 +485,7 @@
 
       risingCard.style.transition = 'none';
       risingCard.classList.remove('is-up');
-      void risingCard.offsetWidth; // force the reset to apply instantly, no visible snap-back
+      void risingCard.offsetWidth; // force reset to apply instantly
       risingCard.style.transition = '';
 
       animating = false;
@@ -499,10 +515,7 @@
 
   startAutoplay();
 
-  // Scroll-hijack: while this section is the one currently in view, mouse-wheel
-  // scrolling cycles through the 4 cards first. Only once the user has scrolled
-  // past the last card (or before the first) does the wheel event fall through
-  // and let the page's own scroll-snap move to the next/previous section.
+  // Scroll-hijack logic
   var sectionEl = document.getElementById('courses-check');
   var sectionActive = false;
   var wheelCooldown = false;
@@ -536,8 +549,6 @@
           window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 150);
         }
       }
-      // else: already at the boundary card in this direction - let the event
-      // through so the page can scroll to the next/previous section.
     }, { passive: false });
   }
 })();
