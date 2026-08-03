@@ -140,36 +140,41 @@
 
 // Expert Minds - swipeable testimonial carousel
 (function () {
-  var cardWrap = document.getElementById('expertCardWrap');
-  var avatar = document.getElementById('expertAvatar');
-  var content = document.getElementById('expertContent');
-  var nameEl = document.getElementById('expertName');
-  var starsEl = document.getElementById('expertStars');
-  var ratingNumEl = document.getElementById('expertRatingNum');
-  var bioEl = document.getElementById('expertBio');
-  var leftImg = document.getElementById('leftCoachImg');
-  var leftRating = document.getElementById('leftCoachRating');
-  var leftWrap = document.getElementById('leftCoachWrap');
-  var rightImg = document.getElementById('rightCoachImg');
-  var rightRating = document.getElementById('rightCoachRating');
-  var rightWrap = document.getElementById('rightCoachWrap');
-  var prevBtn = document.getElementById('expertPrevBtn');
-  var nextBtn = document.getElementById('expertNextBtn');
-  if (!cardWrap || !avatar || !content || !nameEl) return;
+  function getEl(id, className) {
+    return document.getElementById(id) || document.querySelector('.' + className);
+  }
+
+  var cardWrap = getEl('expertCardWrap', 'expert-card-wrap');   // stays static, never touched
+  var avatar = getEl('expertAvatar', 'expert-avatar');
+  var content = getEl('expertContent', 'expert-content');       // name + stars + bio wrapper only
+  var nameEl = getEl('expertName', 'expert-name');
+  var starsEl = getEl('expertStars', 'expert-stars');
+  var ratingNumEl = getEl('expertRatingNum', 'expert-rating-num');
+  var bioEl = getEl('expertBio', 'expert-bio');
+
+  var leftWrap = getEl('leftCoachWrap', 'left-coach-wrap');
+  var leftImg = getEl('leftCoachImg', 'left-coach-img');
+  var leftRating = getEl('leftCoachRating', 'left-coach-rating');
+
+  var rightWrap = getEl('rightCoachWrap', 'right-coach-wrap');
+  var rightImg = getEl('rightCoachImg', 'right-coach-img');
+  var rightRating = getEl('rightCoachRating', 'right-coach-rating');
+
+  if (!cardWrap || !avatar || !nameEl) return;
 
   var experts = [
     {
       avatar: 'images/expert1.png', name: 'Zayn Omar', rating: 4.9,
-      bio: 'I’m a yoga coach dedicated to helping people build strength, flexibility, and inner balance through mindful movement and breathwork. My approach focuses on simple, effective practices that fit into everyday life, guiding students toward better posture, reduced stress, and a deeper connection between body and mind.'
+      bio: 'I\u2019m a yoga coach dedicated to helping people build strength, flexibility, and inner balance through mindful movement and breathwork. My approach focuses on simple, effective practices that fit into everyday life, guiding students toward better posture, reduced stress, and a deeper connection between body and mind.'
     },
     {
-      avatar: 'images/expert2.png', name: 'Amira Cole', rating: 4.8,
+      avatar: 'images/expert2.png', name: 'Mustafa Quraish', rating: 5.0,
+      bio: 'Guides students through "meditation in motion", blending slow, low-impact movements with deep breathing and mental focus. They specialize in helping individuals improve their balance, flexibility, and overall well-being, while teaching the fundamentals of body alignment and stress reduction.'
+    },
+    {
+      avatar: 'images/expert3f.png', name: 'Amira Cole', rating: 4.8,
       bio: 'A tai chi and mindfulness coach guiding students through slow, deliberate movement to build balance, focus, and calm. I blend traditional forms with modern breathing techniques to help you find steadiness in both body and mind, one session at a time.'
-    },
-    {
-      avatar: 'images/expert3f.png', name: 'Malik Hassan', rating: 5.0,
-      bio: 'A breathwork and meditation specialist helping clients release tension and reconnect with stillness. My sessions combine guided breathing, sound, and quiet reflection to leave you calmer, more centered, and better equipped for daily life.'
-    },
+    }
   ];
 
   var index = 0;
@@ -194,10 +199,10 @@
 
     avatar.src = center.avatar;
     avatar.alt = center.name;
-    nameEl.textContent = center.name;
-    starsEl.innerHTML = starsHtml(center.rating);
-    ratingNumEl.textContent = center.rating.toFixed(1);
-    bioEl.textContent = center.bio;
+    if (nameEl) nameEl.textContent = center.name;
+    if (starsEl) starsEl.innerHTML = starsHtml(center.rating);
+    if (ratingNumEl) ratingNumEl.textContent = center.rating.toFixed(1);
+    if (bioEl) bioEl.textContent = center.bio;
 
     if (leftImg) { leftImg.src = left.avatar; leftImg.alt = left.name; }
     if (leftRating) leftRating.innerHTML = Math.round(left.rating) + '<span class="text-amber-400">★</span>';
@@ -206,79 +211,236 @@
     if (rightRating) rightRating.innerHTML = Math.round(right.rating) + '<span class="text-amber-400">★</span>';
   }
 
-  var ARC_OUT_MS = 320;
-  var ARC_IN_MS = 420;
-  var TEXT_FADE_MS = 220;
+  var TEXT_SWAP_TIME = 320; // when name/bio actually swap underneath the fade
+  var TOTAL_TIME = 700;     // when the ring animation fully settles
 
-  // The card body and peek photos never move. Only the avatar circles out
-  // (arcing toward the side of travel) then circles back in from the
-  // opposite side with the new expert's photo, while the name/bio crossfade
-  // in place via a plain opacity transition.
+  function resetAnimation(el) {
+
+    el.classList.remove(
+      "left-to-center",
+      "right-to-center",
+      "avatar-to-left",
+      "avatar-to-right"
+    );
+
+    void el.offsetWidth;
+  }
+  // ==============================
+  // Avatar Flight Animation Helper
+  // ==============================
+
+  function animateAvatar(fromWrap, toWrap, imageSrc, duration, callback) {
+
+    const fromRect = fromWrap.getBoundingClientRect();
+    const toRect = toWrap.getBoundingClientRect();
+
+    const clone = document.createElement("img");
+
+    clone.src = imageSrc;
+
+    clone.className = "flying-avatar";
+
+    clone.style.left = (fromRect.left + fromRect.width / 2) + "px";
+    clone.style.top = (fromRect.top + fromRect.height / 2) + "px";
+
+    document.body.appendChild(clone);
+
+    const startX = fromRect.left + fromRect.width / 2;
+    const startY = fromRect.top + fromRect.height / 2;
+
+    const endX = toRect.left + toRect.width / 2;
+    const endY = toRect.top + toRect.height / 2;
+
+    const controlX = (startX + endX) / 2;
+
+    // height of curve
+    const curveHeight =
+      Math.abs(endX - startX) * 0.35;
+
+    const controlY =
+      Math.min(startY, endY) - curveHeight;
+
+    let start = null;
+
+    function frame(time) {
+
+      if (!start) start = time;
+
+      let progress = (time - start) / duration;
+
+      if (progress > 1) progress = 1;
+
+      // Ease
+      const t = 1 - Math.pow(1 - progress, 3);
+
+      // Quadratic Bezier
+
+      const x =
+        (1 - t) * (1 - t) * startX +
+        2 * (1 - t) * t * controlX +
+        t * t * endX;
+
+      const y =
+        (1 - t) * (1 - t) * startY +
+        2 * (1 - t) * t * controlY +
+        t * t * endY;
+
+      const scale =
+
+        t < .5
+
+          ? 0.72 + t * .6
+
+          : 1.02 - (t - .5) * .2;
+
+      clone.style.left = x + "px";
+      clone.style.top = y + "px";
+
+      clone.style.transform =
+        `translate(-50%,-50%) scale(${scale})`;
+
+      clone.style.opacity =
+
+        t < .5
+
+          ? .25 + t
+
+          : 1;
+
+      if (progress < 1) {
+
+        requestAnimationFrame(frame);
+
+      } else {
+
+        clone.remove();
+
+        if (callback) callback();
+
+      }
+
+    }
+
+    requestAnimationFrame(frame);
+
+  }
+
+  function getCenterAvatarWrap() {
+
+    return document.querySelector("#expertAvatar").parentElement;
+
+  }
+
   function go(direction) {
+
     if (animating) return;
     animating = true;
 
-    avatar.style.setProperty('--arc-x', (direction * 46) + 'px');
-    avatar.style.setProperty('--arc-rot', (direction * 200) + 'deg');
-    avatar.classList.remove('avatar-circle-in');
-    void avatar.offsetWidth; // restart the animation cleanly
-    avatar.classList.add('avatar-circle-out');
+    var centerWrap = getCenterAvatarWrap();
 
-    content.style.transition = 'opacity ' + TEXT_FADE_MS + 'ms ease';
-    content.style.opacity = '0';
+    var incomingWrap =
+      direction > 0
+        ? rightWrap
+        : leftWrap;
 
-    window.setTimeout(function () {
-      index = (index + direction + experts.length) % experts.length;
+    var outgoingWrap =
+      direction > 0
+        ? leftWrap
+        : rightWrap;
+
+    // Store current images BEFORE render()
+    var incomingImg =
+      direction > 0
+        ? rightImg.src
+        : leftImg.src;
+
+    var centerImg = avatar.src;
+
+    // Hide originals while clones fly
+    avatar.style.visibility = "hidden";
+
+    if (incomingWrap)
+      incomingWrap.style.visibility = "hidden";
+
+    // Fade text
+    if (content) {
+
+      content.style.transition = "opacity .25s ease";
+      content.style.opacity = "0";
+
+    }
+
+    // Incoming avatar -> Center
+    animateAvatar(
+      incomingWrap,
+      centerWrap,
+      incomingImg,
+      TOTAL_TIME
+    );
+
+    // Center avatar -> Side
+    animateAvatar(
+      centerWrap,
+      outgoingWrap,
+      centerImg,
+      TOTAL_TIME
+    );
+
+    // Swap content exactly in middle
+    setTimeout(function () {
+
+      index =
+        (index + direction + experts.length) %
+        experts.length;
+
       render();
 
-      avatar.style.setProperty('--arc-x', (direction * -46) + 'px');
-      avatar.style.setProperty('--arc-rot', (direction * -200) + 'deg');
-      avatar.classList.remove('avatar-circle-out');
-      void avatar.offsetWidth;
-      avatar.classList.add('avatar-circle-in');
+      avatar.style.visibility = "";
 
-      content.style.opacity = '1';
+      if (incomingWrap)
+        incomingWrap.style.visibility = "";
 
-      window.setTimeout(function () {
-        avatar.classList.remove('avatar-circle-in');
-        animating = false;
-      }, ARC_IN_MS);
-    }, ARC_OUT_MS);
+      if (content)
+        content.style.opacity = "1";
+
+    }, TOTAL_TIME / 2);
+
+    // Finish
+    setTimeout(function () {
+
+      animating = false;
+
+    }, TOTAL_TIME);
+
   }
 
-  if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
-  if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
-  if (leftWrap) leftWrap.addEventListener('click', function () { go(-1); });
-  if (rightWrap) rightWrap.addEventListener('click', function () { go(1); });
+  document.addEventListener("click", function (e) {
 
-  // Drag / touch swipe: the card stays anchored (no live slide-follow) - a
-  // swipe past the threshold triggers the same circle-in/out transition.
-  var dragging = false;
-  var startX = 0;
-
-  function onPointerDown(e) {
     if (animating) return;
-    dragging = true;
-    startX = e.clientX;
-    cardWrap.style.cursor = 'grabbing';
-    if (cardWrap.setPointerCapture) {
-      try { cardWrap.setPointerCapture(e.pointerId); } catch (err) { }
-    }
-  }
 
-  function onPointerUp(e) {
-    if (!dragging) return;
-    dragging = false;
-    cardWrap.style.cursor = 'grab';
-    var dx = e.clientX - startX;
-    if (Math.abs(dx) > 70) {
-      go(dx < 0 ? 1 : -1);
-    }
-  }
+    const prev = e.target.closest(
+      "#expertPrevBtn,#leftCoachWrap"
+    );
 
-  cardWrap.addEventListener('pointerdown', onPointerDown);
-  document.addEventListener('pointerup', onPointerUp);
-  document.addEventListener('pointercancel', onPointerUp);
+    const next = e.target.closest(
+      "#expertNextBtn,#rightCoachWrap"
+    );
+
+    if (prev) {
+
+      e.preventDefault();
+      go(-1);
+
+    }
+
+    if (next) {
+
+      e.preventDefault();
+      go(1);
+
+    }
+
+  });
 })();
 
 // Personalized Guidance - tab switching
@@ -288,6 +450,10 @@
   var heading = document.getElementById('pgHeading');
   var desc = document.getElementById('pgDesc');
   var exploreLink = document.getElementById('pgExploreLink');
+
+  // Target the brain <img> tag inside .brain-bg
+  var brainImg = document.querySelector('.brain-bg > img');
+
   if (!tabsWrap || !panelText || !heading || !desc) return;
 
   var content = {
@@ -295,25 +461,29 @@
       heading: 'Coach &amp; Wellness centre\'s:',
       desc: 'Journey inward with direct support from our master instructors. Our personalized sessions offer a serene path to wellness.',
       exploreLabel: 'Explore Coaches',
-      target: '#expert-minds'
+      target: '#expert-minds',
+      image: 'images/brain.png'
     },
     wellness: {
       heading: 'Wellness Centres:',
       desc: 'Discover partnered wellness centres offering curated retreats, workshops, and community classes tailored to your practice.',
       exploreLabel: 'Explore Wellness Centres',
-      target: '#join-community'
+      target: '#join-community',
+      image: 'images/wellness-bg.svg' // Update to your image path
     },
     schools: {
       heading: 'Accredited Schools:',
       desc: 'Connect with schools teaching authentic yoga, tai chi, and meditation lineages, from beginner courses to teacher certification.',
       exploreLabel: 'Explore Schools',
-      target: '#join-community'
+      target: '#join-community',
+      image: 'images/schools-bg.svg' // Update to your image path
     },
     partners: {
       heading: 'Trusted Partners:',
       desc: 'Explore our network of partner studios, brands, and practitioners collaborating to bring you a richer wellness journey.',
       exploreLabel: 'Explore Partners',
-      target: '#join-community'
+      target: '#join-community',
+      image: 'images/partner-bg.svg' // Update to your image path
     }
   };
 
@@ -330,18 +500,33 @@
     tabs.forEach(function (t) { t.classList.remove('active'); });
     tab.classList.add('active');
 
+    // Fade out text and image
     panelText.style.opacity = '0';
+    if (brainImg) {
+      brainImg.style.transition = 'opacity .25s ease';
+      brainImg.style.opacity = '0';
+    }
+
     window.setTimeout(function () {
+      // Update text details
       heading.innerHTML = data.heading;
       desc.textContent = data.desc;
       if (exploreLink) {
         exploreLink.textContent = data.exploreLabel;
         exploreLink.setAttribute('href', data.target);
       }
+
+      // Update image source
+      if (brainImg && data.image) {
+        brainImg.src = data.image;
+        brainImg.style.display = 'block'; // Reset if hidden by onerror
+        brainImg.style.opacity = '1';
+      }
+
       activeTarget = data.target;
       panelText.style.opacity = '1';
       animating = false;
-    }, 200);
+    }, 250);
   }
 
   tabs.forEach(function (tab) {
@@ -586,7 +771,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 5. Reveal Stage 2 (Glass Card)
     glassCard.style.display = "block";
-    
+
     // Tiny frame delay so the browser registers display: block before animating opacity
     await sleep(50);
     glassCard.style.opacity = "1";

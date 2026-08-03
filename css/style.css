@@ -883,3 +883,85 @@ section::after {
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 } */
 
+/* ===========================
+   Flying Avatar
+=========================== */
+
+.flying-avatar{
+
+    position:fixed;
+
+    width:144px;
+    height:144px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    pointer-events:none;
+
+    z-index:99999;
+
+    transform:
+        translate(-50%,-50%)
+        scale(.72);
+
+    box-shadow:
+        0 12px 40px rgba(0,0,0,.35);
+
+    will-change:
+        left,
+        top,
+        transform,
+        opacity;
+
+    transition:none;
+
+}
+
+/* keep original avatar above card */
+
+#expertAvatar{
+
+    position:relative;
+    z-index:50;
+
+}
+
+/* side avatars */
+
+#leftCoachWrap,
+#rightCoachWrap{
+
+    z-index:10;
+
+}
+
+/* card */
+
+#expertCardWrap{
+
+    z-index:20;
+
+}
+
+/* text fade */
+
+#expertContent{
+
+    transition:
+        opacity .25s ease;
+
+}
+
+/* smoother image */
+
+#expertAvatar,
+#leftCoachImg,
+#rightCoachImg{
+
+    backface-visibility:hidden;
+
+    transform:translateZ(0);
+
+}
