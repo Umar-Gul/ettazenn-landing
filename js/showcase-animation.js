@@ -65,7 +65,9 @@
 
   let sideSwapTimer = null;
   let sideSwapCount = 0;
+  let phoneOnRight = true;
   let scrollLocked = false;
+  let hasLockedOnce = false;
   let lockedScrollY = 0;
   let savedBodyOverflowY = '';
   let savedRootOverflowY = '';
@@ -88,8 +90,9 @@
   }
 
   function lockScroll() {
-    if (scrollLocked) return;
+    if (scrollLocked || hasLockedOnce) return;
     scrollLocked = true;
+    hasLockedOnce = true;
     lockedScrollY = window.scrollY;
     savedBodyOverflowY = document.body.style.overflowY;
     savedRootOverflowY = document.documentElement.style.overflowY;
@@ -142,7 +145,7 @@
   // Small desktop landing corrections measured against the reference frame.
   // `left` preserves the flex layout and remains independent of the
   // transform used by the animation itself.
-  function applyLayoutAlignment(isSwapped) {
+  function applyLayoutAlignment(isPhoneOnRight) {
     if (!desktopLayout.matches) {
       phoneBlock.style.left = '';
       textBlock.style.position = '';
@@ -153,28 +156,31 @@
       return;
     }
 
-    phoneBlock.style.left = isSwapped ? '10px' : '-10px';
+    phoneBlock.style.left = isPhoneOnRight ? '10px' : '-10px';
     textBlock.style.position = 'relative';
-    textBlock.style.left = isSwapped ? '10px' : '-18px';
+    textBlock.style.left = isPhoneOnRight ? '-18px' : '10px';
     // A second frame ensures flex-order changes have been laid out first.
-    requestAnimationFrame(() => alignBadgesToPhone(isSwapped));
+    requestAnimationFrame(() => alignBadgesToPhone(isPhoneOnRight));
   }
 
   desktopLayout.addEventListener('change', () => {
-    applyLayoutAlignment(textBlock.style.order === '2');
+    applyLayoutAlignment(phoneOnRight);
   });
 
   function swapSides() {
-    const isSwapped = textBlock.style.order === '2';
+    const phoneIsOnRight = phoneOnRight;
     const easing = 'cubic-bezier(0.4, 0, 0.2, 1)';
     const travel = Math.ceil(card.getBoundingClientRect().width * 1.15);
 
-    // Exit across the card: phone to the right, text to the left.
+    const exitPhoneX = phoneIsOnRight ? travel : -travel;
+    const exitTextX = phoneIsOnRight ? -travel : travel;
+
+    // Exit from the current side so the two blocks never overlap.
     phoneBlock.style.transition = `transform ${SIDE_EXIT_DURATION}ms ${easing}, opacity ${SIDE_EXIT_DURATION}ms ease-out`;
     textBlock.style.transition = `transform ${SIDE_EXIT_DURATION}ms ${easing}, opacity ${SIDE_EXIT_DURATION}ms ease-out`;
-    phoneBlock.style.transform = `translateX(${travel}px)`;
+    phoneBlock.style.transform = `translateX(${exitPhoneX}px)`;
     phoneBlock.style.opacity = '0';
-    textBlock.style.transform = `translateX(-${travel}px)`;
+    textBlock.style.transform = `translateX(${exitTextX}px)`;
     textBlock.style.opacity = '0';
     badgeCourses.style.transition = `transform ${SIDE_EXIT_DURATION}ms ${easing}, opacity ${SIDE_EXIT_DURATION}ms ease-out`;
     badgeFocus.style.transition = `transform ${SIDE_EXIT_DURATION}ms ${easing}, opacity ${SIDE_EXIT_DURATION}ms ease-out`;
@@ -187,20 +193,22 @@
       // Change sides only while both elements are invisible.
       phoneBlock.style.transition = 'none';
       textBlock.style.transition = 'none';
-      textBlock.style.order = isSwapped ? '' : '2';
-      phoneBlock.style.order = isSwapped ? '' : '1';
+      phoneOnRight = !phoneIsOnRight;
+      textBlock.style.order = phoneOnRight ? '' : '2';
+      phoneBlock.style.order = phoneOnRight ? '' : '1';
       // Both elements are hidden here. Clear the exit translation before
       // measuring the new layout, otherwise the badge can be positioned
       // from the phone's off-screen rect on the final swap.
       phoneBlock.style.transform = 'none';
       textBlock.style.transform = 'none';
-      applyLayoutAlignment(!isSwapped);
+      applyLayoutAlignment(phoneOnRight);
 
       sideSwapTimer = setTimeout(() => {
-        // Enter from the outside edge of each element's new position.
-        const phoneEntersFromRight = !isSwapped;
-        phoneBlock.style.transform = `translateX(${phoneEntersFromRight ? travel : -travel}px)`;
-        textBlock.style.transform = `translateX(${phoneEntersFromRight ? -travel : travel}px)`;
+        // Enter from the outside edge of the new side.
+        const enterPhoneX = phoneOnRight ? travel : -travel;
+        const enterTextX = phoneOnRight ? -travel : travel;
+        phoneBlock.style.transform = `translateX(${enterPhoneX}px)`;
+        textBlock.style.transform = `translateX(${enterTextX}px)`;
         badgeCourses.style.transition = 'none';
         badgeFocus.style.transition = 'none';
         badgeCourses.style.transform = 'translateY(-18px)';
@@ -283,9 +291,10 @@
 
     card.style.display = 'none';
 
+    phoneOnRight = true;
     textBlock.style.order = '';
     phoneBlock.style.order = '';
-    applyLayoutAlignment(false);
+    applyLayoutAlignment(phoneOnRight);
     textBlock.style.transition = 'none';
     phoneBlock.style.transition = 'none';
     textBlock.style.transform = 'translateX(24px)';
@@ -359,7 +368,7 @@
         // then after the pause, fade in card chrome + text + badges.
         phoneImg.style.transition = 'opacity 120ms linear';
         card.style.display = 'block';
-        applyLayoutAlignment(textBlock.style.order === '2');
+        applyLayoutAlignment(phoneOnRight);
         requestAnimationFrame(() => { phoneImg.style.opacity = '1'; });
         half.style.display = 'none';
 
