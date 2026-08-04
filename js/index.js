@@ -616,6 +616,7 @@
   var animating = false;
   var autoplayTimer = null;
   var wheelCooldown = false;
+  var firstVisitLocked = true;
 
   var dots = categories.map(function (cat, i) {
     var dot = document.createElement('button');
@@ -713,7 +714,8 @@
   }
 
   function updateScrollLock() {
-    setScrollLock(sectionActive && index < categories.length - 1);
+    var shouldLock = firstVisitLocked && sectionActive && index < categories.length - 1;
+    setScrollLock(shouldLock);
   }
 
   if (sectionEl && typeof IntersectionObserver !== 'undefined') {
@@ -734,6 +736,7 @@
 
       if (delta > 0) {
         if (atLast) {
+          firstVisitLocked = false;
           setScrollLock(false);
           return;
         }
@@ -747,6 +750,7 @@
         }
       } else if (delta < 0) {
         if (atFirst) {
+          firstVisitLocked = false;
           setScrollLock(false);
           return;
         }
