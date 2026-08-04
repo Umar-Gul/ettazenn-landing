@@ -63,11 +63,7 @@
       perSlideOffset: 10,
       slideShadows: true,
     },
-    autoplay: reducedMotion ? false : {
-      delay: 4800,
-      disableOnInteraction: false,
-      pauseOnMouseEnter: true,
-    },
+    autoplay: false,
   });
 
   if (prevBtn) prevBtn.addEventListener('click', function () { wisdomSwiper.slidePrev(); });
@@ -102,39 +98,102 @@
   var sectionEl = document.getElementById('wisdom-deck');
   var sectionActive = false;
   var wheelCooldown = false;
+  var touchStartY = null;
+  var gestureBlocked = false;
+  var introPlayed = false;
+  var deckGuideActive = false;
+
+  function advanceWisdom(direction) {
+    if (direction <= 0) return false;
+
+    var atLast = wisdomSwiper.isEnd;
+    if (atLast) return false;
+    if (wheelCooldown || gestureBlocked) return false;
+
+    wheelCooldown = true;
+    gestureBlocked = true;
+
+    wisdomSwiper.slideNext();
+
+    if (wisdomSwiper.isEnd) {
+      deckGuideActive = false;
+    }
+
+    window.setTimeout(function () { wheelCooldown = false; }, 650);
+    window.setTimeout(function () { gestureBlocked = false; }, 700);
+    return true;
+  }
+
+  function playFirstVisitAnimation() {
+    if (introPlayed) return;
+    introPlayed = true;
+    deckGuideActive = true;
+
+    var slides = el.querySelectorAll('.swiper-slide');
+    slides.forEach(function (slide, index) {
+      var card = slide.querySelector('.deck-tilt') || slide;
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(16px) scale(0.97)';
+    });
+
+    window.setTimeout(function () {
+      slides.forEach(function (slide, index) {
+        var card = slide.querySelector('.deck-tilt') || slide;
+        card.style.transition = 'opacity 420ms cubic-bezier(0.22, 1, 0.36, 1), transform 420ms cubic-bezier(0.22, 1, 0.36, 1)';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0) scale(1)';
+      });
+    }, 60);
+  }
 
   if (sectionEl && typeof IntersectionObserver !== 'undefined') {
     var sectionObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         sectionActive = entry.isIntersecting && entry.intersectionRatio > 0.6;
+        if (sectionActive && !introPlayed) {
+          playFirstVisitAnimation();
+        }
       });
     }, { threshold: [0, 0.6, 1] });
     sectionObserver.observe(sectionEl);
 
     sectionEl.addEventListener('wheel', function (e) {
-      if (!sectionActive) return;
+      if (!sectionActive || !deckGuideActive || wisdomSwiper.isEnd) return;
 
-      var atLast = wisdomSwiper.isEnd;
-      var atFirst = wisdomSwiper.isBeginning;
+      var delta = e.deltaY;
 
-      if (e.deltaY > 0 && !atLast) {
+      if (delta > 0) {
         e.preventDefault();
-        if (!wheelCooldown) {
-          wheelCooldown = true;
-          wisdomSwiper.slideNext();
-          window.setTimeout(function () { wheelCooldown = false; }, 550);
-        }
-      } else if (e.deltaY < 0 && !atFirst) {
-        e.preventDefault();
-        if (!wheelCooldown) {
-          wheelCooldown = true;
-          wisdomSwiper.slidePrev();
-          window.setTimeout(function () { wheelCooldown = false; }, 550);
-        }
+        e.stopPropagation();
+        advanceWisdom(1);
       }
-      // else: already at the boundary card in this direction - let the event
-      // through so the page can scroll to the next/previous section.
     }, { passive: false });
+
+    sectionEl.addEventListener('touchstart', function (e) {
+      if (!sectionActive) return;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    sectionEl.addEventListener('touchmove', function (e) {
+      if (!sectionActive || !deckGuideActive || touchStartY === null || gestureBlocked || wisdomSwiper.isEnd) return;
+
+      var touchY = e.touches[0].clientY;
+      var delta = touchY - touchStartY;
+
+      if (delta > 60) {
+        e.preventDefault();
+        e.stopPropagation();
+        touchStartY = null;
+        advanceWisdom(1);
+      } else if (delta < -60) {
+        touchStartY = null;
+      }
+    }, { passive: false });
+
+    sectionEl.addEventListener('touchend', function () {
+      touchStartY = null;
+      gestureBlocked = false;
+    }, { passive: true });
   }
 })();
 
@@ -179,6 +238,7 @@
 
   var index = 0;
   var animating = false;
+  var introPlayed = false;
 
   function starsHtml(rating) {
     var filled = Math.max(0, Math.min(5, Math.round(rating)));
@@ -190,6 +250,12 @@
       html += '</span>';
     }
     return html;
+  }
+
+  function setTransitionState(el, isActive) {
+    if (!el) return;
+    el.classList.toggle('is-transitioning', !isActive);
+    el.classList.toggle('is-active', isActive);
   }
 
   function render() {
@@ -209,6 +275,25 @@
 
     if (rightImg) { rightImg.src = right.avatar; rightImg.alt = right.name; }
     if (rightRating) rightRating.innerHTML = Math.round(right.rating) + '<span class="text-amber-400">★</span>';
+  }
+
+  function playFirstEntryAnimation() {
+    if (introPlayed) return;
+    introPlayed = true;
+
+    setTransitionState(avatar, false);
+    setTransitionState(content, false);
+    setTransitionState(leftWrap, false);
+    setTransitionState(rightWrap, false);
+
+    render();
+
+    requestAnimationFrame(function () {
+      setTransitionState(avatar, true);
+      setTransitionState(content, true);
+      setTransitionState(leftWrap, true);
+      setTransitionState(rightWrap, true);
+    });
   }
 
   var TEXT_SWAP_TIME = 320; // when name/bio actually swap underneath the fade
@@ -356,20 +441,6 @@
 
     var centerImg = avatar.src;
 
-    // Hide originals while clones fly
-    avatar.style.visibility = "hidden";
-
-    if (incomingWrap)
-      incomingWrap.style.visibility = "hidden";
-
-    // Fade text
-    if (content) {
-
-      content.style.transition = "opacity .25s ease";
-      content.style.opacity = "0";
-
-    }
-
     // Incoming avatar -> Center
     animateAvatar(
       incomingWrap,
@@ -395,14 +466,6 @@
 
       render();
 
-      avatar.style.visibility = "";
-
-      if (incomingWrap)
-        incomingWrap.style.visibility = "";
-
-      if (content)
-        content.style.opacity = "1";
-
     }, TOTAL_TIME / 2);
 
     // Finish
@@ -413,6 +476,8 @@
     }, TOTAL_TIME);
 
   }
+
+  playFirstEntryAnimation();
 
   document.addEventListener("click", function (e) {
 
@@ -580,7 +645,7 @@
       icon: 'images/events.svg',
       badgeIcon: 'images/badge.png', // Badge image for this state
       alt: 'Yoga Icon',
-      bg: 'linear-gradient(135deg, #43336B 0%, #2F2154 100%)'
+      bg: 'linear-gradient(88.01deg, #43366B 10.28%, #312357 104.01%)'
     },
     {
       title: "Gym & Wellness<br />Center's.",
@@ -588,7 +653,8 @@
       icon: 'images/gym-main.svg',
       badgeIcon: 'images/gym-badge.png',
       alt: 'Gym Icon',
-      bg: 'linear-gradient(135deg, #2D273A 0%, #1D1828 100%)'
+      bg: 'linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%)'
+
     },
     {
       title: 'Amazing<br />Ettazenn HUB.',
@@ -604,7 +670,8 @@
       icon: 'images/music-main.svg',
       badgeIcon: 'images/music-badge.svg',
       alt: 'Meditation Music Icon',
-      bg: 'linear-gradient(135deg, #2C263A 0%, #1E1A2B 100%)'
+      bg: 'linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%)'
+
     }
   ];
 
@@ -617,6 +684,8 @@
   var autoplayTimer = null;
   var wheelCooldown = false;
   var firstVisitLocked = true;
+  var touchStartY = null;
+  var gestureBlocked = false;
 
   var dots = categories.map(function (cat, i) {
     var dot = document.createElement('button');
@@ -718,6 +787,35 @@
     setScrollLock(shouldLock);
   }
 
+  function releaseSectionFlow() {
+    firstVisitLocked = false;
+    gestureBlocked = false;
+    touchStartY = null;
+    setScrollLock(false);
+  }
+
+  function advanceToNextCard() {
+    if (!sectionActive || animating) {
+      if (index >= categories.length - 1) {
+        releaseSectionFlow();
+      }
+      return false;
+    }
+
+    if (index >= categories.length - 1) {
+      releaseSectionFlow();
+      return false;
+    }
+
+    if (wheelCooldown || gestureBlocked) return false;
+    wheelCooldown = true;
+    gestureBlocked = true;
+    goTo(index + 1);
+    window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 220);
+    window.setTimeout(function () { gestureBlocked = false; }, SWAP_DELAY + 260);
+    return true;
+  }
+
   if (sectionEl && typeof IntersectionObserver !== 'undefined') {
     var sectionObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -728,169 +826,57 @@
     sectionObserver.observe(sectionEl);
 
     sectionEl.addEventListener('wheel', function (e) {
-      if (!sectionActive || animating) return;
+      if (!sectionActive) return;
+
+      if (animating) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
 
       var delta = e.deltaY;
-      var atLast = index === categories.length - 1;
-      var atFirst = index === 0;
+      var isAtFinalCard = index >= categories.length - 1;
 
       if (delta > 0) {
-        if (atLast) {
-          firstVisitLocked = false;
-          setScrollLock(false);
+        if (isAtFinalCard) {
+          releaseSectionFlow();
           return;
         }
 
         e.preventDefault();
         e.stopPropagation();
-        if (!wheelCooldown) {
-          wheelCooldown = true;
-          goTo(index + 1);
-          window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 120);
-        }
+        advanceToNextCard();
       } else if (delta < 0) {
-        if (atFirst) {
-          firstVisitLocked = false;
-          setScrollLock(false);
-          return;
-        }
-
         e.preventDefault();
         e.stopPropagation();
-        if (!wheelCooldown) {
-          wheelCooldown = true;
-          goTo(index - 1);
-          window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 120);
-        }
       }
     }, { passive: false });
+
+    sectionEl.addEventListener('touchstart', function (e) {
+      if (!sectionActive || animating || index >= categories.length - 1) return;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
 
     sectionEl.addEventListener('touchmove', function (e) {
-      if (sectionActive && index < categories.length - 1) {
+      if (!sectionActive || animating || index >= categories.length - 1 || touchStartY === null || gestureBlocked) return;
+
+      var touchY = e.touches[0].clientY;
+      var delta = touchY - touchStartY;
+
+      if (delta > 60) {
         e.preventDefault();
+        e.stopPropagation();
+        touchStartY = null;
+        advanceToNextCard();
+      } else if (delta < -20) {
+        e.preventDefault();
+        e.stopPropagation();
       }
     }, { passive: false });
+
+    sectionEl.addEventListener('touchend', function () {
+      touchStartY = null;
+      gestureBlocked = false;
+    }, { passive: true });
   }
 })();
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   const halfPhone = document.getElementById("stage-half-phone");
-//   const glassCard = document.getElementById("stage-glass-card");
-//   const showcaseContainer = document.getElementById("app-showcase-container");
-//   const section = document.getElementById("app-showcase-section");
-
-//   if (!halfPhone || !glassCard || !showcaseContainer) return;
-
-//   // Helper delay function
-//   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  
-
-//   async function runShowcaseSequence() {
-//     // 1. Explicitly ensure Stage 1 (Half Phone) is visible on load
-//     halfPhone.style.display = "block";
-//     halfPhone.style.opacity = "1";
-//     halfPhone.style.transform = "translate(-50%, 28%)";
-
-//     glassCard.style.display = "none";
-//     glassCard.style.opacity = "0";
-
-//     // 2. Hold half-phone visible for 2 seconds
-//     await sleep(2000);
-
-//     // 3. Start fade-down animation of half-phone
-//     halfPhone.style.opacity = "0";
-//     halfPhone.style.transform = "translate(-50%, 45%)";
-
-//     // 4. Wait for the 700ms transition to complete, then remove from flow
-//     await sleep(700);
-//     halfPhone.style.display = "none";
-
-//     // 5. Reveal Stage 2 (Glass Card)
-//     glassCard.style.display = "block";
-
-//     // Tiny frame delay so the browser registers display: block before animating opacity
-//     await sleep(50);
-//     glassCard.style.opacity = "1";
-//     glassCard.style.transform = "scale(1)";
-
-//     // 6. Start side-swapping loop
-//     startSideSwapSequence();
-//   }
-
-//   function startSideSwapSequence() {
-//     let isSwapped = false;
-
-//     const phoneBlock = document.getElementById("app-phone-block");
-//     const textBlock = document.getElementById("app-text-block");
-//     const coursesBadge = document.getElementById("badge-courses");
-//     const focusBadge = document.getElementById("badge-focus");
-//     if (!phoneBlock || !textBlock || !coursesBadge || !focusBadge) return;
-
-//     const SOFT_CLASSES = [
-//       "soft-exit-left", "soft-exit-right",
-//       "soft-enter-left", "soft-enter-right",
-//       "soft-badge-out", "soft-badge-in",
-//     ];
-//     const clearSoft = (el) => el.classList.remove(...SOFT_CLASSES);
-
-//     setInterval(() => {
-//       // Phone and text fade + drift toward opposite sides, then ease back in
-//       // from their new sides; badges fade + scale on the same beat.
-//       const goingReverse = !isSwapped;
-//       const phoneExit = goingReverse ? "soft-exit-right" : "soft-exit-left";
-//       const textExit = goingReverse ? "soft-exit-left" : "soft-exit-right";
-//       const phoneEnter = goingReverse ? "soft-enter-left" : "soft-enter-right";
-//       const textEnter = goingReverse ? "soft-enter-right" : "soft-enter-left";
-
-//       [phoneBlock, textBlock, coursesBadge, focusBadge].forEach(clearSoft);
-//       void phoneBlock.offsetWidth; // restart animations cleanly
-
-//       phoneBlock.classList.add(phoneExit);
-//       textBlock.classList.add(textExit);
-//       coursesBadge.classList.add("soft-badge-out");
-//       focusBadge.classList.add("soft-badge-out");
-
-//       setTimeout(() => {
-//         if (goingReverse) {
-//           showcaseContainer.classList.remove("md:flex-row");
-//           showcaseContainer.classList.add("md:flex-row-reverse");
-//         } else {
-//           showcaseContainer.classList.remove("md:flex-row-reverse");
-//           showcaseContainer.classList.add("md:flex-row");
-//         }
-//         glassCard.classList.toggle("badges-swapped", goingReverse);
-//         isSwapped = !isSwapped;
-
-//         [phoneBlock, textBlock, coursesBadge, focusBadge].forEach(clearSoft);
-//         void phoneBlock.offsetWidth;
-
-//         phoneBlock.classList.add(phoneEnter);
-//         textBlock.classList.add(textEnter);
-//         coursesBadge.classList.add("soft-badge-in");
-//         focusBadge.classList.add("soft-badge-in");
-//       }, 260); // matches the soft-exit animation duration
-//     }, 3500);
-//   }
-
-//   // Start the sequence only once this section actually scrolls into view,
-//   // not unconditionally at page load. The section sits behind Courses (which
-//   // has its own scroll-hijack requiring several gestures) and Crazy Features,
-//   // so a page-load-timed sequence can finish entirely before the user ever
-//   // scrolls this far - they'd land on the already-swapped glass card and
-//   // never see the half-phone hold at all.
-//   if (section && typeof IntersectionObserver !== "undefined") {
-//     let started = false;
-//     const sectionObserver = new IntersectionObserver((entries) => {
-//       entries.forEach((entry) => {
-//         if (entry.isIntersecting && !started) {
-//           started = true;
-//           runShowcaseSequence();
-//           sectionObserver.unobserve(section);
-//         }
-//       });
-//     }, { threshold: 0.5 });
-//     sectionObserver.observe(section);
-//   } else {
-//     runShowcaseSequence();
-//   }
-// });

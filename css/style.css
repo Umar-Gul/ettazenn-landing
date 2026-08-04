@@ -261,6 +261,30 @@ details[open] .faq-chev {
   backdrop-filter: blur(6px);
 }
 
+#expertContent,
+#expertAvatar,
+#leftCoachWrap,
+#rightCoachWrap {
+  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+#expertContent.is-transitioning,
+#expertAvatar.is-transitioning,
+#leftCoachWrap.is-transitioning,
+#rightCoachWrap.is-transitioning {
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+}
+
+#expertContent.is-active,
+#expertAvatar.is-active,
+#leftCoachWrap.is-active,
+#rightCoachWrap.is-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 .rating-badge {
   position: absolute;
   left: 50%;
