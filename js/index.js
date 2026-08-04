@@ -557,7 +557,7 @@
   });
 })();
 
-// Courses & Specialized Practices - stacked-card slide-up switch (autoplay + dots)
+// Courses & Specialized Practices - stacked-card slide-up switch (scroll-driven)
 (function () {
   var stage = document.getElementById('courseStage');
   var baseCard = document.getElementById('courseCardBase');
@@ -567,6 +567,11 @@
   var awardSealImg = document.getElementById('awardSealImg');
 
   if (!stage || !baseCard || !risingCard || !dotsWrap) return;
+
+  // The stacked-card interaction is autoplay/wheel driven; it does not need
+  // a visible pagination indicator beneath the cards. Inline display wins
+  // over the Tailwind `flex` utility on the element.
+  dotsWrap.style.display = 'none';
 
   var categories = [
     {
@@ -603,14 +608,14 @@
     }
   ];
 
-  var SWAP_DELAY = 1000; // ms - matches the .course-card-rising CSS transition duration
-  var AUTOPLAY_MS = 2000;
+  var SWAP_DELAY = 500; // matches the .course-card-rising CSS transition duration
   var reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   if (reducedMotion) SWAP_DELAY = 0;
 
   var index = 0;
   var animating = false;
   var autoplayTimer = null;
+  var wheelCooldown = false;
 
   var dots = categories.map(function (cat, i) {
     var dot = document.createElement('button');
@@ -683,9 +688,7 @@
   }
 
   function startAutoplay() {
-    if (reducedMotion) return;
-    stopAutoplay();
-    autoplayTimer = window.setTimeout(next, AUTOPLAY_MS);
+    // Cards advance only through the section's wheel interaction.
   }
 
   function stopAutoplay() {
@@ -695,166 +698,195 @@
     }
   }
 
-  stage.addEventListener('mouseenter', stopAutoplay);
-  stage.addEventListener('mouseleave', startAutoplay);
-
-  startAutoplay();
-
   // Scroll-hijack logic
   var sectionEl = document.getElementById('courses-check');
   var sectionActive = false;
-  var wheelCooldown = false;
+  var scrollLocked = false;
+
+  function setScrollLock(locked) {
+    if (scrollLocked === locked) return;
+    scrollLocked = locked;
+    document.body.style.overflow = locked ? 'hidden' : '';
+    document.documentElement.style.overflow = locked ? 'hidden' : '';
+    document.body.style.height = locked ? '100%' : '';
+    document.documentElement.style.height = locked ? '100%' : '';
+  }
+
+  function updateScrollLock() {
+    setScrollLock(sectionActive && index < categories.length - 1);
+  }
 
   if (sectionEl && typeof IntersectionObserver !== 'undefined') {
     var sectionObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         sectionActive = entry.isIntersecting && entry.intersectionRatio > 0.6;
+        updateScrollLock();
       });
     }, { threshold: [0, 0.6, 1] });
     sectionObserver.observe(sectionEl);
 
     sectionEl.addEventListener('wheel', function (e) {
-      if (!sectionActive) return;
+      if (!sectionActive || animating) return;
 
+      var delta = e.deltaY;
       var atLast = index === categories.length - 1;
       var atFirst = index === 0;
 
-      if (e.deltaY > 0 && !atLast) {
+      if (delta > 0) {
+        if (atLast) {
+          setScrollLock(false);
+          return;
+        }
+
         e.preventDefault();
+        e.stopPropagation();
         if (!wheelCooldown) {
           wheelCooldown = true;
           goTo(index + 1);
-          window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 150);
+          window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 120);
         }
-      } else if (e.deltaY < 0 && !atFirst) {
+      } else if (delta < 0) {
+        if (atFirst) {
+          setScrollLock(false);
+          return;
+        }
+
         e.preventDefault();
+        e.stopPropagation();
         if (!wheelCooldown) {
           wheelCooldown = true;
           goTo(index - 1);
-          window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 150);
+          window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 120);
         }
+      }
+    }, { passive: false });
+
+    sectionEl.addEventListener('touchmove', function (e) {
+      if (sectionActive && index < categories.length - 1) {
+        e.preventDefault();
       }
     }, { passive: false });
   }
 })();
 
-document.addEventListener("DOMContentLoaded", () => {
-  const halfPhone = document.getElementById("stage-half-phone");
-  const glassCard = document.getElementById("stage-glass-card");
-  const showcaseContainer = document.getElementById("app-showcase-container");
-  const section = document.getElementById("app-showcase-section");
+// document.addEventListener("DOMContentLoaded", () => {
+//   const halfPhone = document.getElementById("stage-half-phone");
+//   const glassCard = document.getElementById("stage-glass-card");
+//   const showcaseContainer = document.getElementById("app-showcase-container");
+//   const section = document.getElementById("app-showcase-section");
 
-  if (!halfPhone || !glassCard || !showcaseContainer) return;
+//   if (!halfPhone || !glassCard || !showcaseContainer) return;
 
-  // Helper delay function
-  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+//   // Helper delay function
+//   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  
 
-  async function runShowcaseSequence() {
-    // 1. Explicitly ensure Stage 1 (Half Phone) is visible on load
-    halfPhone.style.display = "block";
-    halfPhone.style.opacity = "1";
-    halfPhone.style.transform = "translate(-50%, 28%)";
+//   async function runShowcaseSequence() {
+//     // 1. Explicitly ensure Stage 1 (Half Phone) is visible on load
+//     halfPhone.style.display = "block";
+//     halfPhone.style.opacity = "1";
+//     halfPhone.style.transform = "translate(-50%, 28%)";
 
-    glassCard.style.display = "none";
-    glassCard.style.opacity = "0";
+//     glassCard.style.display = "none";
+//     glassCard.style.opacity = "0";
 
-    // 2. Hold half-phone visible for 2 seconds
-    await sleep(2000);
+//     // 2. Hold half-phone visible for 2 seconds
+//     await sleep(2000);
 
-    // 3. Start fade-down animation of half-phone
-    halfPhone.style.opacity = "0";
-    halfPhone.style.transform = "translate(-50%, 45%)";
+//     // 3. Start fade-down animation of half-phone
+//     halfPhone.style.opacity = "0";
+//     halfPhone.style.transform = "translate(-50%, 45%)";
 
-    // 4. Wait for the 700ms transition to complete, then remove from flow
-    await sleep(700);
-    halfPhone.style.display = "none";
+//     // 4. Wait for the 700ms transition to complete, then remove from flow
+//     await sleep(700);
+//     halfPhone.style.display = "none";
 
-    // 5. Reveal Stage 2 (Glass Card)
-    glassCard.style.display = "block";
+//     // 5. Reveal Stage 2 (Glass Card)
+//     glassCard.style.display = "block";
 
-    // Tiny frame delay so the browser registers display: block before animating opacity
-    await sleep(50);
-    glassCard.style.opacity = "1";
-    glassCard.style.transform = "scale(1)";
+//     // Tiny frame delay so the browser registers display: block before animating opacity
+//     await sleep(50);
+//     glassCard.style.opacity = "1";
+//     glassCard.style.transform = "scale(1)";
 
-    // 6. Start side-swapping loop
-    startSideSwapSequence();
-  }
+//     // 6. Start side-swapping loop
+//     startSideSwapSequence();
+//   }
 
-  function startSideSwapSequence() {
-    let isSwapped = false;
+//   function startSideSwapSequence() {
+//     let isSwapped = false;
 
-    const phoneBlock = document.getElementById("app-phone-block");
-    const textBlock = document.getElementById("app-text-block");
-    const coursesBadge = document.getElementById("badge-courses");
-    const focusBadge = document.getElementById("badge-focus");
-    if (!phoneBlock || !textBlock || !coursesBadge || !focusBadge) return;
+//     const phoneBlock = document.getElementById("app-phone-block");
+//     const textBlock = document.getElementById("app-text-block");
+//     const coursesBadge = document.getElementById("badge-courses");
+//     const focusBadge = document.getElementById("badge-focus");
+//     if (!phoneBlock || !textBlock || !coursesBadge || !focusBadge) return;
 
-    const SOFT_CLASSES = [
-      "soft-exit-left", "soft-exit-right",
-      "soft-enter-left", "soft-enter-right",
-      "soft-badge-out", "soft-badge-in",
-    ];
-    const clearSoft = (el) => el.classList.remove(...SOFT_CLASSES);
+//     const SOFT_CLASSES = [
+//       "soft-exit-left", "soft-exit-right",
+//       "soft-enter-left", "soft-enter-right",
+//       "soft-badge-out", "soft-badge-in",
+//     ];
+//     const clearSoft = (el) => el.classList.remove(...SOFT_CLASSES);
 
-    setInterval(() => {
-      // Phone and text fade + drift toward opposite sides, then ease back in
-      // from their new sides; badges fade + scale on the same beat.
-      const goingReverse = !isSwapped;
-      const phoneExit = goingReverse ? "soft-exit-right" : "soft-exit-left";
-      const textExit = goingReverse ? "soft-exit-left" : "soft-exit-right";
-      const phoneEnter = goingReverse ? "soft-enter-left" : "soft-enter-right";
-      const textEnter = goingReverse ? "soft-enter-right" : "soft-enter-left";
+//     setInterval(() => {
+//       // Phone and text fade + drift toward opposite sides, then ease back in
+//       // from their new sides; badges fade + scale on the same beat.
+//       const goingReverse = !isSwapped;
+//       const phoneExit = goingReverse ? "soft-exit-right" : "soft-exit-left";
+//       const textExit = goingReverse ? "soft-exit-left" : "soft-exit-right";
+//       const phoneEnter = goingReverse ? "soft-enter-left" : "soft-enter-right";
+//       const textEnter = goingReverse ? "soft-enter-right" : "soft-enter-left";
 
-      [phoneBlock, textBlock, coursesBadge, focusBadge].forEach(clearSoft);
-      void phoneBlock.offsetWidth; // restart animations cleanly
+//       [phoneBlock, textBlock, coursesBadge, focusBadge].forEach(clearSoft);
+//       void phoneBlock.offsetWidth; // restart animations cleanly
 
-      phoneBlock.classList.add(phoneExit);
-      textBlock.classList.add(textExit);
-      coursesBadge.classList.add("soft-badge-out");
-      focusBadge.classList.add("soft-badge-out");
+//       phoneBlock.classList.add(phoneExit);
+//       textBlock.classList.add(textExit);
+//       coursesBadge.classList.add("soft-badge-out");
+//       focusBadge.classList.add("soft-badge-out");
 
-      setTimeout(() => {
-        if (goingReverse) {
-          showcaseContainer.classList.remove("md:flex-row");
-          showcaseContainer.classList.add("md:flex-row-reverse");
-        } else {
-          showcaseContainer.classList.remove("md:flex-row-reverse");
-          showcaseContainer.classList.add("md:flex-row");
-        }
-        glassCard.classList.toggle("badges-swapped", goingReverse);
-        isSwapped = !isSwapped;
+//       setTimeout(() => {
+//         if (goingReverse) {
+//           showcaseContainer.classList.remove("md:flex-row");
+//           showcaseContainer.classList.add("md:flex-row-reverse");
+//         } else {
+//           showcaseContainer.classList.remove("md:flex-row-reverse");
+//           showcaseContainer.classList.add("md:flex-row");
+//         }
+//         glassCard.classList.toggle("badges-swapped", goingReverse);
+//         isSwapped = !isSwapped;
 
-        [phoneBlock, textBlock, coursesBadge, focusBadge].forEach(clearSoft);
-        void phoneBlock.offsetWidth;
+//         [phoneBlock, textBlock, coursesBadge, focusBadge].forEach(clearSoft);
+//         void phoneBlock.offsetWidth;
 
-        phoneBlock.classList.add(phoneEnter);
-        textBlock.classList.add(textEnter);
-        coursesBadge.classList.add("soft-badge-in");
-        focusBadge.classList.add("soft-badge-in");
-      }, 260); // matches the soft-exit animation duration
-    }, 3500);
-  }
+//         phoneBlock.classList.add(phoneEnter);
+//         textBlock.classList.add(textEnter);
+//         coursesBadge.classList.add("soft-badge-in");
+//         focusBadge.classList.add("soft-badge-in");
+//       }, 260); // matches the soft-exit animation duration
+//     }, 3500);
+//   }
 
-  // Start the sequence only once this section actually scrolls into view,
-  // not unconditionally at page load. The section sits behind Courses (which
-  // has its own scroll-hijack requiring several gestures) and Crazy Features,
-  // so a page-load-timed sequence can finish entirely before the user ever
-  // scrolls this far - they'd land on the already-swapped glass card and
-  // never see the half-phone hold at all.
-  if (section && typeof IntersectionObserver !== "undefined") {
-    let started = false;
-    const sectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !started) {
-          started = true;
-          runShowcaseSequence();
-          sectionObserver.unobserve(section);
-        }
-      });
-    }, { threshold: 0.5 });
-    sectionObserver.observe(section);
-  } else {
-    runShowcaseSequence();
-  }
-});
+//   // Start the sequence only once this section actually scrolls into view,
+//   // not unconditionally at page load. The section sits behind Courses (which
+//   // has its own scroll-hijack requiring several gestures) and Crazy Features,
+//   // so a page-load-timed sequence can finish entirely before the user ever
+//   // scrolls this far - they'd land on the already-swapped glass card and
+//   // never see the half-phone hold at all.
+//   if (section && typeof IntersectionObserver !== "undefined") {
+//     let started = false;
+//     const sectionObserver = new IntersectionObserver((entries) => {
+//       entries.forEach((entry) => {
+//         if (entry.isIntersecting && !started) {
+//           started = true;
+//           runShowcaseSequence();
+//           sectionObserver.unobserve(section);
+//         }
+//       });
+//     }, { threshold: 0.5 });
+//     sectionObserver.observe(section);
+//   } else {
+//     runShowcaseSequence();
+//   }
+// });

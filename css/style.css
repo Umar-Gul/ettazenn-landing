@@ -1,102 +1,14 @@
-/* ---- App Showcase glass-card: soft, modern side-swap transition ----
-   Phone and text fade + drift a short distance toward opposite sides, with a
-   light blur, then ease back in from their new sides - no rotation, no
-   bounce, just a calm crossfade-slide. Badges do a matching gentle
-   fade + scale, nothing flashy. */
-.soft-exit-left {
-  animation: softExit 260ms ease-out forwards;
-  --soft-x: -28px;
-}
-
-.soft-exit-right {
-  animation: softExit 260ms ease-out forwards;
-  --soft-x: 28px;
-}
-
-@keyframes softExit {
-  to {
-    transform: translateX(var(--soft-x)) scale(0.97);
-    opacity: 0;
-    filter: blur(4px);
-  }
-}
-
-.soft-enter-left {
-  animation: softEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  --soft-x: -28px;
-}
-
-.soft-enter-right {
-  animation: softEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  --soft-x: 28px;
-}
-
-@keyframes softEnter {
-  0% {
-    transform: translateX(var(--soft-x)) scale(0.97);
-    opacity: 0;
-    filter: blur(4px);
-  }
-
-  100% {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-    filter: blur(0);
-  }
-}
-
-.soft-badge-out {
-  animation: softBadgeOut 220ms ease-in forwards;
-}
-
-@keyframes softBadgeOut {
-  to {
-    transform: scale(0.88);
-    opacity: 0;
-  }
-}
-
-.soft-badge-in {
-  animation: softBadgeIn 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes softBadgeIn {
-  0% {
-    transform: scale(0.88);
-    opacity: 0;
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-
-  .soft-exit-left,
-  .soft-exit-right,
-  .soft-enter-left,
-  .soft-enter-right,
-  .soft-badge-out,
-  .soft-badge-in {
-    animation: none;
+  #stage-half-phone,
+  #stage-glass-card,
+  #app-phone-block,
+  #app-text-block,
+  #badge-courses,
+  #badge-focus {
+    transition: none !important;
   }
 }
 
-/* Badges mirror to the opposite corner along with the phone/text swap. The
-   position flips via left/right (not transform) because the badge fade-in
-   animation owns transform; and it flips mid-swap while the badges are at
-   opacity 0, so the move is never visible as a jump. */
-#stage-glass-card.badges-swapped #badge-courses {
-  right: auto;
-  left: 44%;
-}
-
-#stage-glass-card.badges-swapped #badge-focus {
-  left: auto;
-  right: 2rem;
-}
 
 /* Global overflow safety: prevent any fixed-width element from creating horizontal scroll */
 html,

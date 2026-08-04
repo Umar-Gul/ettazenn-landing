@@ -12,6 +12,8 @@
   <!-- Swiper.js - powers the Daily Wisdom Deck card-swipe (same library/effect used on tokenology.mubien.com) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 
   <!-- Poppins (base sans), Inter (headings/CTAs), DM Sans (body copy) - matches the Figma type spec -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,6 +21,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
+    
 
   <!--
     ============================================================
@@ -416,36 +419,29 @@
 <!-- ===================== APP SHOWCASE SECTION ===================== -->
 <section id="app-showcase-section" class="dusk-bg relative min-h-[100dvh] w-full overflow-hidden snap-start snap-always shrink-0 flex items-center justify-center py-12 px-4 md:px-8"
   style="--edge-rgb-top: 5, 2, 13; --edge-rgb-bottom: 19, 16, 35;">
-
+ 
   <!-- Background mountain silhouettes -->
   <svg class="absolute inset-x-0 bottom-0 h-[55%] w-full pointer-events-none" viewBox="0 0 1440 400" preserveAspectRatio="none" style="filter: blur(2px)">
     <path d="M0 250 L220 175 L430 235 L680 135 L920 225 L1180 155 L1440 240 L1440 400 L0 400 Z" fill="#2a2145" opacity="0.55" />
     <path d="M0 315 L300 235 L600 300 L860 215 L1180 300 L1440 245 L1440 400 L0 400 Z" fill="#211a37" opacity="0.85" />
   </svg>
-
+ 
   <!-- Ambient light glow -->
   <div class="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-500/20 blur-[120px]"></div>
-
-  <!-- STATE 1: HALF-MOBILE (RISING FROM BOTTOM) - Explicitly visible on page load.
-       Position/transform/z-index are set inline (not just via Tailwind utility
-       classes) so the very first paint is correct even before the Tailwind CDN
-       script finishes injecting its generated stylesheet - relying on the
-       utility classes alone left a brief window where this could render in
-       normal document flow instead of pinned to the bottom, looking like it
-       "wasn't showing". z-30 also removes the tie with the bottom shadow
-       overlay below, which was also z-20. -->
+ 
+  <!-- STATE 1: HALF-MOBILE (RISING FROM BOTTOM) -->
   <div id="stage-half-phone"
        class="absolute bottom-0 left-1/2 z-20 -translate-x-1/2 translate-y-[28%] transition-all duration-700 ease-out"
        style="position: absolute; bottom: 0; left: 50%; z-index: 30; transform: translate(-50%, 28%); opacity: 1; display: block;">
     <img src="images/mobile.png" alt="Ettazenn app preview"
       class="h-[100dvh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:h-[110dvh] lg:h-[116vh]" />
   </div>
-
-  <!-- STATE 2: GLASS SHOWCASE CARD (Initially hidden via display:none and opacity:0) -->
-  <div id="stage-glass-card" 
+ 
+  <!-- STATE 2: GLASS SHOWCASE CARD -->
+  <div id="stage-glass-card"
        class="relative z-10 w-full max-w-4xl rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl md:p-10 shadow-2xl transition-all duration-700 ease-in-out"
        style="opacity: 0; display: none; transform: scale(0.95);">
-    
+ 
     <!-- Top Floating Badge: Courses -->
     <div id="badge-courses" class="absolute -top-10 right-[44%] z-30 flex flex-col items-center rounded-2xl border border-white/15 bg-white/10 px-6 py-4 backdrop-blur-md shadow-lg transition-all duration-500">
       <span class="text-sm font-medium text-white/90">Courses</span>
@@ -454,10 +450,10 @@
         <img src="images/courses.png" alt="" class="h-9 w-9 object-contain" />
       </div>
     </div>
-
+ 
     <!-- Inner Flex Layout -->
     <div id="app-showcase-container" class="flex flex-col-reverse items-center justify-between gap-8 md:flex-row md:gap-12 transition-all duration-700 ease-in-out">
-      
+ 
       <!-- Text Block -->
       <div id="app-text-block" class="w-full flex-1 text-left md:max-w-lg transition-all duration-500">
         <h2 class="text-3xl font-bold text-white sm:text-4xl lg:text-5xl tracking-tight">
@@ -473,18 +469,14 @@
           </button>
         </div>
       </div>
-
-      <!-- Phone Frame Block: same clean mobile.png mockup as State 1, not a
-           hand-built bezel around a cropped image. The block itself is short
-           and fixed-height so it - not the phone - sets the card's height;
-           the phone image is deliberately taller and overflows past the
-           card's top and bottom borders, as in the reference design. -->
+ 
+      <!-- Phone Frame Block -->
       <div id="app-phone-block" class="relative flex h-[300px] w-full flex-1 items-center justify-center transition-all duration-700 ease-in-out md:h-[320px]">
         <img src="images/mobile.png" alt="App Preview" class="relative h-[460px] w-auto max-w-none object-contain md:h-[520px]" />
       </div>
-
+ 
     </div>
-
+ 
     <!-- Bottom Floating Badge: Focus -->
     <div id="badge-focus" class="absolute -bottom-10 left-8 z-30 flex flex-col items-center rounded-2xl border border-white/15 bg-white/10 px-6 py-4 backdrop-blur-md shadow-lg transition-all duration-500">
       <span class="text-sm font-medium text-white/90">Focus</span>
@@ -493,12 +485,12 @@
         <img src="images/moon-stars.png" alt="" class="h-9 w-9 object-contain" />
       </div>
     </div>
-
+ 
   </div>
-
+ 
   <!-- Bottom Shadow Overlay -->
   <div class="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[25%] bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-
+ 
 </section>
 
   <!-- =====================  SPECIALIZED PRACTICES(masterclass) ===================== -->
@@ -987,8 +979,10 @@
 
     </div>
   </footer>
-
+  
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
   <script src="js/index.js"></script>
+  <script src="js/showcase-animation.js"></script>
 
 </body>
 
