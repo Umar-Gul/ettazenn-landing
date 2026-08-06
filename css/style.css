@@ -578,7 +578,8 @@ details[open] .faq-chev {
   /* uniform size for every card */
   border-radius: 18px;
   border: 1px solid rgba(196, 181, 253, 0.16);
-  background: rgba(21, 13, 46, 0.8);
+  background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%);
+
   padding: 0.85rem 1rem;
   backdrop-filter: blur(4px);
 }
