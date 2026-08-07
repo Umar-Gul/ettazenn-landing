@@ -441,23 +441,23 @@
  
   <!-- STATE 1: HALF-MOBILE (RISING FROM BOTTOM) -->
 <div id="stage-half-phone"
-     class="absolute bottom-0 left-[9%] md:left-1/2 z-20 translate-y-[28%] transition-all duration-500 ease-out"
-     style="position: absolute; bottom: 0; left: 9%; z-index: 30; transform: translate(0, 28%); opacity: 1; display: block;">
+     class="absolute bottom-0 left-[16%] md:left-1/2 z-20 translate-y-[28%] transition-all duration-500 ease-out"
+     style="position: absolute; bottom: 0; left: 16%; z-index: 30; transform: translate(0, 28%); opacity: 1; display: block;">
   <img src="images/mobile.png" alt="Ettazenn app preview"
     class="h-[100dvh] w-auto max-w-[92vw] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] sm:h-[110dvh] lg:h-[116vh]" />
 </div>
  
   <!-- STATE 2: GLASS SHOWCASE CARD -->
   <div id="stage-glass-card"
-       class="relative z-10 w-full max-w-4xl rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl md:p-10 shadow-2xl transition-all duration-700 ease-in-out"
+       class="relative z-10 w-full max-w-4xl rounded-[32px] border border-white/15 bg-white/[0.04] p-8 sm:p-10 md:p-14 backdrop-blur-xl shadow-2xl transition-all duration-700 ease-in-out"
        style="opacity: 0; display: none; transform: scale(0.95);">
  
     <!-- Top Floating Badge: Courses -->
-    <div id="badge-courses" class="absolute -top-10 right-[44%] z-30 flex flex-col items-center rounded-2xl border border-white/15 bg-white/10 px-6 py-4 backdrop-blur-md shadow-lg transition-all duration-500">
-      <span class="text-sm font-medium text-white/90">Courses</span>
-      <div class="mt-1.5 h-px w-10 bg-white/25 rounded-full"></div>
-      <div id="badge-courses-icon" class="mt-3">
-        <img src="images/courses.png" alt="" class="h-9 w-9 object-contain" />
+    <div id="badge-courses" class="absolute -top-9 z-30 flex flex-col items-center rounded-2xl border border-white/15 bg-white/10 px-5 py-3.5 backdrop-blur-md shadow-lg transition-all duration-500">
+      <span class="text-xs font-medium text-white/90 tracking-wide">Courses</span>
+      <div class="mt-1.5 h-px w-8 bg-white/25 rounded-full"></div>
+      <div id="badge-courses-icon" class="mt-2.5">
+        <img src="images/courses.png" alt="" class="h-8 w-8 object-contain" />
       </div>
     </div>
  
@@ -465,34 +465,34 @@
     <div id="app-showcase-container" class="flex flex-col-reverse items-center justify-between gap-8 md:flex-row md:gap-12 transition-all duration-700 ease-in-out">
  
       <!-- Text Block -->
-      <div id="app-text-block" class="w-full flex-1 text-left md:max-w-lg transition-all duration-500">
-        <h2 class="text-3xl font-bold text-white sm:text-4xl lg:text-5xl tracking-tight">
+      <div id="app-text-block" class="w-full flex-1 flex flex-col justify-center text-left md:max-w-md my-auto transition-all duration-500">
+        <h2 class="text-2xl font-bold text-white sm:text-3xl lg:text-4xl tracking-tight leading-snug">
           Experience the app
         </h2>
-        <div class="mt-2 h-1 w-12 rounded-full bg-purple-400"></div>
-        <p class="mt-4 text-sm sm:text-base text-slate-300/90 leading-relaxed">
+        <div class="mt-2.5 h-[3px] w-12 rounded-full bg-purple-400/90"></div>
+        <p class="mt-3.5 text-xs sm:text-sm text-purple-100/70 leading-relaxed max-w-xs sm:max-w-sm">
           A sanctuary in your pocket. Navigate your journey with an interface designed for peace and clarity.
         </p>
-        <div class="mt-6">
-          <button class="rounded-full border border-purple-400/50 bg-white/5 px-7 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:border-purple-300 hover:bg-purple-500/20">
+        <div class="mt-5">
+          <button class="rounded-full border border-purple-400/50 bg-white/5 px-6 py-2 text-xs sm:text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:border-purple-300 hover:bg-purple-500/20 active:scale-95">
             Explore Now
           </button>
         </div>
       </div>
  
       <!-- Phone Frame Block -->
-      <div id="app-phone-block" class="relative flex h-[300px] w-full flex-1 items-center justify-center transition-all duration-700 ease-in-out md:h-[320px]">
+      <div id="app-phone-block" class="relative flex h-[300px] w-full flex-1 items-center justify-center transition-all duration-500 ease-in-out md:h-[320px]">
         <img src="images/mobile.png" alt="App Preview" class="relative h-[460px] w-auto max-w-none object-contain md:h-[520px]" />
       </div>
  
     </div>
  
     <!-- Bottom Floating Badge: Focus -->
-    <div id="badge-focus" class="absolute -bottom-10 left-8 z-30 flex flex-col items-center rounded-2xl border border-white/15 bg-white/10 px-6 py-4 backdrop-blur-md shadow-lg transition-all duration-500">
-      <span class="text-sm font-medium text-white/90">Focus</span>
-      <div class="mt-1.5 h-px w-10 bg-white/25 rounded-full"></div>
-      <div class="mt-3">
-        <img src="images/moon-stars.png" alt="" class="h-9 w-9 object-contain" />
+    <div id="badge-focus" class="absolute -bottom-9 z-30 flex flex-col items-center rounded-2xl border border-white/15 bg-white/10 px-5 py-3.5 backdrop-blur-md shadow-lg transition-all duration-500">
+      <span class="text-xs font-medium text-white/90 tracking-wide">Focus</span>
+      <div class="mt-1.5 h-px w-8 bg-white/25 rounded-full"></div>
+      <div class="mt-2.5">
+        <img src="images/moon-stars.png" alt="" class="h-8 w-8 object-contain" />
       </div>
     </div>
  

@@ -104,21 +104,27 @@ function positionHalfPhone() {
     const textRect = textBlock.getBoundingClientRect();
     if (!cardRect.width || !textRect.width) return;
 
-    // Courses: left-aligned with the text block's left edge.
+    // Courses badge always aligns with the text block's left edge
     const coursesLeft = textRect.left - cardRect.left;
     badgeCourses.style.left = `${coursesLeft}px`;
     badgeCourses.style.right = 'auto';
 
-    // Focus: right-aligned with the text block's right edge.
-    const focusRight = cardRect.right - textRect.right;
-    badgeFocus.style.right = `${focusRight}px`;
-    badgeFocus.style.left = 'auto';
+    if (phoneOnRight) {
+      // Phone on Right, Text on Left: Focus badge aligns with text block's left edge
+      const focusLeft = textRect.left - cardRect.left;
+      badgeFocus.style.left = `${focusLeft}px`;
+      badgeFocus.style.right = 'auto';
+    } else {
+      // Phone on Left, Text on Right: Focus badge aligns with text block's right edge
+      const focusRight = cardRect.right - textRect.right;
+      badgeFocus.style.right = `${focusRight}px`;
+      badgeFocus.style.left = 'auto';
+    }
   }
 
   function applyLayoutAlignment(isPhoneOnRight) {
-    phoneBlock.style.left = desktopLayout.matches ? (isPhoneOnRight ? '10px' : '-10px') : '';
-    textBlock.style.position = 'relative';
-    textBlock.style.left = desktopLayout.matches ? (isPhoneOnRight ? '-18px' : '10px') : '';
+    phoneBlock.style.left = '';
+    textBlock.style.left = '';
     requestAnimationFrame(alignBadgesToPhone);
   }
 
@@ -255,11 +261,9 @@ function positionHalfPhone() {
       });
 
       track(setTimeout(() => {
-        phoneImg.style.transition = 'opacity 120ms linear';
         card.style.display = 'block';
         applyLayoutAlignment(phoneOnRight);
-        requestAnimationFrame(() => { phoneImg.style.opacity = '1'; });
-        half.style.display = 'none';
+        phoneImg.style.opacity = '0'; // Keep card inner phone hidden so only half is visible
         resolve();
       }, MORPH_DURATION));
     });
@@ -267,23 +271,30 @@ function positionHalfPhone() {
 
   function stepForward1to2() {
     return new Promise((resolve) => {
+      const easing = 'cubic-bezier(0.22, 1, 0.36, 1)';
+      const DURATION = 800;
+
+      card.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
+      textBlock.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
+      badgeCourses.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
+      badgeFocus.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
+
       requestAnimationFrame(() => {
         card.style.opacity = '1';
-        card.style.transform = 'scale(1)';
-      });
-      track(setTimeout(() => {
+        card.style.transform = 'translateX(0) scale(1)';
         textBlock.style.opacity = '1';
         textBlock.style.transform = 'translateX(0)';
-      }, TEXT_DELAY));
-      track(setTimeout(() => {
         badgeCourses.style.opacity = '1';
-        badgeCourses.style.transform = 'translateY(0)';
-      }, COURSES_DELAY));
-      track(setTimeout(() => {
+        badgeCourses.style.transform = 'translate(0, 0)';
         badgeFocus.style.opacity = '1';
-        badgeFocus.style.transform = 'translateY(0)';
-      }, FOCUS_DELAY));
-      track(setTimeout(resolve, FOCUS_DELAY + SETTLE_DURATION_ESTIMATE));
+        badgeFocus.style.transform = 'translate(0, 0)';
+      });
+
+      track(setTimeout(() => {
+        phoneImg.style.opacity = '1'; // Show card inner phone
+        half.style.display = 'none';   // Hide rising phone at exact same moment
+        resolve();
+      }, DURATION));
     });
   }
 
@@ -389,7 +400,7 @@ function positionHalfPhone() {
     card.style.display = 'none';
     card.style.transition = 'none';
     card.style.opacity = '0';
-    card.style.transform = 'scale(0.97)';
+    card.style.transform = 'translateX(-80px) scale(0.97)';
 
     phoneImg.style.transition = 'none';
     phoneImg.style.opacity = '0';
@@ -401,16 +412,16 @@ function positionHalfPhone() {
     textBlock.style.transition = 'none';
     phoneBlock.style.transition = 'none';
     textBlock.style.opacity = '0';
-    textBlock.style.transform = 'translateX(24px)';
+    textBlock.style.transform = 'translateX(80px)';
     phoneBlock.style.transform = 'none';
 
     badgeCourses.style.transition = 'none';
     badgeCourses.style.opacity = '0';
-    badgeCourses.style.transform = 'translateY(-18px)';
+    badgeCourses.style.transform = 'translate(80px, -18px)';
 
     badgeFocus.style.transition = 'none';
     badgeFocus.style.opacity = '0';
-    badgeFocus.style.transform = 'translateY(18px)';
+    badgeFocus.style.transform = 'translate(80px, 18px)';
 
     halfImg.style.transition = 'none';
     halfImg.style.transform = 'none';
