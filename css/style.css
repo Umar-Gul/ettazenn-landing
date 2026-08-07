@@ -14,6 +14,7 @@
 html,
 body {
   overflow-x: hidden;
+  
   width: 100%;
 }
 
@@ -624,14 +625,25 @@ details[open] .faq-chev {
 }
 
 /* dashed connector stubs from each card toward the central spine (desktop only) */
+/* dashed connector stubs from each card toward the central spine (desktop only) */
 .fc-line-r,
 .fc-line-l {
   display: none;
   position: absolute;
   top: 50%;
   width: 64px;
-  border-top: 1.5px dashed rgba(216, 204, 240, 0.35);
+  height: 2px;
   z-index: 0;
+  overflow: hidden;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(216, 204, 240, 0.55) 0px,
+    rgba(216, 204, 240, 0.55) 4px,
+    transparent 4px,
+    transparent 11px
+  );
+  background-size: 22px 100%;
+  background-repeat: repeat-x;
 }
 
 /* connector dot at the end of each stub, where it meets the spine */
@@ -647,26 +659,32 @@ details[open] .faq-chev {
   box-shadow: 0 0 8px 1px rgba(168, 85, 247, 0.7);
 }
 
+/* LEFT column card → stub sits to the RIGHT of the card, toward center:
+   dots flow rightward (toward the spine) */
 .fc-line-r {
   right: 0;
-  transform: translateX(100%);
+  transform: translate(100%, -50%);
+  animation: dash-flow-right 1.4s linear infinite;
 }
 
 .fc-line-r::after {
   right: -3px;
 }
 
+/* RIGHT column card → stub sits to the LEFT of the card, toward center:
+   dots flow leftward (toward the spine) */
 .fc-line-l {
   left: 0;
-  transform: translateX(-100%);
+  transform: translate(-100%, -50%);
+  animation: dash-flow-left 1.4s linear infinite;
 }
 
 .fc-line-l::after {
   left: -3px;
 }
 
-/* central dashed spine (vertical + horizontal) behind the phone, tying every
-   connector stub together into one grid, like the Figma reference */
+/* central dashed spine (vertical + horizontal) behind the phone.
+   Each is split into two halves so dots converge toward the true center. */
 .fc-spine-v,
 .fc-spine-h {
   display: none;
@@ -679,28 +697,104 @@ details[open] .faq-chev {
   top: 4%;
   bottom: 4%;
   left: 50%;
-  width: 0;
-  border-left: 1.5px dashed rgba(216, 204, 240, 0.3);
+  width: 2px;
   transform: translateX(-50%);
+  overflow: hidden;
+}
+
+.fc-spine-v::before,
+.fc-spine-v::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(216, 204, 240, 0.5) 0px,
+    rgba(216, 204, 240, 0.5) 4px,
+    transparent 4px,
+    transparent 11px
+  );
+  background-size: 100% 22px;
+  background-repeat: repeat-y;
+}
+
+/* top half: flows downward, toward center */
+.fc-spine-v::before {
+  top: 0;
+  animation: dash-flow-down 1.4s linear infinite;
+}
+
+/* bottom half: flows upward, toward center */
+.fc-spine-v::after {
+  bottom: 0;
+  animation: dash-flow-up 1.4s linear infinite;
 }
 
 .fc-spine-h {
   top: 50%;
   left: 12%;
   right: 12%;
-  height: 0;
-  border-top: 1.5px dashed rgba(216, 204, 240, 0.3);
+  height: 2px;
   transform: translateY(-50%);
 }
 
-@media (min-width: 768px) {
+.fc-spine-h::before,
+.fc-spine-h::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(216, 204, 240, 0.5) 0px,
+    rgba(216, 204, 240, 0.5) 4px,
+    transparent 4px,
+    transparent 11px
+  );
+  background-size: 22px 100%;
+  background-repeat: repeat-x;
+}
 
+/* left half: flows rightward, toward center */
+.fc-spine-h::before {
+  left: 0;
+  animation: dash-flow-right 1.4s linear infinite;
+}
+
+/* right half: flows leftward, toward center */
+.fc-spine-h::after {
+  right: 0;
+  animation: dash-flow-left 1.4s linear infinite;
+}
+
+@media (min-width: 768px) {
   .fc-line-r,
   .fc-line-l,
   .fc-spine-v,
   .fc-spine-h {
     display: block;
   }
+}
+
+/* dot-flow animations, one per inward direction */
+@keyframes dash-flow-right {
+  from { background-position: 0 0; }
+  to   { background-position: 22px 0; }
+}
+@keyframes dash-flow-left {
+  from { background-position: 0 0; }
+  to   { background-position: 22px 0; }
+}
+@keyframes dash-flow-down {
+  from { background-position: 0 0; }
+  to   { background-position: 0 22px; }
+}
+@keyframes dash-flow-up {
+  from { background-position: 0 0; }
+  to   { background-position: 0 22px; }
 }
 
 /* ---- Crazy Features: fit inside a single mobile screen (desktop untouched) ---- */
@@ -767,6 +861,59 @@ details[open] .faq-chev {
     height: 14vh;
     max-height: 120px;
   }
+}
+
+/* Animated dashed connector lines — dots/dashes only, nothing else moves */
+
+@keyframes dash-flow-h {
+  from { background-position: 0 0; }
+  to   { background-position: 24px 0; }
+}
+@keyframes dash-flow-v {
+  from { background-position: 0 0; }
+  to   { background-position: 0 24px; }
+}
+
+.fc-line-r,
+.fc-line-l {
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(216, 180, 254, 0.9) 0px,
+    rgba(216, 180, 254, 0.9) 4px,
+    transparent 4px,
+    transparent 12px
+  );
+  background-size: 24px 100%;
+  animation: dash-flow-h 1.2s linear infinite;
+}
+
+/* If .fc-line-l runs right-to-left visually, reverse the flow direction */
+.fc-line-l {
+  animation-direction: reverse;
+}
+
+.fc-spine-v {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(216, 180, 254, 0.9) 0px,
+    rgba(216, 180, 254, 0.9) 4px,
+    transparent 4px,
+    transparent 12px
+  );
+  background-size: 100% 24px;
+  animation: dash-flow-v 1.2s linear infinite;
+}
+
+.fc-spine-h {
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(216, 180, 254, 0.9) 0px,
+    rgba(216, 180, 254, 0.9) 4px,
+    transparent 4px,
+    transparent 12px
+  );
+  background-size: 24px 100%;
+  animation: dash-flow-h 1.2s linear infinite;
 }
 
 /* ---- Mobile nav drawer (added for responsiveness; visual style matches existing navbar) ---- */
@@ -902,3 +1049,4 @@ section::after {
     transform:translateZ(0);
 
 }
+

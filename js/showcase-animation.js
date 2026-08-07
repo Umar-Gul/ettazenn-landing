@@ -1,22 +1,20 @@
 // showcase-animation.js
 //
-// Scroll/step-driven entrance sequence for app-showcase-section, replacing
-// the old timer-based autoplay. The section pins (page scroll locked) once
-// it's ~50% in view, and each wheel tick / swipe / arrow-key press advances
-// or retreats ONE beat:
+// One-time, scroll-driven entrance sequence for app-showcase-section.
+// Animation content/timings are unchanged from the previous version —
+// only the locking behavior around it changed:
 //
-//   0 initial  -> 1 morphed -> 2 settled -> 3 swap1 -> 4 swap2
-//
-// Scrolling further forward at step 4, or backward at step 0, releases the
-// lock and lets that same input event pass through as normal page scroll.
-//
-// State 1 (morphed): the big hero phone (a real <img>, #stage-half-phone)
-// shrink+slides via a FLIP transform into the card's phone slot, then hands
-// off to the real #app-phone-block image so layout stays responsive.
-// State 2 (settled): the glass card chrome + text + both badges fade in.
-// States 3/4 (swap1/swap2): phoneOnRight flips. Because a flip is its own
-// inverse, moving 2->3, 4->3, or 3->2/3->4 all call the exact same
-// toggleSide() — direction doesn't change what the animation looks like.
+//   - Fires ONCE per page load. Once triggered (even if aborted early by
+//     an upward scroll), it never triggers again.
+//   - Downward scroll/swipe/arrow-key steps the animation forward one
+//     beat at a time, same as before: 0 initial -> 1 morphed -> 2 settled
+//     -> 3 swap1 -> 4 swap2. Page scroll stays locked the whole time.
+//   - Upward scroll/swipe/arrow-key is ALWAYS free — it is never
+//     intercepted, even mid-animation. It immediately releases the lock
+//     and lets that same input scroll the page normally. There is no
+//     reverse-stepping anymore.
+//   - Reaching step 4 unlocks scroll and hands off to normal downward
+//     page scroll, same as reaching it via an early upward release.
 
 (function () {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -37,17 +35,11 @@
     return;
   }
 
-  // Timings (ms) — proportions kept from the original reference video.
-  const MORPH_DURATION       = 1800; // shared-phone shrink + slide
+  // Timings (ms) — unchanged.
+  const MORPH_DURATION       = 1800;
   const TEXT_DELAY           = 60;
   const COURSES_DELAY        = 90;
   const FOCUS_DELAY          = 120;
-  // Card/text/badge fades themselves are governed by the transition-all
-  // duration-* Tailwind classes already on those elements in the HTML — we
-  // don't own that duration here, so this is just a safe estimate of how
-  // long to wait before allowing the next input, so a quick second scroll
-  // can't interrupt a still-fading element. Bump this if that Tailwind
-  // duration is longer than ~500ms.
   const SETTLE_DURATION_ESTIMATE = 500;
 
   const SIDE_EXIT_DURATION   = 1400;
@@ -59,6 +51,7 @@
   let animating   = false;
   let phoneOnRight = true;
   let reducedMotionApplied = false;
+  let hasPlayed = false; // one-time guard — set the moment capture begins
 
   let scrollLocked = false;
   let lockedScrollY = 0;
@@ -75,48 +68,36 @@
   }
 
   // ---------------------------------------------------------------------
-  // Layout helpers (unchanged from original)
+  // Layout helpers (unchanged)
   // ---------------------------------------------------------------------
 
-  function alignBadgesToPhone(isSwapped) {
-    if (!desktopLayout.matches) return;
+ // showcase-animation.js — replace alignBadgesToPhone with this
 
-    const cardRect = card.getBoundingClientRect();
-    const phoneRect = phoneImg.getBoundingClientRect();
-    if (!cardRect.width || !phoneRect.width) return;
+function alignBadgesToPhone() {
+  const cardRect = card.getBoundingClientRect();
+  const textRect = textBlock.getBoundingClientRect();
+  if (!cardRect.width || !textRect.width) return;
 
-    const phoneIsOnRight = phoneRect.left + phoneRect.width / 2 > cardRect.left + cardRect.width / 2;
+  // Courses: left-aligned with the text block's left edge (matches the
+  // Figma reference — it floats directly above the heading's start, not
+  // at a fixed % of the card).
+  const coursesLeft = textRect.left - cardRect.left;
+  badgeCourses.style.left = `${coursesLeft}px`;
+  badgeCourses.style.right = 'auto';
 
-    if (phoneIsOnRight) {
-      badgeCourses.style.left = 'auto';
-      badgeCourses.style.right = '43%';
-      badgeFocus.style.left = '2rem';
-      badgeFocus.style.right = 'auto';
-    } else {
-      badgeCourses.style.right = 'auto';
-      badgeCourses.style.left = 'auto';
-      badgeCourses.style.right = '43%';
-      badgeFocus.style.left = 'auto';
-      badgeFocus.style.right = '1.25rem';
-    }
-  }
+  // Focus: right-aligned with the text block's right edge (paragraph's
+  // wrap width) — floats below-right of the text, not at a fixed left offset.
+  const focusRight = cardRect.right - textRect.right;
+  badgeFocus.style.right = `${focusRight}px`;
+  badgeFocus.style.left = 'auto';
+}
 
-  function applyLayoutAlignment(isPhoneOnRight) {
-    if (!desktopLayout.matches) {
-      phoneBlock.style.left = '';
-      textBlock.style.position = '';
-      textBlock.style.left = '';
-      badgeCourses.style.right = '';
-      badgeFocus.style.left = '';
-      badgeFocus.style.right = '';
-      return;
-    }
-
-    phoneBlock.style.left = isPhoneOnRight ? '10px' : '-10px';
-    textBlock.style.position = 'relative';
-    textBlock.style.left = isPhoneOnRight ? '-18px' : '10px';
-    requestAnimationFrame(() => alignBadgesToPhone(isPhoneOnRight));
-  }
+function applyLayoutAlignment(isPhoneOnRight) {
+  phoneBlock.style.left = desktopLayout.matches ? (isPhoneOnRight ? '10px' : '-10px') : '';
+  textBlock.style.position = 'relative';
+  textBlock.style.left = desktopLayout.matches ? (isPhoneOnRight ? '-18px' : '10px') : '';
+  requestAnimationFrame(alignBadgesToPhone);
+}
 
   desktopLayout.addEventListener('change', () => {
     applyLayoutAlignment(phoneOnRight);
@@ -150,9 +131,23 @@
     window.scrollTo(0, lockedScrollY);
   }
 
+  // Upward input is always free — this clears any in-flight step timers
+  // (so a pending timeout can't mutate styles after we've bailed) and
+  // drops the lock, letting the triggering event scroll normally.
+  function releaseUpward() {
+    if (!scrollLocked) return;
+    clearPendingTimers();
+    animating = false;
+    unlockScroll();
+  }
+
   function onWheel(event) {
+    if (event.deltaY < 0) {
+      releaseUpward();
+      return; // do not preventDefault — let this event scroll the page
+    }
     if (Math.abs(event.deltaY) < 4) { event.preventDefault(); return; }
-    handleStepInput(event.deltaY > 0 ? 'forward' : 'backward', event);
+    handleStepInput(event);
   }
 
   let touchStartY = 0;
@@ -164,11 +159,16 @@
   }
 
   function onTouchMove(event) {
-    if (touchStepFired) { event.preventDefault(); return; }
     const delta = touchStartY - event.touches[0].clientY;
-    if (Math.abs(delta) < 30) { event.preventDefault(); return; }
+
+    if (delta < -10) { // swipe down = scrolling up = always free
+      releaseUpward();
+      return;
+    }
+    if (touchStepFired) { event.preventDefault(); return; }
+    if (delta < 30) { event.preventDefault(); return; }
     touchStepFired = true;
-    handleStepInput(delta > 0 ? 'forward' : 'backward', event);
+    handleStepInput(event);
   }
 
   function onKeydown(event) {
@@ -176,10 +176,12 @@
     if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT' || event.target.isContentEditable) return;
     if (!scrollKeys.has(event.key)) return;
 
+    if (event.key === 'ArrowUp' || event.key === 'PageUp') {
+      releaseUpward();
+      return;
+    }
     if (event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' ') {
-      handleStepInput('forward', event);
-    } else if (event.key === 'ArrowUp' || event.key === 'PageUp') {
-      handleStepInput('backward', event);
+      handleStepInput(event);
     } else {
       event.preventDefault(); // swallow Home/End while locked
     }
@@ -213,7 +215,7 @@
   }
 
   // ---------------------------------------------------------------------
-  // Step transitions
+  // Step transitions — unchanged from the previous version
   // ---------------------------------------------------------------------
 
   function stepForward0to1() {
@@ -242,37 +244,6 @@
     });
   }
 
-  function stepBackward1to0() {
-    return new Promise((resolve) => {
-      const currentRect = phoneImg.getBoundingClientRect();
-
-      half.style.display = 'block';
-      half.style.opacity = '1';
-      halfImg.style.transition = 'none';
-      halfImg.style.transformOrigin = 'top left';
-      halfImg.style.transform = 'none';
-      void halfImg.offsetWidth;
-      const naturalRect = halfImg.getBoundingClientRect();
-
-      const dx = currentRect.left - naturalRect.left;
-      const dy = currentRect.top - naturalRect.top;
-      const scale = currentRect.width / naturalRect.width;
-      halfImg.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
-      void halfImg.offsetWidth;
-
-      phoneImg.style.transition = 'none';
-      phoneImg.style.opacity = '0';
-      card.style.display = 'none';
-
-      halfImg.style.transition = `transform ${MORPH_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`;
-      requestAnimationFrame(() => {
-        halfImg.style.transform = 'none';
-      });
-
-      track(setTimeout(resolve, MORPH_DURATION));
-    });
-  }
-
   function stepForward1to2() {
     return new Promise((resolve) => {
       requestAnimationFrame(() => {
@@ -295,25 +266,6 @@
     });
   }
 
-  function stepBackward2to1() {
-    return new Promise((resolve) => {
-      badgeFocus.style.opacity = '0';
-      badgeFocus.style.transform = 'translateY(18px)';
-      badgeCourses.style.opacity = '0';
-      badgeCourses.style.transform = 'translateY(-18px)';
-      track(setTimeout(() => {
-        textBlock.style.opacity = '0';
-        textBlock.style.transform = 'translateX(24px)';
-      }, TEXT_DELAY));
-      track(setTimeout(() => {
-        card.style.opacity = '0';
-        card.style.transform = 'scale(0.97)';
-      }, TEXT_DELAY + COURSES_DELAY));
-      track(setTimeout(resolve, TEXT_DELAY + COURSES_DELAY + SETTLE_DURATION_ESTIMATE));
-    });
-  }
-
-  // Symmetric flip — used for BOTH directions between steps 2/3 and 3/4.
   function toggleSide() {
     return new Promise((resolve) => {
       const phoneIsOnRight = phoneOnRight;
@@ -378,52 +330,43 @@
     });
   }
 
-  const FORWARD_TRANSITIONS  = [stepForward0to1, stepForward1to2, toggleSide, toggleSide];
-  const BACKWARD_TRANSITIONS = [null, stepBackward1to0, stepBackward2to1, toggleSide, toggleSide];
+  const FORWARD_TRANSITIONS = [stepForward0to1, stepForward1to2, toggleSide, toggleSide];
 
-  async function advanceStep(direction) {
-    if (animating) return;
-
-    if (direction === 'forward') {
-      if (currentStep >= LAST_STEP) return;
-      animating = true;
-      await FORWARD_TRANSITIONS[currentStep]();
-      currentStep += 1;
-      animating = false;
-      if (currentStep === LAST_STEP) unlockScroll();
-    } else {
-      if (currentStep <= 0) return;
-      animating = true;
-      await BACKWARD_TRANSITIONS[currentStep]();
-      currentStep -= 1;
-      animating = false;
-      if (currentStep === 0) unlockScroll();
-    }
+  async function advanceStep() {
+    if (animating || currentStep >= LAST_STEP) return;
+    animating = true;
+    await FORWARD_TRANSITIONS[currentStep]();
+    currentStep += 1;
+    animating = false;
+    if (currentStep === LAST_STEP) unlockScroll();
   }
 
-  function handleStepInput(direction, event) {
+  function handleStepInput(event) {
     if (animating) {
       event.preventDefault();
       return;
     }
-    if (direction === 'forward' && currentStep >= LAST_STEP) {
-      unlockScroll(); // let this event scroll the page past the section
-      return;
-    }
-    if (direction === 'backward' && currentStep <= 0) {
-      unlockScroll(); // let this event scroll the page above the section
+    if (currentStep >= LAST_STEP) {
+      unlockScroll(); // animation already finished — let this scroll the page
       return;
     }
     event.preventDefault();
-    advanceStep(direction);
+    advanceStep();
   }
 
   // ---------------------------------------------------------------------
-  // Hard reset — instant, no animation. Used when the section is scrolled
-  // away from mid-sequence, or on first load.
+  // Initial arm — runs once at load. No mid-sequence reset anymore since
+  // this is one-time only (no replay).
   // ---------------------------------------------------------------------
 
-  function armCardChildren() {
+  function armInitialState() {
+    clearPendingTimers();
+
+    half.style.display = 'block';
+    half.style.opacity = '1';
+    half.style.transform = 'translate(-50%, 28%)';
+
+    card.style.display = 'none';
     card.style.transition = 'none';
     card.style.opacity = '0';
     card.style.transform = 'scale(0.97)';
@@ -431,9 +374,15 @@
     phoneImg.style.transition = 'none';
     phoneImg.style.opacity = '0';
 
+    phoneOnRight = true;
+    textBlock.style.order = '';
+    phoneBlock.style.order = '';
+    applyLayoutAlignment(phoneOnRight);
     textBlock.style.transition = 'none';
+    phoneBlock.style.transition = 'none';
     textBlock.style.opacity = '0';
     textBlock.style.transform = 'translateX(24px)';
+    phoneBlock.style.transform = 'none';
 
     badgeCourses.style.transition = 'none';
     badgeCourses.style.opacity = '0';
@@ -450,36 +399,11 @@
       card.style.transition = '';
       phoneImg.style.transition = '';
       textBlock.style.transition = '';
+      phoneBlock.style.transition = '';
       badgeCourses.style.transition = '';
       badgeFocus.style.transition = '';
+      halfImg.style.transition = '';
     });
-  }
-
-  function resetToStep0() {
-    clearPendingTimers();
-    animating = false;
-    currentStep = 0;
-
-    half.style.display = 'block';
-    half.style.opacity = '1';
-    half.style.transform = 'translate(-50%, 28%)';
-
-    card.style.display = 'none';
-
-    phoneOnRight = true;
-    textBlock.style.order = '';
-    phoneBlock.style.order = '';
-    applyLayoutAlignment(phoneOnRight);
-    textBlock.style.transition = 'none';
-    phoneBlock.style.transition = 'none';
-    textBlock.style.transform = 'translateX(24px)';
-    phoneBlock.style.transform = 'none';
-    requestAnimationFrame(() => {
-      textBlock.style.transition = '';
-      phoneBlock.style.transition = '';
-    });
-
-    armCardChildren();
   }
 
   function showFinalStateInstant() {
@@ -496,10 +420,10 @@
     badgeFocus.style.transform = 'translateY(0)';
   }
 
-  resetToStep0();
+  armInitialState();
 
   // ---------------------------------------------------------------------
-  // Intersection observer — arms/disarms the scroll lock
+  // Intersection observer — arms the one-time lock
   // ---------------------------------------------------------------------
 
   const io = new IntersectionObserver((entries) => {
@@ -507,18 +431,17 @@
       if (reduceMotion) {
         if (entry.isIntersecting && !reducedMotionApplied) {
           reducedMotionApplied = true;
+          hasPlayed = true;
           showFinalStateInstant();
+          io.unobserve(section);
         }
         return;
       }
 
-      if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.5 && !hasPlayed) {
+        hasPlayed = true; // consumed — this can never fire again
         lockScroll();
-      } else if (!entry.isIntersecting) {
-        if (currentStep > 0 && currentStep < LAST_STEP) {
-          resetToStep0(); // left mid-sequence — snap back for next time
-        }
-        unlockScroll();
+        io.unobserve(section);
       }
     });
   }, { threshold: [0, 0.5, 1] });
