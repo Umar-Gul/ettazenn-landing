@@ -535,6 +535,12 @@ details[open] .faq-chev {
   z-index: 2;
   transform: translateY(100%);
   transition: transform 500ms ease-in-out;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.course-card-rising.from-top {
+  transform: translateY(-100%);
 }
 
 .course-card-rising.is-up {

@@ -57,6 +57,7 @@
   var wisdomSwiper = new Swiper('#wisdomSwiper', {
     effect: 'cards',
     grabCursor: true,
+    simulateTouch: true,
     loop: false,
     cardsEffect: {
       perSlideRotate: 5,
@@ -91,43 +92,14 @@
     });
   }
 
-  // Scroll-hijack: while this section is the one currently in view, mouse-wheel
-  // scrolling draws through the cards first. Only once the user has scrolled
-  // past the last card (or before the first) does the wheel event fall through
-  // and let the page's own scroll-snap move to the next/previous section.
+  // Play the deck's entrance once when the section becomes visible. Card
+  // navigation remains native Swiper interaction: drag/swipe or the buttons.
   var sectionEl = document.getElementById('wisdom-deck');
-  var sectionActive = false;
-  var wheelCooldown = false;
-  var touchStartY = null;
-  var gestureBlocked = false;
   var introPlayed = false;
-  var deckGuideActive = false;
-
-  function advanceWisdom(direction) {
-    if (direction <= 0) return false;
-
-    var atLast = wisdomSwiper.isEnd;
-    if (atLast) return false;
-    if (wheelCooldown || gestureBlocked) return false;
-
-    wheelCooldown = true;
-    gestureBlocked = true;
-
-    wisdomSwiper.slideNext();
-
-    if (wisdomSwiper.isEnd) {
-      deckGuideActive = false;
-    }
-
-    window.setTimeout(function () { wheelCooldown = false; }, 650);
-    window.setTimeout(function () { gestureBlocked = false; }, 700);
-    return true;
-  }
 
   function playFirstVisitAnimation() {
     if (introPlayed) return;
     introPlayed = true;
-    deckGuideActive = true;
 
     var slides = el.querySelectorAll('.swiper-slide');
     slides.forEach(function (slide, index) {
@@ -149,51 +121,14 @@
   if (sectionEl && typeof IntersectionObserver !== 'undefined') {
     var sectionObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        sectionActive = entry.isIntersecting && entry.intersectionRatio > 0.6;
-        if (sectionActive && !introPlayed) {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.6 && !introPlayed) {
           playFirstVisitAnimation();
         }
       });
     }, { threshold: [0, 0.6, 1] });
     sectionObserver.observe(sectionEl);
-
-    sectionEl.addEventListener('wheel', function (e) {
-      if (!sectionActive || !deckGuideActive || wisdomSwiper.isEnd) return;
-
-      var delta = e.deltaY;
-
-      if (delta > 0) {
-        e.preventDefault();
-        e.stopPropagation();
-        advanceWisdom(1);
-      }
-    }, { passive: false });
-
-    sectionEl.addEventListener('touchstart', function (e) {
-      if (!sectionActive) return;
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    sectionEl.addEventListener('touchmove', function (e) {
-      if (!sectionActive || !deckGuideActive || touchStartY === null || gestureBlocked || wisdomSwiper.isEnd) return;
-
-      var touchY = e.touches[0].clientY;
-      var delta = touchY - touchStartY;
-
-      if (delta > 60) {
-        e.preventDefault();
-        e.stopPropagation();
-        touchStartY = null;
-        advanceWisdom(1);
-      } else if (delta < -60) {
-        touchStartY = null;
-      }
-    }, { passive: false });
-
-    sectionEl.addEventListener('touchend', function () {
-      touchStartY = null;
-      gestureBlocked = false;
-    }, { passive: true });
+  } else {
+    playFirstVisitAnimation();
   }
 })();
 
@@ -660,7 +595,7 @@
       title: 'Amazing<br />Ettazenn HUB.',
       desc: 'Master the ancient arts with modern instruction.<br class="hidden sm:inline" />From deep-flow Yoga to the moving meditation of minds.',
       icon: 'images/amazing-hub-main.svg',
-      // badgeIcon: 'images/amazing-hub-badge.svg',
+      badgeIcon: 'images/amazing-hub-badge.svg',
       alt: 'Ettazenn Hub Icon',
       bg: 'url("images/amazing-bg1.svg") center/cover no-repeat'
     },
@@ -675,7 +610,7 @@
     }
   ];
 
-  var SWAP_DELAY = 500; // matches the .course-card-rising CSS transition duration
+  var SWAP_DELAY = 500; // matches the reference card-lift duration
   var reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   if (reducedMotion) SWAP_DELAY = 0;
 
@@ -716,35 +651,49 @@
     icon.alt = cat.alt;
   }
 
-  // Helper to change badge icon smoothly along with card transitions
+  // Fade the floating badge out with the outgoing card, swap its asset while
+  // the incoming card covers the stage, then fade it back in before landing.
   function updateBadgeIcon(cat) {
-    if (!badgeIcon) return;
+    if (!badgeIcon || !awardSealImg) return;
+    badgeIcon.style.transition = 'opacity 180ms ease-in-out';
     badgeIcon.style.opacity = '0';
     setTimeout(function () {
-      if (awardSealImg && cat.badgeIcon) {
-        awardSealImg.src = cat.badgeIcon;
-      }
-      badgeIcon.style.opacity = '1';
-    }, 0);
+      awardSealImg.src = cat.badgeIcon;
+      requestAnimationFrame(function () {
+        badgeIcon.style.opacity = '1';
+      });
+    }, Math.round(SWAP_DELAY / 2));
   }
 
   function goTo(newIndex) {
     if (animating || newIndex === index) return;
     animating = true;
     stopAutoplay();
+    var movingBackward = newIndex < index;
+
+    // Put the incoming card on the correct outer edge without animating its
+    // reset. Forward cards rise from below; previous cards descend from above.
+    risingCard.style.transition = 'none';
+    risingCard.classList.remove('is-up');
+    risingCard.classList.toggle('from-top', movingBackward);
+    void risingCard.offsetWidth;
+    risingCard.style.transition = '';
 
     index = newIndex;
     populateCard(risingCard, categories[index]);
     updateDots();
     updateBadgeIcon(categories[index]);
 
-    risingCard.classList.add('is-up');
+    requestAnimationFrame(function () {
+      risingCard.classList.add('is-up');
+    });
 
     window.setTimeout(function () {
       populateCard(baseCard, categories[index]);
 
       risingCard.style.transition = 'none';
       risingCard.classList.remove('is-up');
+      risingCard.classList.remove('from-top');
       void risingCard.offsetWidth; // force reset to apply instantly
       risingCard.style.transition = '';
 
@@ -816,6 +765,17 @@
     return true;
   }
 
+  function advanceToPreviousCard() {
+    if (!sectionActive || animating || index <= 0 || wheelCooldown || gestureBlocked) return false;
+
+    wheelCooldown = true;
+    gestureBlocked = true;
+    goTo(index - 1);
+    window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 220);
+    window.setTimeout(function () { gestureBlocked = false; }, SWAP_DELAY + 260);
+    return true;
+  }
+
   if (sectionEl && typeof IntersectionObserver !== 'undefined') {
     var sectionObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -847,8 +807,13 @@
         e.stopPropagation();
         advanceToNextCard();
       } else if (delta < 0) {
+        if (index <= 0) {
+          releaseSectionFlow();
+          return;
+        }
         e.preventDefault();
         e.stopPropagation();
+        advanceToPreviousCard();
       }
     }, { passive: false });
 
@@ -863,14 +828,16 @@
       var touchY = e.touches[0].clientY;
       var delta = touchY - touchStartY;
 
-      if (delta > 60) {
+      if (delta < -60) {
         e.preventDefault();
         e.stopPropagation();
         touchStartY = null;
         advanceToNextCard();
-      } else if (delta < -20) {
+      } else if (delta > 60) {
         e.preventDefault();
         e.stopPropagation();
+        touchStartY = null;
+        advanceToPreviousCard();
       }
     }, { passive: false });
 
@@ -880,5 +847,3 @@
     }, { passive: true });
   }
 })();
-
-

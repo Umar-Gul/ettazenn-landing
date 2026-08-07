@@ -32,18 +32,6 @@ const section       = document.getElementById('app-showcase-section');
   const badgeFocus    = document.getElementById('badge-focus');
   const desktopLayout = window.matchMedia('(min-width: 768px)');
 
-  // Forces left-positioning on mobile even if a stray CSS rule with
-  // !important is fighting it — setProperty(..., 'important') always wins.
- function positionHalfPhone() {
-  if (desktopLayout.matches) {
-    half.style.setProperty('left', '50%', 'important');
-    half.style.setProperty('transform', 'translate(-50%, 28%)', 'important');
-  } else {
-    half.style.setProperty('left', '9%', 'important');   // was '0'
-    half.style.setProperty('transform', 'translate(0, 28%)', 'important');
-  }
-}
-
   if (!section || !half || !halfImg || !card || !phoneBlock || !phoneImg || !textBlock || !badgeCourses || !badgeFocus) {
     console.warn('[showcase-animation] one or more expected elements were not found — check IDs.');
     return;
@@ -136,16 +124,21 @@ function positionHalfPhone() {
   function measureTargetRect() {
     const prevDisplay = card.style.display;
     const prevVisibility = card.style.visibility;
+    const prevTransform = card.style.transform;
 
     card.style.transition = 'none';
     card.style.display = 'block';
     card.style.visibility = 'hidden';
+    // The morph must end at the slot's final resting position. The card's
+    // own left-to-right entrance is applied only during the next step.
+    card.style.transform = 'scale(1)';
     void card.offsetHeight;
 
     const rect = phoneImg.getBoundingClientRect();
 
     card.style.display = prevDisplay;
     card.style.visibility = prevVisibility;
+    card.style.transform = prevTransform;
     requestAnimationFrame(() => { card.style.transition = ''; });
 
     return rect;
@@ -272,7 +265,9 @@ function positionHalfPhone() {
   function stepForward1to2() {
     return new Promise((resolve) => {
       const easing = 'cubic-bezier(0.22, 1, 0.36, 1)';
-      const DURATION = 800;
+      // Match the later side-entry tempo so the card's left entrance and
+      // text/badge right entrance can be read clearly.
+      const DURATION = SIDE_ENTER_DURATION;
 
       card.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
       textBlock.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
@@ -400,7 +395,7 @@ function positionHalfPhone() {
     card.style.display = 'none';
     card.style.transition = 'none';
     card.style.opacity = '0';
-    card.style.transform = 'translateX(-80px) scale(0.97)';
+    card.style.transform = 'translateX(-105vw) scale(0.97)';
 
     phoneImg.style.transition = 'none';
     phoneImg.style.opacity = '0';
@@ -412,16 +407,16 @@ function positionHalfPhone() {
     textBlock.style.transition = 'none';
     phoneBlock.style.transition = 'none';
     textBlock.style.opacity = '0';
-    textBlock.style.transform = 'translateX(80px)';
+    textBlock.style.transform = 'translateX(105vw)';
     phoneBlock.style.transform = 'none';
 
     badgeCourses.style.transition = 'none';
     badgeCourses.style.opacity = '0';
-    badgeCourses.style.transform = 'translate(80px, -18px)';
+    badgeCourses.style.transform = 'translate(105vw, -18px)';
 
     badgeFocus.style.transition = 'none';
     badgeFocus.style.opacity = '0';
-    badgeFocus.style.transform = 'translate(80px, 18px)';
+    badgeFocus.style.transform = 'translate(105vw, 18px)';
 
     halfImg.style.transition = 'none';
     halfImg.style.transform = 'none';
