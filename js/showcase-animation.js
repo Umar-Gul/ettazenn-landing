@@ -1,25 +1,27 @@
 // showcase-animation.js
 //
 // One-time, scroll-driven entrance sequence for app-showcase-section.
-// Animation content/timings are unchanged from the previous version —
-// only the locking behavior around it changed:
+// Animation content/timings are unchanged — only the locking behavior
+// and the hero-phone starting position (mobile vs desktop) changed.
 //
 //   - Fires ONCE per page load. Once triggered (even if aborted early by
 //     an upward scroll), it never triggers again.
 //   - Downward scroll/swipe/arrow-key steps the animation forward one
-//     beat at a time, same as before: 0 initial -> 1 morphed -> 2 settled
-//     -> 3 swap1 -> 4 swap2. Page scroll stays locked the whole time.
-//   - Upward scroll/swipe/arrow-key is ALWAYS free — it is never
-//     intercepted, even mid-animation. It immediately releases the lock
-//     and lets that same input scroll the page normally. There is no
-//     reverse-stepping anymore.
+//     beat at a time: 0 initial -> 1 morphed -> 2 settled -> 3 swap1 ->
+//     4 swap2. Page scroll stays locked the whole time.
+//   - Upward scroll/swipe/arrow-key is ALWAYS free — never intercepted,
+//     even mid-animation. It immediately releases the lock and lets that
+//     same input scroll the page normally. There is no reverse-stepping.
 //   - Reaching step 4 unlocks scroll and hands off to normal downward
 //     page scroll, same as reaching it via an early upward release.
+//   - #stage-half-phone starts flush at the left edge on mobile
+//     (< md breakpoint) and centered on desktop, matching the
+//     `left-0 md:left-1/2` classes on that element.
 
 (function () {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const section       = document.getElementById('app-showcase-section');
+const section       = document.getElementById('app-showcase-section');
   const half          = document.getElementById('stage-half-phone');
   const halfImg       = half ? half.querySelector('img') : null;
   const card          = document.getElementById('stage-glass-card');
@@ -29,6 +31,18 @@
   const badgeCourses  = document.getElementById('badge-courses');
   const badgeFocus    = document.getElementById('badge-focus');
   const desktopLayout = window.matchMedia('(min-width: 768px)');
+
+  // Forces left-positioning on mobile even if a stray CSS rule with
+  // !important is fighting it — setProperty(..., 'important') always wins.
+ function positionHalfPhone() {
+  if (desktopLayout.matches) {
+    half.style.setProperty('left', '50%', 'important');
+    half.style.setProperty('transform', 'translate(-50%, 28%)', 'important');
+  } else {
+    half.style.setProperty('left', '9%', 'important');   // was '0'
+    half.style.setProperty('transform', 'translate(0, 28%)', 'important');
+  }
+}
 
   if (!section || !half || !halfImg || !card || !phoneBlock || !phoneImg || !textBlock || !badgeCourses || !badgeFocus) {
     console.warn('[showcase-animation] one or more expected elements were not found — check IDs.');
@@ -49,7 +63,7 @@
   const LAST_STEP = 4;
   let currentStep = 0;
   let animating   = false;
-  let phoneOnRight = true;
+  let phoneOnRight = false;
   let reducedMotionApplied = false;
   let hasPlayed = false; // one-time guard — set the moment capture begins
 
@@ -68,39 +82,49 @@
   }
 
   // ---------------------------------------------------------------------
-  // Layout helpers (unchanged)
+  // Layout helpers
   // ---------------------------------------------------------------------
 
- // showcase-animation.js — replace alignBadgesToPhone with this
-
-function alignBadgesToPhone() {
-  const cardRect = card.getBoundingClientRect();
-  const textRect = textBlock.getBoundingClientRect();
-  if (!cardRect.width || !textRect.width) return;
-
-  // Courses: left-aligned with the text block's left edge (matches the
-  // Figma reference — it floats directly above the heading's start, not
-  // at a fixed % of the card).
-  const coursesLeft = textRect.left - cardRect.left;
-  badgeCourses.style.left = `${coursesLeft}px`;
-  badgeCourses.style.right = 'auto';
-
-  // Focus: right-aligned with the text block's right edge (paragraph's
-  // wrap width) — floats below-right of the text, not at a fixed left offset.
-  const focusRight = cardRect.right - textRect.right;
-  badgeFocus.style.right = `${focusRight}px`;
-  badgeFocus.style.left = 'auto';
+  // #stage-half-phone: flush left on mobile, centered on desktop — mirrors
+  // the `left-0 md:left-1/2` classes in the HTML. JS sets the transform
+  // inline (needed for the FLIP morph later), so it must branch here too,
+  // otherwise it always overrides the class with a centered transform.
+function positionHalfPhone() {
+  if (desktopLayout.matches) {
+    half.style.setProperty('left', '50%', 'important');
+    half.style.setProperty('transform', 'translate(-50%, 28%)', 'important');
+  } else {
+    half.style.setProperty('left', '0', 'important');
+    half.style.setProperty('transform', 'translate(0, 28%)', 'important');
+  }
 }
 
-function applyLayoutAlignment(isPhoneOnRight) {
-  phoneBlock.style.left = desktopLayout.matches ? (isPhoneOnRight ? '10px' : '-10px') : '';
-  textBlock.style.position = 'relative';
-  textBlock.style.left = desktopLayout.matches ? (isPhoneOnRight ? '-18px' : '10px') : '';
-  requestAnimationFrame(alignBadgesToPhone);
-}
+  function alignBadgesToPhone() {
+    const cardRect = card.getBoundingClientRect();
+    const textRect = textBlock.getBoundingClientRect();
+    if (!cardRect.width || !textRect.width) return;
+
+    // Courses: left-aligned with the text block's left edge.
+    const coursesLeft = textRect.left - cardRect.left;
+    badgeCourses.style.left = `${coursesLeft}px`;
+    badgeCourses.style.right = 'auto';
+
+    // Focus: right-aligned with the text block's right edge.
+    const focusRight = cardRect.right - textRect.right;
+    badgeFocus.style.right = `${focusRight}px`;
+    badgeFocus.style.left = 'auto';
+  }
+
+  function applyLayoutAlignment(isPhoneOnRight) {
+    phoneBlock.style.left = desktopLayout.matches ? (isPhoneOnRight ? '10px' : '-10px') : '';
+    textBlock.style.position = 'relative';
+    textBlock.style.left = desktopLayout.matches ? (isPhoneOnRight ? '-18px' : '10px') : '';
+    requestAnimationFrame(alignBadgesToPhone);
+  }
 
   desktopLayout.addEventListener('change', () => {
     applyLayoutAlignment(phoneOnRight);
+    if (!hasPlayed) positionHalfPhone(); // only matters before capture starts
   });
 
   function measureTargetRect() {
@@ -131,9 +155,6 @@ function applyLayoutAlignment(isPhoneOnRight) {
     window.scrollTo(0, lockedScrollY);
   }
 
-  // Upward input is always free — this clears any in-flight step timers
-  // (so a pending timeout can't mutate styles after we've bailed) and
-  // drops the lock, letting the triggering event scroll normally.
   function releaseUpward() {
     if (!scrollLocked) return;
     clearPendingTimers();
@@ -215,7 +236,7 @@ function applyLayoutAlignment(isPhoneOnRight) {
   }
 
   // ---------------------------------------------------------------------
-  // Step transitions — unchanged from the previous version
+  // Step transitions — unchanged
   // ---------------------------------------------------------------------
 
   function stepForward0to1() {
@@ -355,8 +376,7 @@ function applyLayoutAlignment(isPhoneOnRight) {
   }
 
   // ---------------------------------------------------------------------
-  // Initial arm — runs once at load. No mid-sequence reset anymore since
-  // this is one-time only (no replay).
+  // Initial arm — runs once at load. No mid-sequence reset (one-time only).
   // ---------------------------------------------------------------------
 
   function armInitialState() {
@@ -364,7 +384,7 @@ function applyLayoutAlignment(isPhoneOnRight) {
 
     half.style.display = 'block';
     half.style.opacity = '1';
-    half.style.transform = 'translate(-50%, 28%)';
+    positionHalfPhone(); // was: half.style.transform = 'translate(-50%, 28%)';
 
     card.style.display = 'none';
     card.style.transition = 'none';
@@ -374,9 +394,9 @@ function applyLayoutAlignment(isPhoneOnRight) {
     phoneImg.style.transition = 'none';
     phoneImg.style.opacity = '0';
 
-    phoneOnRight = true;
-    textBlock.style.order = '';
-    phoneBlock.style.order = '';
+    phoneOnRight = false;
+    textBlock.style.order = '2';
+    phoneBlock.style.order = '1';
     applyLayoutAlignment(phoneOnRight);
     textBlock.style.transition = 'none';
     phoneBlock.style.transition = 'none';
@@ -418,6 +438,7 @@ function applyLayoutAlignment(isPhoneOnRight) {
     badgeCourses.style.transform = 'translateY(0)';
     badgeFocus.style.opacity = '1';
     badgeFocus.style.transform = 'translateY(0)';
+    applyLayoutAlignment(false);
   }
 
   armInitialState();

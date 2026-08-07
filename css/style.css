@@ -14,7 +14,7 @@
 html,
 body {
   overflow-x: hidden;
-  
+
   width: 100%;
 }
 
@@ -583,6 +583,7 @@ details[open] .faq-chev {
 
   padding: 0.85rem 1rem;
   backdrop-filter: blur(4px);
+  
 }
 
 .fc-icon {
@@ -631,7 +632,7 @@ details[open] .faq-chev {
   display: none;
   position: absolute;
   top: 50%;
-  width: 64px;
+  width: 80px;
   height: 2px;
   z-index: 0;
   overflow: hidden;
@@ -642,7 +643,7 @@ details[open] .faq-chev {
     transparent 4px,
     transparent 11px
   );
-  background-size: 22px 100%;
+  /* background-size: 22px 100%; */
   background-repeat: repeat-x;
 }
 
@@ -661,15 +662,31 @@ details[open] .faq-chev {
 
 /* LEFT column card → stub sits to the RIGHT of the card, toward center:
    dots flow rightward (toward the spine) */
+/* LEFT column card → stub sits to the RIGHT of the card, toward center:
+   dots flow rightward (toward the spine) */
 .fc-line-r {
   right: 0;
   transform: translate(100%, -50%);
   animation: dash-flow-right 1.4s linear infinite;
+  /* fade the line out where it meets the card (local 0% = edge touching card) */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 18%,
+    black 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 50%,
+    black 100%
+  );
 }
 
 .fc-line-r::after {
-  right: -3px;
+  right: -px;
 }
+
 
 /* RIGHT column card → stub sits to the LEFT of the card, toward center:
    dots flow leftward (toward the spine) */
@@ -677,6 +694,19 @@ details[open] .faq-chev {
   left: 0;
   transform: translate(-100%, -50%);
   animation: dash-flow-left 1.4s linear infinite;
+  /* fade the line out where it meets the card (local 100% = edge touching card) */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0%,
+    black 82%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    black 0%,
+    black 82%,
+    transparent 100%
+  );
 }
 
 .fc-line-l::after {
@@ -687,16 +717,17 @@ details[open] .faq-chev {
    Each is split into two halves so dots converge toward the true center. */
 .fc-spine-v,
 .fc-spine-h {
-  display: none;
+  display: none !important;
   position: absolute;
   pointer-events: none;
   z-index: 0;
 }
 
+
 .fc-spine-v {
   top: 4%;
   bottom: 4%;
-  left: 50%;
+  left: 60%;
   width: 2px;
   transform: translateX(-50%);
   overflow: hidden;
@@ -734,10 +765,11 @@ details[open] .faq-chev {
 
 .fc-spine-h {
   top: 50%;
-  left: 12%;
-  right: 12%;
+  left: 8%;
+  right: 22%;  /* increased from 12% — pushes the spine's end further away from Community card */
   height: 2px;
   transform: translateY(-50%);
+  overflow: hidden;
 }
 
 .fc-spine-h::before,
@@ -772,9 +804,7 @@ details[open] .faq-chev {
 
 @media (min-width: 768px) {
   .fc-line-r,
-  .fc-line-l,
-  .fc-spine-v,
-  .fc-spine-h {
+  .fc-line-l {
     display: block;
   }
 }
@@ -790,12 +820,12 @@ details[open] .faq-chev {
 }
 @keyframes dash-flow-down {
   from { background-position: 0 0; }
-  to   { background-position: 0 22px; }
+  to   { background-position: 0 -22px; }
 }
-@keyframes dash-flow-up {
+/* @keyframes dash-flow-up {
   from { background-position: 0 0; }
   to   { background-position: 0 22px; }
-}
+} */
 
 /* ---- Crazy Features: fit inside a single mobile screen (desktop untouched) ---- */
 @media (max-width: 767px) {

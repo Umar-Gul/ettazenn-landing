@@ -725,7 +725,7 @@
         awardSealImg.src = cat.badgeIcon;
       }
       badgeIcon.style.opacity = '1';
-    }, 300);
+    }, 0);
   }
 
   function goTo(newIndex) {
@@ -880,3 +880,5 @@
     }, { passive: true });
   }
 })();
+
+
