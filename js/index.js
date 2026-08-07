@@ -138,9 +138,9 @@
     return document.getElementById(id) || document.querySelector('.' + className);
   }
 
-  var cardWrap = getEl('expertCardWrap', 'expert-card-wrap');   // stays static, never touched
+  var cardWrap = getEl('expertCardWrap', 'expert-card-wrap');
   var avatar = getEl('expertAvatar', 'expert-avatar');
-  var content = getEl('expertContent', 'expert-content');       // name + stars + bio wrapper only
+  var content = getEl('expertContent', 'expert-content');
   var nameEl = getEl('expertName', 'expert-name');
   var starsEl = getEl('expertStars', 'expert-stars');
   var ratingNumEl = getEl('expertRatingNum', 'expert-rating-num');
@@ -193,10 +193,16 @@
     el.classList.toggle('is-active', isActive);
   }
 
+  // expert at a relative offset from the current index, wrapping infinitely
+  function expertAt(offset) {
+    var n = experts.length;
+    return experts[((index + offset) % n + n) % n];
+  }
+
   function render() {
     var center = experts[index];
-    var left = experts[(index + experts.length - 1) % experts.length];
-    var right = experts[(index + 1) % experts.length];
+    var left = expertAt(-1);
+    var right = expertAt(1);
 
     avatar.src = center.avatar;
     avatar.alt = center.name;
@@ -231,215 +237,170 @@
     });
   }
 
-  var TEXT_SWAP_TIME = 320; // when name/bio actually swap underneath the fade
-  var TOTAL_TIME = 700;     // when the ring animation fully settles
+  var TOTAL_TIME = 620;       // full slide duration
+  var TEXT_HOLD_TIME = 220;   // how long content stays faded out before swapping in
 
-  function resetAnimation(el) {
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
-    el.classList.remove(
-      "left-to-center",
-      "right-to-center",
-      "avatar-to-left",
-      "avatar-to-right"
-    );
-
-    void el.offsetWidth;
+  function centerOf(rect) {
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   }
-  // ==============================
-  // Avatar Flight Animation Helper
-  // ==============================
 
-  function animateAvatar(fromWrap, toWrap, imageSrc, duration, callback) {
+  function makeFlyer(imageSrc, size) {
+    var el = document.createElement('img');
+    el.src = imageSrc;
+    el.className = 'flying-avatar';
+    if (size) {
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+    }
+    document.body.appendChild(el);
+    return el;
+  }
 
-    const fromRect = fromWrap.getBoundingClientRect();
-    const toRect = toWrap.getBoundingClientRect();
-
-    const clone = document.createElement("img");
-
-    clone.src = imageSrc;
-
-    clone.className = "flying-avatar";
-
-    clone.style.left = (fromRect.left + fromRect.width / 2) + "px";
-    clone.style.top = (fromRect.top + fromRect.height / 2) + "px";
-
-    document.body.appendChild(clone);
-
-    const startX = fromRect.left + fromRect.width / 2;
-    const startY = fromRect.top + fromRect.height / 2;
-
-    const endX = toRect.left + toRect.width / 2;
-    const endY = toRect.top + toRect.height / 2;
-
-    const controlX = (startX + endX) / 2;
-
-    // height of curve
-    const curveHeight =
-      Math.abs(endX - startX) * 0.35;
-
-    const controlY =
-      Math.min(startY, endY) - curveHeight;
-
-    let start = null;
+  // Straight horizontal line from `from` to `to`. Handles optional
+  // fade-in (used for the avatar entering off-screen) and fade-out
+  // (used for the avatar exiting off-screen) so nothing pops.
+  function flyStraight(el, from, to, duration, opts, onDone) {
+    opts = opts || {};
+    var startScale = opts.startScale != null ? opts.startScale : 1;
+    var endScale = opts.endScale != null ? opts.endScale : 1;
+    var start = null;
 
     function frame(time) {
-
       if (!start) start = time;
+      var raw = (time - start) / duration;
+      if (raw > 1) raw = 1;
+      var t = easeOutCubic(raw);
 
-      let progress = (time - start) / duration;
+      var x = lerp(from.x, to.x, t);
+      var y = lerp(from.y, to.y, t);
+      var scale = lerp(startScale, endScale, t);
 
-      if (progress > 1) progress = 1;
+      var opacity = 1;
+      if (opts.fadeIn) opacity = raw < 0.3 ? lerp(0, 1, raw / 0.3) : opacity;
+      if (opts.fadeOut) opacity = raw > 0.7 ? Math.min(opacity, lerp(1, 0, (raw - 0.7) / 0.3)) : opacity;
 
-      // Ease
-      const t = 1 - Math.pow(1 - progress, 3);
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.transform = 'translate(-50%,-50%) scale(' + scale + ')';
+      el.style.opacity = opacity;
 
-      // Quadratic Bezier
-
-      const x =
-        (1 - t) * (1 - t) * startX +
-        2 * (1 - t) * t * controlX +
-        t * t * endX;
-
-      const y =
-        (1 - t) * (1 - t) * startY +
-        2 * (1 - t) * t * controlY +
-        t * t * endY;
-
-      const scale =
-
-        t < .5
-
-          ? 0.72 + t * .6
-
-          : 1.02 - (t - .5) * .2;
-
-      clone.style.left = x + "px";
-      clone.style.top = y + "px";
-
-      clone.style.transform =
-        `translate(-50%,-50%) scale(${scale})`;
-
-      clone.style.opacity =
-
-        t < .5
-
-          ? .25 + t
-
-          : 1;
-
-      if (progress < 1) {
-
+      if (raw < 1) {
         requestAnimationFrame(frame);
-
-      } else {
-
-        clone.remove();
-
-        if (callback) callback();
-
+      } else if (onDone) {
+        onDone();
       }
-
     }
-
     requestAnimationFrame(frame);
-
-  }
-
-  function getCenterAvatarWrap() {
-
-    return document.querySelector("#expertAvatar").parentElement;
-
   }
 
   function go(direction) {
-
     if (animating) return;
     animating = true;
 
-    var centerWrap = getCenterAvatarWrap();
+    var centerWrap = avatar.parentElement;
+    var centerRect = centerOf(centerWrap.getBoundingClientRect());
+    var leftRect = centerOf(leftWrap.getBoundingClientRect());
+    var rightRect = centerOf(rightWrap.getBoundingClientRect());
 
-    var incomingWrap =
-      direction > 0
-        ? rightWrap
-        : leftWrap;
+    // Off-screen exit/enter points, mirrored the same distance beyond
+    // the left/right slots as those slots are from center — this is
+    // what makes the outgoing avatar keep travelling in a straight
+    // line past the slot instead of stopping there.
+    var exitX = leftRect.x - (centerRect.x - leftRect.x);
+    var enterX = rightRect.x + (rightRect.x - centerRect.x);
 
-    var outgoingWrap =
-      direction > 0
-        ? leftWrap
-        : rightWrap;
+    var incomingWrapRect = direction > 0 ? rightRect : leftRect;   // side -> center
+    var outgoingWrapRect = direction > 0 ? leftRect : rightRect;   // center -> side
+    var exitPoint = direction > 0 ? { x: exitX, y: leftRect.y } : { x: enterX, y: rightRect.y };
+    var enterPoint = direction > 0 ? { x: enterX, y: rightRect.y } : { x: exitX, y: leftRect.y };
 
-    // Store current images BEFORE render()
-    var incomingImg =
-      direction > 0
-        ? rightImg.src
-        : leftImg.src;
+    var incomingImgSrc = direction > 0 ? rightImg.src : leftImg.src;
+    var centerImgSrc = avatar.src;
+    var outgoingImgSrc = direction > 0 ? leftImg.src : rightImg.src;
+    var newUpcoming = direction > 0 ? expertAt(2) : expertAt(-2);
 
-    var centerImg = avatar.src;
+    var centerSize = avatar.getBoundingClientRect().width;
+    var sideSize = leftImg.getBoundingClientRect().width || centerSize;
 
-    // Incoming avatar -> Center
-    animateAvatar(
-      incomingWrap,
-      centerWrap,
-      incomingImg,
-      TOTAL_TIME
-    );
+    // Hide the real elements — the four clones below fully represent
+    // them until the flight finishes, so the underlying src swap
+    // (in render(), fired mid-flight) is never visible.
+    leftImg.style.opacity = 0;
+    rightImg.style.opacity = 0;
+    avatar.style.opacity = 0;
+    if (leftRating) leftRating.style.opacity = 0;
+    if (rightRating) rightRating.style.opacity = 0;
 
-    // Center avatar -> Side
-    animateAvatar(
-      centerWrap,
-      outgoingWrap,
-      centerImg,
-      TOTAL_TIME
-    );
+ // same size throughout
+var flyer1 = makeFlyer(incomingImgSrc, sideSize);
+flyStraight(flyer1, incomingWrapRect, centerRect, TOTAL_TIME, { startScale: 1, endScale: 1 }, function () { flyer1.remove(); });
 
-    // Swap content exactly in middle
+var flyer2 = makeFlyer(centerImgSrc, centerSize);
+flyStraight(flyer2, centerRect, outgoingWrapRect, TOTAL_TIME, { startScale: 1, endScale: 1 }, function () { flyer2.remove(); });
+
+var flyer3 = makeFlyer(outgoingImgSrc, sideSize);
+flyStraight(flyer3, outgoingWrapRect, exitPoint, TOTAL_TIME, { startScale: 1, endScale: 1, fadeOut: true }, function () { flyer3.remove(); });
+
+var flyer4 = makeFlyer(newUpcoming.avatar, sideSize);
+flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, endScale: 1, fadeIn: true }, function () { flyer4.remove(); });
+
+    // crossfade the text block independently of the avatar flight
+    setTransitionState(content, false);
     setTimeout(function () {
+      index = (index + direction + experts.length) % experts.length;
+      render(); // updates real elements while still hidden — no pop
+      setTransitionState(content, true);
+    }, TEXT_HOLD_TIME);
 
-      index =
-        (index + direction + experts.length) %
-        experts.length;
-
-      render();
-
-    }, TOTAL_TIME / 2);
-
-    // Finish
+    // reveal the real elements at the exact instant the clones land
     setTimeout(function () {
-
+      leftImg.style.opacity = '';
+      rightImg.style.opacity = '';
+      avatar.style.opacity = '';
+      if (leftRating) leftRating.style.opacity = '';
+      if (rightRating) rightRating.style.opacity = '';
       animating = false;
-
     }, TOTAL_TIME);
-
   }
 
   playFirstEntryAnimation();
 
-  document.addEventListener("click", function (e) {
-
+  document.addEventListener('click', function (e) {
     if (animating) return;
+    var prev = e.target.closest('#expertPrevBtn,#leftCoachWrap');
+    var next = e.target.closest('#expertNextBtn,#rightCoachWrap');
+    if (prev) { e.preventDefault(); go(-1); }
+    if (next) { e.preventDefault(); go(1); }
+  });
 
-    const prev = e.target.closest(
-      "#expertPrevBtn,#leftCoachWrap"
-    );
+  // Swipe / drag support on the center card
+  var dragStartX = null;
+  var dragPointerId = null;
+  var SWIPE_THRESHOLD = 50;
 
-    const next = e.target.closest(
-      "#expertNextBtn,#rightCoachWrap"
-    );
+  cardWrap.addEventListener('pointerdown', function (e) {
+    if (animating) return;
+    dragStartX = e.clientX;
+    dragPointerId = e.pointerId;
+    cardWrap.setPointerCapture(e.pointerId);
+    cardWrap.style.cursor = 'grabbing';
+  });
 
-    if (prev) {
+  cardWrap.addEventListener('pointerup', function (e) {
+    if (dragStartX === null) return;
+    var dx = e.clientX - dragStartX;
+    dragStartX = null;
+    cardWrap.style.cursor = 'grab';
+    if (dx <= -SWIPE_THRESHOLD) go(1);
+    else if (dx >= SWIPE_THRESHOLD) go(-1);
+  });
 
-      e.preventDefault();
-      go(-1);
-
-    }
-
-    if (next) {
-
-      e.preventDefault();
-      go(1);
-
-    }
-
+  cardWrap.addEventListener('pointercancel', function () {
+    dragStartX = null;
+    cardWrap.style.cursor = 'grab';
   });
 })();
 

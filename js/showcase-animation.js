@@ -38,7 +38,7 @@ const section       = document.getElementById('app-showcase-section');
   }
 
   // Timings (ms) — unchanged.
-  const MORPH_DURATION       = 1800;
+  const MORPH_DURATION       = 1500;
   const TEXT_DELAY           = 60;
   const COURSES_DELAY        = 90;
   const FOCUS_DELAY          = 120;
