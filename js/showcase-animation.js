@@ -608,4 +608,4 @@ function positionHalfPhone() {
 
   io.observe(section);
   armJoinRelease();
-})();
+})();.
