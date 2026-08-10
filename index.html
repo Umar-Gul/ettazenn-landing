@@ -54,7 +54,7 @@
 <body class="font-sans antialiased bg-plum-900 text-white overflow-x-hidden h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth">
 
   <!-- ===================== HERO ===================== -->
-  <section class="hero-fallback relative min-h-[100dvh] w-full overflow-hidden h-screen snap-start snap-always shrink-0 overflow-y-auto" style="--edge-rgb: 42, 31, 61;">
+  <section class="hero-fallback relative min-h-[100dvh] w-full overflow-hidden h-screen snap-start snap-always shrink-0 overflow-y-visible" style="--edge-rgb: 42, 31, 61;">
     <!-- image layer -->
     <div class="hero-bg absolute inset-0"></div>
 
@@ -749,7 +749,7 @@
 
   <!-- ===================== CTA: JOIN COMMUNITY ===================== -->
   <section id="join-community"
-    class="screen-section flex items-center justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-16 h-screen w-full snap-start snap-always shrink-0 overflow-y-auto"
+    class="screen-section flex items-center justify-center overflow-hidden bg-[#131023] px-4 py-14 sm:px-6 lg:py-16 min-h-[100svh] h-auto w-full snap-start snap-always shrink-0"
     style="--edge-rgb: 19, 16, 35;">
     <div class="relative mx-auto w-full max-w-[1065px]">
 
@@ -801,7 +801,8 @@
   </section>
 
   <!-- ===================== EXPERT MINDS ===================== -->
- <section id="expert-minds"
+<section id="expert-minds"
+
   class="expert-bg screen-section relative flex flex-col items-center justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-10 h-screen w-full snap-start snap-always shrink-0 overflow-y-auto"
   style="--edge-rgb: 13, 10, 28;">
   <!-- Internal contents (Figma: 1065 x 673, gap 50) -->
@@ -817,11 +818,11 @@
     </div>
 
     <!-- Card row (Figma: 1065 x 478) -->
-    <div class="relative flex w-full items-center justify-center">
+    <div class="relative flex w-full items-center justify-center mt-14">
 
       <!-- LEFT peeking coach -->
       <div id="leftCoachWrap" class="absolute left-[2%] top-1/2 hidden -translate-y-1/2 lg:left-[7%] xl:block cursor-pointer">
-        <div class="relative h-24 w-24">
+        <div class="relative h-36 w-36">
           <img id="leftCoachImg" src="images/expert3f.png" alt="Left Coach"
             class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
           <span id="leftCoachRating" class="rating-badge">5<span class="text-amber-400">★</span></span>
@@ -830,7 +831,7 @@
 
       <!-- RIGHT peeking coach -->
       <div id="rightCoachWrap" class="absolute right-[2%] top-1/2 hidden -translate-y-1/2 lg:right-[7%] xl:block cursor-pointer">
-        <div class="relative h-24 w-24">
+        <div class="relative h-36 w-36">
           <img id="rightCoachImg" src="images/expert2.png" alt="Right Coach"
             class="h-full w-full rounded-full object-cover opacity-90 ring-1 ring-white/10" />
           <span id="rightCoachRating" class="rating-badge">5<span class="text-amber-400">★</span></span>
@@ -840,23 +841,25 @@
       <!-- CENTER testimonial card -->
       <div id="expertCardWrap" class="relative w-[460px] max-w-full select-none" style="cursor: grab; touch-action: pan-y;">
         <!-- avatar overlapping the top -->
-        <div class="absolute left-1/2 top-0 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2">
+        <div class="absolute left-1/2 top-0 z-10 h-36 w-36 -translate-x-1/2 -translate-y-1/2">
           <img id="expertAvatar" src="images/expert1.png" alt="Zayn Omar"
             class="h-full w-full rounded-full object-cover ring-4 ring-[#160f2c]" />
         </div>
 
-        <div id="expertContent" class="expert-card px-6 pb-8 pt-16 text-center sm:px-8">
-          <h3 id="expertName" class="text-[18px] sm:text-[20px] font-inter text-white">Zayn Omar</h3>
-          <div class="mt-2 flex items-center justify-center gap-2 text-amber-400">
-            <span id="expertStars" class="text-[13px] tracking-tight">★★★★<span class="text-white/25">★</span></span>
-            <span id="expertRatingNum" class="text-[12px] text-lavender/60">4.9</span>
+        <div id="expertContent" class="expert-card px-6 pb-8 pt-24 text-center sm:px-8">
+          <div id="expertTextInner">
+            <h3 id="expertName" class="text-[18px] sm:text-[20px] font-inter text-white">Zayn Omar</h3>
+            <div class="mt-2 flex items-center justify-center gap-2 text-amber-400">
+              <span id="expertStars" class="text-[13px] tracking-tight">★★★★<span class="text-white/25">★</span></span>
+              <span id="expertRatingNum" class="text-[12px] text-lavender/60">4.9</span>
+            </div>
+            <p id="expertBio" class="mt-4 text-[13px] leading-relaxed text-lavender/60">
+              I'm a yoga coach dedicated to helping people build strength, flexibility, and inner
+              balance through mindful movement and breathwork. My approach focuses on simple,
+              effective practices that fit into everyday life, guiding students toward better
+              posture, reduced stress, and a deeper connection between body and mind.
+            </p>
           </div>
-          <p id="expertBio" class="mt-4 text-[13px] leading-relaxed text-lavender/60">
-            I'm a yoga coach dedicated to helping people build strength, flexibility, and inner
-            balance through mindful movement and breathwork. My approach focuses on simple,
-            effective practices that fit into everyday life, guiding students toward better
-            posture, reduced stress, and a deeper connection between body and mind.
-          </p>
         </div>
       </div>
     </div>

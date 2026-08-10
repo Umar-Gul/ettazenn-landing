@@ -14,8 +14,20 @@
 html,
 body {
   overflow-x: hidden;
-
   width: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 0;
+}
+
+body {
+  max-width: 100%;
+  min-height: 100svh;
+  overflow-y: auto;
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
 }
 
 img,
@@ -23,7 +35,49 @@ svg {
   max-width: 100%;
 }
 
-/* ---- Scroll-entry reveal animations (crossfade + slight scale) ----
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+@media (min-width: 1024px) {
+  body {
+    scroll-snap-type: y proximity;
+  }
+}
+
+@media (max-width: 1023px) {
+  body {
+    min-height: 100svh;
+    overflow-y: auto;
+    scroll-snap-type: y proximity;
+  }
+
+  body.snap-y,
+  body.snap-mandatory {
+    scroll-snap-type: y proximity;
+  }
+
+  section,
+  .screen-section,
+  .hero-fallback {
+    min-height: 100svh !important;
+    height: auto !important;
+  }
+
+  section.snap-start,
+  section.snap-always {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+}
+
+/* ---- Scroll-entry reveal animations (crossfade + slback {
+    overflow-y: visible !important;
+    scroll-snap-align: none;
+  }
+
    Applied via IntersectionObserver: element starts hidden/offset, then
    eases into place the first time it enters the viewport. */
 .reveal-up {
@@ -62,6 +116,435 @@ svg {
     transition: none;
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ---- Responsive polish: keep desktop intact, soften only smaller layouts ---- */
+@media (max-width: 1023px) {
+  .hero-fallback > header {
+    border-radius: 0 0 18px 18px;
+  }
+
+  .hero-fallback > div {
+    min-height: calc(100svh - 85px);
+    justify-content: center;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .hero-fallback h1 {
+    white-space: normal;
+    font-size: clamp(1.15rem, 4.8vw, 2.2rem);
+    max-width: 14ch;
+  }
+
+  .hero-fallback p {
+    max-width: 34rem;
+  }
+
+  #courses-check .max-w-shell,
+  #crazyFeatures .max-w-shell,
+  #wisdom-deck .max-w-\[447px\],
+  #expert-minds .max-w-\[1065px\],
+  #join-community .max-w-\[1065px\] {
+    width: 100%;
+  }
+
+  #courseStage {
+    min-height: 0;
+    height: min(86svh, 760px);
+  }
+
+  #courseCardBase,
+  #courseCardRising {
+    padding: clamp(1rem, 4vw, 2rem);
+  }
+
+  .course-title {
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+  }
+
+  .ring-outer {
+    transform: scale(clamp(0.78, 0.28vw + 0.7, 1));
+    transform-origin: center;
+  }
+
+  #badge-icon {
+    top: -20px !important;
+    right: 16px !important;
+  }
+
+  #crazyFeatures .feature-card {
+    width: 100%;
+    min-height: 140px;
+  }
+
+  #crazyFeatures .fc-col {
+    align-items: stretch;
+  }
+
+  .fc-spine-v,
+  .fc-spine-h,
+  .fc-line-r,
+  .fc-line-l {
+    display: none !important;
+  }
+
+  #app-showcase-section img,
+  #join-community svg,
+  #expert-minds img,
+  #wisdom-deck img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  #wisdom-deck .relative.z-10 {
+    width: min(100%, 447px);
+    gap: 2rem;
+  }
+
+  #wisdomSwiper {
+    overflow: visible;
+  }
+
+  #expertCardWrap {
+    width: min(100%, 460px);
+  }
+
+  .faq-item {
+    width: 100%;
+  }
+
+  .faq-summary {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  .faq-answer {
+    padding: 0 16px 16px;
+  }
+
+  footer .flex.flex-col {
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 1023px) and (orientation: portrait) {
+  section,
+  .screen-section,
+  #app-showcase-section,
+  #courses-check,
+  #specialized-practices,
+  #expert-minds,
+  #wisdom-deck,
+  #join-community {
+    min-height: 100svh !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-fallback > div {
+    min-height: calc(100svh - 84px);
+    justify-content: end;
+    padding-bottom: 1.25rem;
+  }
+
+  .hero-fallback .flex.flex-row.items-center.justify-center.gap-3 {
+    flex-wrap: wrap;
+  }
+
+  .hero-fallback .flex.flex-row.items-center.justify-center.gap-3 > a {
+    width: min(100%, 160px);
+  }
+
+  #courses-check .max-w-shell,
+  #crazyFeatures .max-w-shell,
+  #expert-minds .max-w-\[1065px\],
+  #join-community .max-w-\[1065px\] {
+    max-width: 100%;
+  }
+
+  #courseStage {
+    border-radius: 22px;
+  }
+
+  #courseCardBase,
+  #courseCardRising {
+    align-items: flex-start;
+  }
+
+  #courseCardBase .flex,
+  #courseCardRising .flex {
+    gap: 1.5rem;
+  }
+
+  #courseCardBase .ring-outer,
+  #courseCardRising .ring-outer {
+    transform: scale(0.8);
+  }
+
+  #crazyFeatures #fcGrid {
+    grid-template-columns: 1fr;
+  }
+
+  #crazyFeatures .feature-card {
+    min-height: 120px;
+  }
+
+  #wisdom-deck .relative.z-10 {
+    gap: 1.5rem;
+  }
+
+  #wisdom-deck .reveal-pop {
+    width: min(84vw, 300px) !important;
+    height: auto !important;
+    aspect-ratio: 260 / 390;
+  }
+
+  .deck-front {
+    padding: 24px 22px;
+  }
+
+  .deck-quote {
+    font-size: 15px;
+  }
+
+  #join-community .relative.mx-auto.w-full.max-w-\[1065px\] {
+    padding-inline: 0;
+  }
+
+  #app-showcase-section {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  #app-showcase-section #stage-half-phone img {
+    height: min(82svh, 560px);
+    max-width: 88vw;
+  }
+
+  #app-showcase-section #stage-glass-card {
+    padding: 1rem;
+    border-radius: 24px;
+  }
+
+  #app-showcase-section #app-showcase-container {
+    gap: 1.25rem;
+  }
+
+  #app-showcase-section #app-text-block {
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+
+  #app-showcase-section #app-phone-block {
+    height: auto;
+    min-height: 240px;
+  }
+
+  #app-showcase-section #app-phone-block img {
+    height: min(48svh, 360px);
+    max-width: 78vw;
+  }
+
+  #courses-check {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  #courses-check .max-w-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  #courseStage {
+    min-height: 0;
+  }
+
+  #courseStage .flex.w-full.flex-col {
+    gap: 1.2rem;
+  }
+
+  #courseCardBase,
+  #courseCardRising {
+    align-items: stretch;
+    min-height: 100%;
+  }
+
+  #courseCardBase .flex,
+  #courseCardRising .flex {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  #courseCardBase .course-title,
+  #courseCardRising .course-title {
+    text-align: center;
+  }
+
+  #courseCardBase .course-explore-link,
+  #courseCardRising .course-explore-link {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #specialized-practices {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  #specialized-practices .mt-10 {
+    margin-top: 1rem;
+  }
+
+  #specialized-practices .grid.min-h-\[520px\] {
+    min-height: 0;
+    gap: 1rem;
+  }
+
+  #specialized-practices .md\:grid-cols-\[1\.7fr_1fr\] {
+    grid-template-columns: 1fr;
+  }
+
+  #specialized-practices .mc-card {
+    min-height: 280px;
+  }
+
+  #specialized-practices .side-card {
+    min-height: 120px;
+  }
+
+  #specialized-practices .side-card {
+    padding: 1rem;
+  }
+
+  #expert-minds {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  #expert-minds .mx-auto.flex.w-full.max-w-\[1065px\] {
+    gap: 1.5rem;
+  }
+
+  #expertCardWrap {
+    width: min(100%, 420px);
+  }
+
+  #expertContent {
+    padding: 5.25rem 1rem 1.25rem;
+  }
+
+  .rating-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+
+  .faq-summary span {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 479px) {
+  .hero-fallback h1 {
+    max-width: 11ch;
+  }
+
+  .hero-fallback .flex.flex-row.items-center.justify-center.gap-3 > a {
+    width: 100%;
+  }
+
+  #wisdom-deck .reveal-pop {
+    width: min(88vw, 280px) !important;
+  }
+
+  .deck-quote {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .swipe-text {
+    gap: 8px;
+    letter-spacing: 0.16em;
+  }
+
+  .faq-summary {
+    min-height: 60px;
+    padding-block: 12px;
+  }
+
+  #badge-courses {
+    top: auto !important;
+    bottom: 0.75rem !important;
+    left: 0.75rem !important;
+    right: auto !important;
+    transform: none !important;
+  }
+
+  #badge-focus {
+    top: auto !important;
+    bottom: 0.75rem !important;
+    right: 0.75rem !important;
+    left: auto !important;
+    transform: none !important;
+  }
+
+  #app-showcase-section #stage-half-phone img {
+    height: min(72svh, 480px);
+    max-width: 92vw;
+  }
+
+  #app-showcase-section #app-phone-block img {
+    height: min(42svh, 320px);
+    max-width: 84vw;
+  }
+
+  #app-showcase-section svg,
+  #app-showcase-section #stage-half-phone img,
+  #app-showcase-section #app-phone-block img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #courseStage {
+    height: min(84svh, 680px);
+  }
+
+  #courseCardBase .ring-outer,
+  #courseCardRising .ring-outer {
+    transform: scale(0.72);
+  }
+
+  #specialized-practices .mc-card {
+    min-height: 260px;
+  }
+
+  #specialized-practices .side-card {
+    padding: 0.9rem;
+  }
+
+  #specialized-practices .side-card {
+    min-height: 112px;
+  }
+
+  #wisdom-deck .relative.z-10 {
+    width: min(100%, 340px);
+  }
+
+  #wisdom-deck .reveal-pop {
+    width: min(78vw, 280px) !important;
+  }
+
+  #expertCardWrap {
+    width: min(100%, 360px);
+  }
+
+  #expertContent {
+    padding-top: 4.75rem;
   }
 }
 
@@ -210,51 +693,6 @@ details[open] .faq-chev {
 /* ---- Expert Minds: avatar circles into place on next/prev; the card body
    and peek photos stay put - only the avatar image and the name/bio text
    (via a plain opacity crossfade set inline) change. ---- */
-.avatar-circle-out {
-  animation: avatarCircleOut 320ms cubic-bezier(0.4, 0, 0.7, 0.4) forwards;
-}
-
-.avatar-circle-in {
-  animation: avatarCircleIn 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes avatarCircleOut {
-  0% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translate(var(--arc-x, 46px), -22px) rotate(var(--arc-rot, 200deg)) scale(0.25);
-    opacity: 0;
-  }
-}
-
-@keyframes avatarCircleIn {
-  0% {
-    transform: translate(var(--arc-x, -46px), -22px) rotate(var(--arc-rot, -200deg)) scale(0.25);
-    opacity: 0;
-  }
-
-  65% {
-    transform: translate(calc(var(--arc-x, -46px) * -0.08), -8px) rotate(calc(var(--arc-rot, -200deg) * -0.04)) scale(1.08);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-  .avatar-circle-out,
-  .avatar-circle-in {
-    animation: none;
-  }
-}
-
 .expert-card {
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -262,7 +700,7 @@ details[open] .faq-chev {
   backdrop-filter: blur(6px);
 }
 
-#expertContent,
+#expertTextInner,
 #expertAvatar,
 #leftCoachWrap,
 #rightCoachWrap {
@@ -270,7 +708,7 @@ details[open] .faq-chev {
   will-change: opacity, transform;
 }
 
-#expertContent.is-transitioning,
+#expertTextInner.is-transitioning,
 #expertAvatar.is-transitioning,
 #leftCoachWrap.is-transitioning,
 #rightCoachWrap.is-transitioning {
@@ -278,7 +716,7 @@ details[open] .faq-chev {
   transform: translateY(12px) scale(0.97);
 }
 
-#expertContent.is-active,
+#expertTextInner.is-active,
 #expertAvatar.is-active,
 #leftCoachWrap.is-active,
 #rightCoachWrap.is-active {
@@ -316,6 +754,45 @@ details[open] .faq-chev {
 
 .nav-btn:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* card */
+
+#expertCardWrap {
+  z-index: 20;
+}
+
+/* text fade */
+
+#expertTextInner {
+  transition: opacity 0.25s ease;
+}
+
+/* smoother image */
+
+#expertAvatar,
+#leftCoachImg,
+#rightCoachImg {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* ===========================
+   Flying Avatar
+=========================== */
+
+.flying-avatar {
+  position: fixed;
+  width: 144px;
+  height: 144px;
+  border-radius: 50%;
+  object-fit: cover;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%) scale(0.72);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  will-change: left, top, transform, opacity;
+  transition: none;
 }
 
 /* ---- Daily Wisdom Deck ---- */
@@ -973,6 +1450,11 @@ details[open] .faq-chev {
 section {
   position: relative;
   --edge-rgb: 10, 8, 20;
+  isolation: isolate;
+}
+
+section + section {
+  margin-top: -1px;
 }
 
 section::before {
@@ -980,8 +1462,8 @@ section::before {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  height: min(200px, 28%);
+  top: -1px;
+  height: min(240px, 34%);
   background: linear-gradient(to top, rgba(var(--edge-rgb-top, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-top, var(--edge-rgb)), 1) 100%);
   pointer-events: none;
   z-index: -1;
@@ -992,8 +1474,8 @@ section::after {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  height: min(200px, 28%);
+  bottom: -1px;
+  height: min(240px, 34%);
   background: linear-gradient(to bottom, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 1) 100%);
   pointer-events: none;
   z-index: -1;
@@ -1085,4 +1567,3 @@ section::after {
     transform:translateZ(0);
 
 }
-

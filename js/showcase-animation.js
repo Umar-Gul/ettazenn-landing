@@ -30,7 +30,9 @@ const section       = document.getElementById('app-showcase-section');
   const textBlock     = document.getElementById('app-text-block');
   const badgeCourses  = document.getElementById('badge-courses');
   const badgeFocus    = document.getElementById('badge-focus');
+  const joinSection   = document.getElementById('join-community');
   const desktopLayout = window.matchMedia('(min-width: 768px)');
+  const mobileLayout  = window.matchMedia('(max-width: 767px)');
 
   if (!section || !half || !halfImg || !card || !phoneBlock || !phoneImg || !textBlock || !badgeCourses || !badgeFocus) {
     console.warn('[showcase-animation] one or more expected elements were not found — check IDs.');
@@ -88,6 +90,32 @@ function positionHalfPhone() {
 }
 
   function alignBadgesToPhone() {
+    if (mobileLayout.matches) {
+      const cardRect = card.getBoundingClientRect();
+      const textRect = textBlock.getBoundingClientRect();
+      if (!cardRect.width || !textRect.height) return;
+
+      const textAbovePhone = textRect.top < cardRect.top + cardRect.height * 0.5;
+
+      badgeCourses.style.left = '0.75rem';
+      badgeCourses.style.right = 'auto';
+      badgeFocus.style.left = 'auto';
+      badgeFocus.style.right = '0.75rem';
+
+      if (textAbovePhone) {
+        badgeCourses.style.top = 'auto';
+        badgeCourses.style.bottom = '0.75rem';
+        badgeFocus.style.top = 'auto';
+        badgeFocus.style.bottom = '0.75rem';
+      } else {
+        badgeCourses.style.top = '0.75rem';
+        badgeCourses.style.bottom = 'auto';
+        badgeFocus.style.top = '0.75rem';
+        badgeFocus.style.bottom = 'auto';
+      }
+      return;
+    }
+
     const cardRect = card.getBoundingClientRect();
     const textRect = textBlock.getBoundingClientRect();
     if (!cardRect.width || !textRect.width) return;
@@ -113,6 +141,10 @@ function positionHalfPhone() {
   function applyLayoutAlignment(isPhoneOnRight) {
     phoneBlock.style.left = '';
     textBlock.style.left = '';
+    badgeCourses.style.top = '';
+    badgeCourses.style.bottom = '';
+    badgeFocus.style.top = '';
+    badgeFocus.style.bottom = '';
     requestAnimationFrame(alignBadgesToPhone);
   }
 
@@ -232,6 +264,20 @@ function positionHalfPhone() {
     window.removeEventListener('touchmove', onTouchMove);
     window.removeEventListener('keydown', onKeydown);
     window.removeEventListener('scroll', keepScrollPosition);
+  }
+
+  function armJoinRelease() {
+    if (!joinSection || typeof IntersectionObserver === 'undefined') return;
+
+    const joinObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.35) {
+          unlockScroll();
+        }
+      });
+    }, { threshold: [0, 0.35, 0.6, 1] });
+
+    joinObserver.observe(joinSection);
   }
 
   // ---------------------------------------------------------------------
@@ -474,4 +520,5 @@ function positionHalfPhone() {
   }, { threshold: [0, 0.5, 1] });
 
   io.observe(section);
+  armJoinRelease();
 })();

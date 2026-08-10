@@ -105,7 +105,7 @@
     slides.forEach(function (slide, index) {
       var card = slide.querySelector('.deck-tilt') || slide;
       card.style.opacity = '0';
-      card.style.transform = 'translateY(16px) scale(0.97)';
+      card.style.transform = 'translateY(16px) scale(1.97)';
     });
 
     window.setTimeout(function () {
@@ -133,6 +133,7 @@
 })();
 
 // Expert Minds - swipeable testimonial carousel
+// Expert Minds - swipeable testimonial carousel
 (function () {
   function getEl(id, className) {
     return document.getElementById(id) || document.querySelector('.' + className);
@@ -140,7 +141,7 @@
 
   var cardWrap = getEl('expertCardWrap', 'expert-card-wrap');
   var avatar = getEl('expertAvatar', 'expert-avatar');
-  var content = getEl('expertContent', 'expert-content');
+  var content = getEl('expertTextInner', 'expert-text-inner');
   var nameEl = getEl('expertName', 'expert-name');
   var starsEl = getEl('expertStars', 'expert-stars');
   var ratingNumEl = getEl('expertRatingNum', 'expert-rating-num');
@@ -237,14 +238,33 @@
     });
   }
 
-  var TOTAL_TIME = 620;       // full slide duration
-  var TEXT_HOLD_TIME = 220;   // how long content stays faded out before swapping in
+  var TOTAL_TIME = 680;       // full slide duration
+  var TEXT_HOLD_TIME = 260;   // how long content stays faded out before swapping in
 
   function lerp(a, b, t) { return a + (b - a) * t; }
   function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
   function centerOf(rect) {
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  }
+
+  // leftCoachWrap/rightCoachWrap only render at the xl breakpoint
+  // (1280px+) — below that they're `display:none`, so
+  // getBoundingClientRect() on them returns an all-zero rect and the
+  // flying clones would fly to the top-left corner of the page instead
+  // of arcing in from the side. When that happens, synthesize a sane
+  // rect just outside the card's own edge (vertically centered on the
+  // card) so the exact same flight animation still makes sense with no
+  // visible peeking avatar to aim at.
+  function wrapRect(wrapEl, side) {
+    var r = wrapEl.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) return r;
+
+    var cardRect = cardWrap.getBoundingClientRect();
+    var size = avatar.getBoundingClientRect().width || 96;
+    var x = side === 'left' ? cardRect.left - size * 0.4 : cardRect.right + size * 0.4;
+    var y = cardRect.top + cardRect.height / 2;
+    return { left: x - size / 2, top: y - size / 2, width: size, height: size };
   }
 
   function makeFlyer(imageSrc, size) {
@@ -302,8 +322,8 @@
 
     var centerWrap = avatar.parentElement;
     var centerRect = centerOf(centerWrap.getBoundingClientRect());
-    var leftRect = centerOf(leftWrap.getBoundingClientRect());
-    var rightRect = centerOf(rightWrap.getBoundingClientRect());
+    var leftRect = centerOf(wrapRect(leftWrap, 'left'));
+    var rightRect = centerOf(wrapRect(rightWrap, 'right'));
 
     // Off-screen exit/enter points, mirrored the same distance beyond
     // the left/right slots as those slots are from center — this is
@@ -347,12 +367,18 @@ flyStraight(flyer3, outgoingWrapRect, exitPoint, TOTAL_TIME, { startScale: 1, en
 var flyer4 = makeFlyer(newUpcoming.avatar, sideSize);
 flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, endScale: 1, fadeIn: true }, function () { flyer4.remove(); });
 
-    // crossfade the text block independently of the avatar flight
-    setTransitionState(content, false);
+    // Crossfade the text block independently of the avatar flight.
+    // Pure opacity, no transform/scale — the card box itself must stay
+    // perfectly fixed in place; only its text content fades. (Note this
+    // intentionally bypasses the shared is-transitioning/is-active
+    // classes, which also apply a translateY+scale used for the
+    // one-time page-load entrance — that entrance is unaffected.)
+    content.style.transition = 'opacity ' + (TOTAL_TIME - TEXT_HOLD_TIME) + 'ms ease';
+    content.style.opacity = '0';
     setTimeout(function () {
       index = (index + direction + experts.length) % experts.length;
       render(); // updates real elements while still hidden — no pop
-      setTransitionState(content, true);
+      content.style.opacity = '1';
     }, TEXT_HOLD_TIME);
 
     // reveal the real elements at the exact instant the clones land
@@ -402,6 +428,31 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
     dragStartX = null;
     cardWrap.style.cursor = 'grab';
   });
+})();
+
+// Release any lingering scroll locking when the CTA section comes into view.
+(function () {
+  var joinSection = document.getElementById('join-community');
+  if (!joinSection || typeof IntersectionObserver === 'undefined') return;
+
+  function releaseScrollStyles() {
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.body.style.overflowY = '';
+    document.documentElement.style.overflowY = '';
+    document.body.style.height = '';
+    document.documentElement.style.height = '';
+  }
+
+  var joinObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.35) {
+        releaseScrollStyles();
+      }
+    });
+  }, { threshold: [0, 0.35, 0.6, 1] });
+
+  joinObserver.observe(joinSection);
 })();
 
 // Personalized Guidance - tab switching
@@ -808,3 +859,4 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
     }, { passive: true });
   }
 })();
+
