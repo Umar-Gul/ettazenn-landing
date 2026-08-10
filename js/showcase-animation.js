@@ -4,16 +4,16 @@
 // Animation content/timings are unchanged — only the locking behavior
 // and the hero-phone starting position (mobile vs desktop) changed.
 //
-//   - Fires ONCE per page load. Once triggered (even if aborted early by
-//     an upward scroll), it never triggers again.
+//   - Fires ONCE per page load. Once triggered, it never re-arms.
 //   - Downward scroll/swipe/arrow-key steps the animation forward one
 //     beat at a time: 0 initial -> 1 morphed -> 2 settled -> 3 swap1 ->
 //     4 swap2. Page scroll stays locked the whole time.
-//   - Upward scroll/swipe/arrow-key is ALWAYS free — never intercepted,
-//     even mid-animation. It immediately releases the lock and lets that
-//     same input scroll the page normally. There is no reverse-stepping.
+//   - Upward scroll/swipe/arrow-key steps the animation BACKWARD one
+//     beat at a time, mirroring the forward steps exactly (4->3->2->1->0).
+//     Only once you're back at step 0 does upward input release the lock
+//     and scroll the page normally.
 //   - Reaching step 4 unlocks scroll and hands off to normal downward
-//     page scroll, same as reaching it via an early upward release.
+//     page scroll, same as before.
 //   - #stage-half-phone starts flush at the left edge on mobile
 //     (< md breakpoint) and centered on desktop, matching the
 //     `left-0 md:left-1/2` classes on that element.
@@ -186,59 +186,6 @@ function positionHalfPhone() {
     window.scrollTo(0, lockedScrollY);
   }
 
-  function releaseUpward() {
-    if (!scrollLocked) return;
-    clearPendingTimers();
-    animating = false;
-    unlockScroll();
-  }
-
-  function onWheel(event) {
-    if (event.deltaY < 0) {
-      releaseUpward();
-      return; // do not preventDefault — let this event scroll the page
-    }
-    if (Math.abs(event.deltaY) < 4) { event.preventDefault(); return; }
-    handleStepInput(event);
-  }
-
-  let touchStartY = 0;
-  let touchStepFired = false;
-
-  function onTouchStart(event) {
-    touchStartY = event.touches[0].clientY;
-    touchStepFired = false;
-  }
-
-  function onTouchMove(event) {
-    const delta = touchStartY - event.touches[0].clientY;
-
-    if (delta < -10) { // swipe down = scrolling up = always free
-      releaseUpward();
-      return;
-    }
-    if (touchStepFired) { event.preventDefault(); return; }
-    if (delta < 30) { event.preventDefault(); return; }
-    touchStepFired = true;
-    handleStepInput(event);
-  }
-
-  function onKeydown(event) {
-    const tagName = event.target.tagName;
-    if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT' || event.target.isContentEditable) return;
-    if (!scrollKeys.has(event.key)) return;
-
-    if (event.key === 'ArrowUp' || event.key === 'PageUp') {
-      releaseUpward();
-      return;
-    }
-    if (event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' ') {
-      handleStepInput(event);
-    } else {
-      event.preventDefault(); // swallow Home/End while locked
-    }
-  }
-
   function lockScroll() {
     if (scrollLocked) return;
     scrollLocked = true;
@@ -281,7 +228,7 @@ function positionHalfPhone() {
   }
 
   // ---------------------------------------------------------------------
-  // Step transitions — unchanged
+  // Step transitions (forward) — unchanged
   // ---------------------------------------------------------------------
 
   function stepForward0to1() {
@@ -425,6 +372,146 @@ function positionHalfPhone() {
     }
     event.preventDefault();
     advanceStep();
+  }
+
+  // ---------------------------------------------------------------------
+  // Step transitions (backward) — exact mirrors of the forward steps above.
+  // Each one undoes exactly what its forward counterpart did, so scrolling
+  // up at any point in the sequence plays the entrance in reverse.
+  // ---------------------------------------------------------------------
+
+  // Reverses stepForward1to2: card/text/badges slide back off-screen to
+  // their pre-entrance positions, and the half-phone reappears (with
+  // phoneImg going transparent) at the same instant the forward version
+  // swapped them at the end — because reversing playback moves that swap
+  // to the start.
+  function stepBackward2to1() {
+    return new Promise((resolve) => {
+      const easing = 'cubic-bezier(0.22, 1, 0.36, 1)';
+      const DURATION = SIDE_ENTER_DURATION;
+
+      half.style.display = 'block';
+      phoneImg.style.opacity = '0';
+
+      card.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
+      textBlock.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
+      badgeCourses.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
+      badgeFocus.style.transition = `transform ${DURATION}ms ${easing}, opacity ${DURATION}ms ease-out`;
+
+      requestAnimationFrame(() => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(-105vw) scale(0.97)';
+        textBlock.style.opacity = '0';
+        textBlock.style.transform = 'translateX(105vw)';
+        badgeCourses.style.opacity = '0';
+        badgeCourses.style.transform = 'translate(105vw, -18px)';
+        badgeFocus.style.opacity = '0';
+        badgeFocus.style.transform = 'translate(105vw, 18px)';
+      });
+
+      track(setTimeout(resolve, DURATION));
+    });
+  }
+
+  // Reverses stepForward0to1: the half-phone morphs back from the card
+  // slot to its original half-risen position, then the card is fully
+  // hidden again (display: none), matching the pre-capture arm state.
+  function stepBackward1to0() {
+    return new Promise((resolve) => {
+      halfImg.style.transformOrigin = 'top left';
+      halfImg.style.transition = `transform ${MORPH_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+      requestAnimationFrame(() => {
+        halfImg.style.transform = 'none';
+      });
+
+      track(setTimeout(() => {
+        card.style.display = 'none';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(-105vw) scale(0.97)';
+        resolve();
+      }, MORPH_DURATION));
+    });
+  }
+
+  // Index i = the reverse of FORWARD_TRANSITIONS[i], i.e. the transition
+  // that undoes "leaving step i+1 back to step i". toggleSide is its own
+  // inverse (it just swaps whichever side is currently active), so the
+  // same function is reused for both step 3->2 and step 4->3.
+  const BACKWARD_TRANSITIONS = [stepBackward1to0, stepBackward2to1, toggleSide, toggleSide];
+
+  async function retreatStep() {
+    if (animating || currentStep <= 0) return;
+    animating = true;
+    const leavingStep = currentStep; // 1..4
+    await BACKWARD_TRANSITIONS[leavingStep - 1]();
+    currentStep -= 1;
+    animating = false;
+    if (currentStep === 0) unlockScroll(); // fully reversed — release to normal upward scroll
+  }
+
+  function handleStepInputUp(event) {
+    if (animating) {
+      event.preventDefault();
+      return;
+    }
+    if (currentStep <= 0) {
+      unlockScroll(); // nothing left to reverse — let this scroll move the page up
+      return;
+    }
+    event.preventDefault();
+    retreatStep();
+  }
+
+  // ---------------------------------------------------------------------
+  // Input handlers
+  // ---------------------------------------------------------------------
+
+  function onWheel(event) {
+    if (event.deltaY < 0) {
+      handleStepInputUp(event);
+      return;
+    }
+    if (Math.abs(event.deltaY) < 4) { event.preventDefault(); return; }
+    handleStepInput(event);
+  }
+
+  let touchStartY = 0;
+  let touchStepFired = false;
+
+  function onTouchStart(event) {
+    touchStartY = event.touches[0].clientY;
+    touchStepFired = false;
+  }
+
+  function onTouchMove(event) {
+    const delta = touchStartY - event.touches[0].clientY;
+
+    if (delta < -10) {
+      if (touchStepFired) { event.preventDefault(); return; }
+      touchStepFired = true;
+      handleStepInputUp(event);
+      return;
+    }
+    if (touchStepFired) { event.preventDefault(); return; }
+    if (delta < 30) { event.preventDefault(); return; }
+    touchStepFired = true;
+    handleStepInput(event);
+  }
+
+  function onKeydown(event) {
+    const tagName = event.target.tagName;
+    if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT' || event.target.isContentEditable) return;
+    if (!scrollKeys.has(event.key)) return;
+
+    if (event.key === 'ArrowUp' || event.key === 'PageUp') {
+      handleStepInputUp(event);
+      return;
+    }
+    if (event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' ') {
+      handleStepInput(event);
+    } else {
+      event.preventDefault(); // swallow Home/End while locked
+    }
   }
 
   // ---------------------------------------------------------------------
