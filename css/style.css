@@ -1,3 +1,11 @@
+/* ============================================================
+   ETTAZENN LANDING PAGE — STYLESHEET
+   Desktop (≥1024px) is the approved source of truth and is left
+   untouched outside explicit @media (max-width) blocks below.
+   All responsive behavior lives in clearly labeled media queries,
+   organized section-by-section, with no duplicate/conflicting rules.
+============================================================ */
+
 @media (prefers-reduced-motion: reduce) {
   #stage-half-phone,
   #stage-glass-card,
@@ -9,17 +17,15 @@
   }
 }
 
-
-/* Global overflow safety: prevent any fixed-width element from creating horizontal scroll */
+/* ------------------------------------------------------------
+   GLOBAL BASE / OVERFLOW SAFETY
+   Applies at all widths — prevents any fixed-width element from
+   creating horizontal scroll, on desktop or mobile.
+------------------------------------------------------------ */
 html,
 body {
   overflow-x: hidden;
   width: 100%;
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 0;
 }
 
 body {
@@ -28,6 +34,7 @@ body {
   overflow-y: auto;
   scroll-snap-type: y proximity;
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 img,
@@ -47,39 +54,64 @@ iframe {
   }
 }
 
+/* ------------------------------------------------------------
+   GLOBAL MOBILE/TABLET SCROLL + SNAP BEHAVIOR (≤1023px)
+
+   ROOT FIX: every section is locked to exactly one screen using a
+   fixed 100dvh (height + min-height + max-height together, not
+   height:auto). dvh accounts for the mobile browser's address bar,
+   so this can never fall short of the real viewport the way the
+   old "min-height:100svh + height:auto" combo did once individual
+   sections' content shrank below one screen. overflow-y:auto is
+   the default safety net (matches each section's native
+   h-screen ... overflow-y-auto markup) so any section whose
+   content slightly overflows scrolls internally instead of
+   pushing into the next section. Sections that should never
+   internally scroll (Wisdom Deck, Courses, Crazy Features) opt
+   into overflow:hidden at the ID level below — that single
+   override is now the ONLY thing those blocks still need to set,
+   since height is handled globally, once, here.
+------------------------------------------------------------ */
 @media (max-width: 1023px) {
   body {
     min-height: 100svh;
     overflow-y: auto;
-    scroll-snap-type: y proximity;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    scroll-padding-top: 0;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   body.snap-y,
   body.snap-mandatory {
-    scroll-snap-type: y proximity;
+    scroll-snap-type: y mandatory;
   }
 
   section,
   .screen-section,
   .hero-fallback {
-    min-height: 100svh !important;
-    height: auto !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow-y: auto !important;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    box-sizing: border-box;
   }
 
   section.snap-start,
   section.snap-always {
     scroll-snap-align: start;
-    scroll-snap-stop: normal;
+    scroll-snap-stop: always;
   }
 }
 
-/* ---- Scroll-entry reveal animations (crossfade + slback {
-    overflow-y: visible !important;
-    scroll-snap-align: none;
-  }
-
-   Applied via IntersectionObserver: element starts hidden/offset, then
-   eases into place the first time it enters the viewport. */
+/* ------------------------------------------------------------
+   SCROLL-ENTRY REVEAL ANIMATIONS (crossfade + slide)
+   Applied via IntersectionObserver: element starts hidden/offset,
+   then eases into place the first time it enters the viewport.
+------------------------------------------------------------ */
 .reveal-up {
   opacity: 0;
   transform: translateY(28px) scale(0.96);
@@ -110,7 +142,6 @@ iframe {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .reveal-up,
   .reveal-pop {
     transition: none;
@@ -119,17 +150,41 @@ iframe {
   }
 }
 
-/* ---- Responsive polish: keep desktop intact, soften only smaller layouts ---- */
+/* ============================================================
+   RESPONSIVE — GENERAL SECTION WIDTH CONTAINMENT (≤1023px)
+============================================================ */
+
+@media (max-width: 1023px) {
+  section,
+  .screen-section,
+  .hero-fallback {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  section > *,
+  .screen-section > *,
+  .hero-fallback > * {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #wisdom-deck .relative.z-10 {
+    gap: clamp(1.25rem, 4dvh, 2rem) !important;
+  }
+}
+
 @media (max-width: 1023px) {
   .hero-fallback > header {
     border-radius: 0 0 18px 18px;
   }
 
   .hero-fallback > div {
-    min-height: calc(100svh - 85px);
+    min-height: 0;
+    height: 100%;
     justify-content: center;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding: 1.25rem 1rem 1.5rem;
   }
 
   .hero-fallback h1 {
@@ -148,30 +203,7 @@ iframe {
   #expert-minds .max-w-\[1065px\],
   #join-community .max-w-\[1065px\] {
     width: 100%;
-  }
-
-  #courseStage {
-    min-height: 0;
-    height: min(86svh, 760px);
-  }
-
-  #courseCardBase,
-  #courseCardRising {
-    padding: clamp(1rem, 4vw, 2rem);
-  }
-
-  .course-title {
-    font-size: clamp(1.8rem, 6vw, 2.6rem);
-  }
-
-  .ring-outer {
-    transform: scale(clamp(0.78, 0.28vw + 0.7, 1));
-    transform-origin: center;
-  }
-
-  #badge-icon {
-    top: -20px !important;
-    right: 16px !important;
+    margin-inline: auto;
   }
 
   #crazyFeatures .feature-card {
@@ -198,13 +230,25 @@ iframe {
     height: auto;
   }
 
-  #wisdom-deck .relative.z-10 {
-    width: min(100%, 447px);
-    gap: 2rem;
+  #wisdom-deck {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    overflow: hidden !important;
+    padding-top: clamp(0.75rem, 2.5dvh, 1.5rem);
+    padding-bottom: clamp(0.75rem, 2.5dvh, 1.5rem);
   }
 
   #wisdomSwiper {
     overflow: visible;
+  }
+
+  #wisdom-deck .relative.z-10 {
+    width: min(100%, 447px);
+    max-width: 100%;
+    margin-inline: auto;
+    gap: clamp(1rem, 3dvh, 1.75rem) !important;
+    transform: scale(0.84);
+    transform-origin: center top;
   }
 
   #expertCardWrap {
@@ -230,24 +274,157 @@ iframe {
   }
 }
 
-@media (max-width: 1023px) and (orientation: portrait) {
-  section,
-  .screen-section,
-  #app-showcase-section,
-  #courses-check,
-  #specialized-practices,
-  #expert-minds,
-  #wisdom-deck,
-  #join-community {
-    min-height: 100svh !important;
+/* ============================================================
+   RESPONSIVE — COURSES & SPECIALIZED PRACTICES (≤1023px)
+   Mirrors desktop's row layout (text left, icon rings right),
+   fit to one screen and scaled proportionally. Desktop untouched.
+============================================================ */
+@media (max-width: 1023px) {
+  #courses-check {
+    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: clamp(0.5rem, 2dvh, 1rem);
+    padding-bottom: clamp(0.5rem, 2dvh, 1rem);
+  }
+
+  #courses-check > .max-w-shell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 0;
+  }
+
+  #courses-check .mx-auto.max-w-xl {
+    flex: 0 0 auto;
+  }
+
+  #courses-check .mx-auto.max-w-xl h2 {
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+  }
+
+  #courses-check .mx-auto.max-w-xl p {
+    margin-top: 0.4rem;
+    font-size: clamp(11px, 2.5vw, 13px);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  #courses-check .relative.mx-auto.mt-8 {
+    flex: 0 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: clamp(0.5rem, 2dvh, 1.25rem);
+  }
+
+  #courseStage {
+    flex: 0 0 auto;
+    width: 100%;
+    height: clamp(320px, 56dvh, 480px);
+    min-height: 0;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #courseDots {
+    flex: 0 0 auto;
+    margin-top: clamp(0.5rem, 1.5dvh, 0.9rem);
+  }
+
+  /* Badge: hidden below md by the "hidden md:flex" Tailwind classes on the
+     element itself — force it visible on mobile too, repositioned to sit
+     just above the (now top-centered) icon, echoing its desktop placement
+     just above the icon ring. */
+  #badge-icon {
+    display: flex !important;
+    top: -14px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(6vw) scale(0.55) !important;
+    transform-origin: top center;
+  }
+
+  #courseCardBase,
+  #courseCardRising {
+    padding: clamp(0.75rem, 3vw, 1.5rem);
+  }
+
+  /* Icon on top, text/button stacked below it, all centered.
+     DOM order is [text block, icon block] — column-reverse renders the
+     icon first (top) without touching the markup. */
+  #courseCardBase .flex.w-full.flex-col,
+  #courseCardRising .flex.w-full.flex-col {
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.4rem, 2dvh, 1rem);
+  }
+
+  #courseCardBase .max-w-md,
+  #courseCardRising .max-w-md {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .course-title {
+    text-align: center;
+    font-size: clamp(1.1rem, 4.6vw, 1.7rem);
+  }
+
+  .course-desc {
+    font-size: clamp(10px, 2.3vw, 12px);
+    margin-top: clamp(0.35rem, 1dvh, 0.6rem) !important;
+  }
+
+  .ring-outer {
+    transform: scale(clamp(0.48, 0.22vw + 0.38, 0.85));
+    transform-origin: center;
+  }
+
+  .course-explore-link {
+    margin-top: clamp(0.35rem, 1dvh, 0.75rem) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 0.5rem 1.25rem !important;
+    font-size: 12px !important;
   }
 }
 
+/* Short-viewport safety net (small phones in landscape, older iPhones) */
+@media (max-width: 1023px) and (max-height: 680px) {
+  #badge-icon {
+    transform: translateX(6vw) scale(0.4) !important;
+  }
+
+  .ring-outer {
+    transform: scale(0.38) !important;
+  }
+
+  .course-desc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — ≤767px OVERRIDES (PHONE)
+============================================================ */
 @media (max-width: 767px) {
   .hero-fallback > div {
-    min-height: calc(100svh - 84px);
-    justify-content: end;
-    padding-bottom: 1.25rem;
+    min-height: 0;
+    justify-content: center;
+    padding: 1rem 1rem 1.25rem;
   }
 
   .hero-fallback .flex.flex-row.items-center.justify-center.gap-3 {
@@ -263,25 +440,11 @@ iframe {
   #expert-minds .max-w-\[1065px\],
   #join-community .max-w-\[1065px\] {
     max-width: 100%;
+    margin-inline: auto;
   }
 
   #courseStage {
     border-radius: 22px;
-  }
-
-  #courseCardBase,
-  #courseCardRising {
-    align-items: flex-start;
-  }
-
-  #courseCardBase .flex,
-  #courseCardRising .flex {
-    gap: 1.5rem;
-  }
-
-  #courseCardBase .ring-outer,
-  #courseCardRising .ring-outer {
-    transform: scale(0.8);
   }
 
   #crazyFeatures #fcGrid {
@@ -294,6 +457,11 @@ iframe {
 
   #wisdom-deck .relative.z-10 {
     gap: 1.5rem;
+    transform: scale(0.9);
+  }
+
+  #wisdom-deck {
+    padding-inline: 1.25rem;
   }
 
   #wisdom-deck .reveal-pop {
@@ -312,16 +480,32 @@ iframe {
 
   #join-community .relative.mx-auto.w-full.max-w-\[1065px\] {
     padding-inline: 0;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   #app-showcase-section {
     padding-top: 1rem;
     padding-bottom: 1rem;
+    touch-action: pan-y;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+    scroll-snap-stop: normal;
+  }
+
+  #app-showcase-section #app-showcase-container {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: visible;
   }
 
   #app-showcase-section #stage-half-phone img {
-    height: min(82svh, 560px);
-    max-width: 88vw;
+    height: min(58svh, 420px);
+    max-width: 84vw;
   }
 
   #app-showcase-section #stage-glass-card {
@@ -342,54 +526,12 @@ iframe {
   #app-showcase-section #app-phone-block {
     height: auto;
     min-height: 240px;
+    overflow: visible;
   }
 
   #app-showcase-section #app-phone-block img {
-    height: min(48svh, 360px);
-    max-width: 78vw;
-  }
-
-  #courses-check {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
-  #courses-check .max-w-shell {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  #courseStage {
-    min-height: 0;
-  }
-
-  #courseStage .flex.w-full.flex-col {
-    gap: 1.2rem;
-  }
-
-  #courseCardBase,
-  #courseCardRising {
-    align-items: stretch;
-    min-height: 100%;
-  }
-
-  #courseCardBase .flex,
-  #courseCardRising .flex {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  #courseCardBase .course-title,
-  #courseCardRising .course-title {
-    text-align: center;
-  }
-
-  #courseCardBase .course-explore-link,
-  #courseCardRising .course-explore-link {
-    margin-left: auto;
-    margin-right: auto;
+    height: min(38svh, 300px);
+    max-width: 74vw;
   }
 
   #specialized-practices {
@@ -397,8 +539,14 @@ iframe {
     padding-bottom: 1rem;
   }
 
+  #specialized-practices .grid.min-h-\[520px\],
+  #specialized-practices .md\:grid-cols-\[1\.7fr_1fr\] {
+    align-items: center;
+    justify-items: center;
+  }
+
   #specialized-practices .mt-10 {
-    margin-top: 1rem;
+    margin-top: -1rem;
   }
 
   #specialized-practices .grid.min-h-\[520px\] {
@@ -416,9 +564,6 @@ iframe {
 
   #specialized-practices .side-card {
     min-height: 120px;
-  }
-
-  #specialized-practices .side-card {
     padding: 1rem;
   }
 
@@ -429,6 +574,8 @@ iframe {
 
   #expert-minds .mx-auto.flex.w-full.max-w-\[1065px\] {
     gap: 1.5rem;
+    align-items: center;
+    text-align: center;
   }
 
   #expertCardWrap {
@@ -449,6 +596,9 @@ iframe {
   }
 }
 
+/* ============================================================
+   RESPONSIVE — ≤479px OVERRIDES (SMALL PHONE)
+============================================================ */
 @media (max-width: 479px) {
   .hero-fallback h1 {
     max-width: 11ch;
@@ -460,6 +610,10 @@ iframe {
 
   #wisdom-deck .reveal-pop {
     width: min(88vw, 280px) !important;
+  }
+
+  #wisdom-deck {
+    padding-inline: 1rem;
   }
 
   .deck-quote {
@@ -494,13 +648,20 @@ iframe {
   }
 
   #app-showcase-section #stage-half-phone img {
-    height: min(72svh, 480px);
-    max-width: 92vw;
+    height: min(52svh, 360px);
+    max-width: 90vw;
+  }
+
+  #app-showcase-section {
+    touch-action: pan-y;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+    scroll-snap-stop: normal;
   }
 
   #app-showcase-section #app-phone-block img {
-    height: min(42svh, 320px);
-    max-width: 84vw;
+    height: min(34svh, 260px);
+    max-width: 82vw;
   }
 
   #app-showcase-section svg,
@@ -510,29 +671,22 @@ iframe {
     margin-right: auto;
   }
 
-  #courseStage {
-    height: min(84svh, 680px);
-  }
-
-  #courseCardBase .ring-outer,
-  #courseCardRising .ring-outer {
-    transform: scale(0.72);
-  }
-
   #specialized-practices .mc-card {
     min-height: 260px;
   }
 
   #specialized-practices .side-card {
     padding: 0.9rem;
-  }
-
-  #specialized-practices .side-card {
     min-height: 112px;
   }
 
   #wisdom-deck .relative.z-10 {
     width: min(100%, 340px);
+    transform: scale(0.92);
+  }
+
+  #join-community .relative.mx-auto.w-full.max-w-\[1065px\] {
+    padding-inline: 1rem;
   }
 
   #wisdom-deck .reveal-pop {
@@ -547,6 +701,12 @@ iframe {
     padding-top: 4.75rem;
   }
 }
+
+/* ============================================================
+   COMPONENT / SECTION VISUAL STYLES
+   (backgrounds, cards, effects — same at every width unless a
+   media query above overrides a specific property)
+============================================================ */
 
 /* Hero background — Figma artwork, enhanced with a starfield, a warm glow
    around the lit doorway, and a vignette for more depth/contrast */
@@ -756,19 +916,27 @@ details[open] .faq-chev {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* card */
-
 #expertCardWrap {
   z-index: 20;
 }
-
-/* text fade */
 
 #expertTextInner {
   transition: opacity 0.25s ease;
 }
 
-/* smoother image */
+#expertContent {
+  transition: opacity 0.25s ease;
+}
+
+#expertAvatar {
+  position: relative;
+  z-index: 50;
+}
+
+#leftCoachWrap,
+#rightCoachWrap {
+  z-index: 10;
+}
 
 #expertAvatar,
 #leftCoachImg,
@@ -777,10 +945,7 @@ details[open] .faq-chev {
   transform: translateZ(0);
 }
 
-/* ===========================
-   Flying Avatar
-=========================== */
-
+/* ---- Flying Avatar (Expert Minds mobile-clone animation) ---- */
 .flying-avatar {
   position: fixed;
   width: 144px;
@@ -829,14 +994,10 @@ details[open] .faq-chev {
 }
 
 @keyframes deckShimmer {
-
-  0%,
-  35% {
+  0%, 35% {
     transform: translateX(-130%);
   }
-
-  60%,
-  100% {
+  60%, 100% {
     transform: translateX(130%);
   }
 }
@@ -867,12 +1028,9 @@ details[open] .faq-chev {
 }
 
 @keyframes deckIconGlow {
-
-  0%,
-  100% {
+  0%, 100% {
     filter: drop-shadow(0 0 8px rgba(216, 180, 254, 0.55));
   }
-
   50% {
     filter: drop-shadow(0 0 16px rgba(216, 180, 254, 0.95));
   }
@@ -892,13 +1050,10 @@ details[open] .faq-chev {
 }
 
 @keyframes deckTwinkle {
-
-  0%,
-  100% {
+  0%, 100% {
     opacity: 0;
     transform: scale(0.4);
   }
-
   50% {
     opacity: 1;
     transform: scale(1);
@@ -914,13 +1069,10 @@ details[open] .faq-chev {
 }
 
 @keyframes deckGlowPulse {
-
-  0%,
-  100% {
+  0%, 100% {
     opacity: 0.55;
     transform: scale(0.92);
   }
-
   50% {
     opacity: 1;
     transform: scale(1.06);
@@ -928,7 +1080,6 @@ details[open] .faq-chev {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .deck-card::after,
   .deck-icon,
   .deck-sparkle,
@@ -1063,10 +1214,8 @@ details[open] .faq-chev {
   border-radius: 18px;
   border: 1px solid rgba(196, 181, 253, 0.16);
   background: linear-gradient(97.35deg, rgba(170, 166, 179, 0.2538) -5.62%, rgba(33, 26, 59, 0.27) 111.1%);
-
   padding: 0.85rem 1rem;
   backdrop-filter: blur(4px);
-  
 }
 
 .fc-icon {
@@ -1109,7 +1258,6 @@ details[open] .faq-chev {
 }
 
 /* dashed connector stubs from each card toward the central spine (desktop only) */
-/* dashed connector stubs from each card toward the central spine (desktop only) */
 .fc-line-r,
 .fc-line-l {
   display: none;
@@ -1126,7 +1274,6 @@ details[open] .faq-chev {
     transparent 4px,
     transparent 11px
   );
-  /* background-size: 22px 100%; */
   background-repeat: repeat-x;
 }
 
@@ -1145,13 +1292,10 @@ details[open] .faq-chev {
 
 /* LEFT column card → stub sits to the RIGHT of the card, toward center:
    dots flow rightward (toward the spine) */
-/* LEFT column card → stub sits to the RIGHT of the card, toward center:
-   dots flow rightward (toward the spine) */
 .fc-line-r {
   right: 0;
   transform: translate(100%, -50%);
   animation: dash-flow-right 1.4s linear infinite;
-  /* fade the line out where it meets the card (local 0% = edge touching card) */
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
@@ -1170,14 +1314,12 @@ details[open] .faq-chev {
   right: -px;
 }
 
-
 /* RIGHT column card → stub sits to the LEFT of the card, toward center:
    dots flow leftward (toward the spine) */
 .fc-line-l {
   left: 0;
   transform: translate(-100%, -50%);
   animation: dash-flow-left 1.4s linear infinite;
-  /* fade the line out where it meets the card (local 100% = edge touching card) */
   -webkit-mask-image: linear-gradient(
     to right,
     black 0%,
@@ -1205,7 +1347,6 @@ details[open] .faq-chev {
   pointer-events: none;
   z-index: 0;
 }
-
 
 .fc-spine-v {
   top: 4%;
@@ -1249,7 +1390,7 @@ details[open] .faq-chev {
 .fc-spine-h {
   top: 50%;
   left: 8%;
-  right: 22%;  /* increased from 12% — pushes the spine's end further away from Community card */
+  right: 22%; /* pushes the spine's end further away from Community card */
   height: 2px;
   transform: translateY(-50%);
   overflow: hidden;
@@ -1305,16 +1446,11 @@ details[open] .faq-chev {
   from { background-position: 0 0; }
   to   { background-position: 0 -22px; }
 }
-/* @keyframes dash-flow-up {
-  from { background-position: 0 0; }
-  to   { background-position: 0 22px; }
-} */
 
 /* ---- Crazy Features: fit inside a single mobile screen (desktop untouched) ---- */
 @media (max-width: 767px) {
   #crazyFeatures {
-    height: 100dvh;
-    min-height: 100dvh;
+    overflow: hidden !important;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
   }
@@ -1377,7 +1513,6 @@ details[open] .faq-chev {
 }
 
 /* Animated dashed connector lines — dots/dashes only, nothing else moves */
-
 @keyframes dash-flow-h {
   from { background-position: 0 0; }
   to   { background-position: 24px 0; }
@@ -1429,7 +1564,7 @@ details[open] .faq-chev {
   animation: dash-flow-h 1.2s linear infinite;
 }
 
-/* ---- Mobile nav drawer (added for responsiveness; visual style matches existing navbar) ---- */
+/* ---- Mobile nav drawer (visual style matches existing navbar) ---- */
 .mobile-nav-panel {
   max-height: 0;
   overflow: hidden;
@@ -1440,31 +1575,36 @@ details[open] .faq-chev {
   max-height: 400px;
 }
 
-/* ---- Shadow at both the top and bottom edge of every section ----
-   Each section sets --edge-rgb (via inline style) to the RGB components
-   of ITS OWN background color, so the shadow fades using the section's
-   own color instead of a generic black wash — this is what removes the
-   visible seam/line between adjoining sections. Purely visual,
-   non-interactive, and clipped by each section's existing overflow so
-   nothing else about layout/spacing changes. */
-section {
+/* ---- Cross-fade every section's edge into its NEIGHBOR's color ----
+   --edge-rgb-top = color of the section ABOVE this one
+   --edge-rgb-bottom = color of the section BELOW this one
+   Each side's gradient starts opaque in the neighbor's exact color and
+   fades toward this section, so the two touching edges match perfectly
+   and the seam disappears. Purely visual, non-interactive. */
+section,
+footer {
   position: relative;
-  --edge-rgb: 10, 8, 20;
   isolation: isolate;
+  --edge-rgb-top: 10, 8, 20;
+  --edge-rgb-bottom: 10, 8, 20;
 }
 
-section + section {
+section + section,
+section + footer {
   margin-top: -1px;
 }
 
-section::before {
+section::before,
+footer::before {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   top: -1px;
-  height: min(240px, 34%);
-  background: linear-gradient(to top, rgba(var(--edge-rgb-top, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-top, var(--edge-rgb)), 1) 100%);
+  height: min(200px, 30%);
+  background: linear-gradient(to bottom,
+      rgba(var(--edge-rgb-top), 1) 0%,
+      rgba(var(--edge-rgb-top), 0) 100%);
   pointer-events: none;
   z-index: -1;
 }
@@ -1475,95 +1615,10 @@ section::after {
   left: 0;
   right: 0;
   bottom: -1px;
-  height: min(240px, 34%);
-  background: linear-gradient(to bottom, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 0) 0%, rgba(var(--edge-rgb-bottom, var(--edge-rgb)), 1) 100%);
+  height: min(200px, 30%);
+  background: linear-gradient(to bottom,
+      rgba(var(--edge-rgb-bottom), 0) 0%,
+      rgba(var(--edge-rgb-bottom), 1) 100%);
   pointer-events: none;
   z-index: -1;
-}
-
-/* #app-showcase-container {
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-} */
-
-/* ===========================
-   Flying Avatar
-=========================== */
-
-.flying-avatar{
-
-    position:fixed;
-
-    width:144px;
-    height:144px;
-
-    border-radius:50%;
-
-    object-fit:cover;
-
-    pointer-events:none;
-
-    z-index:99999;
-
-    transform:
-        translate(-50%,-50%)
-        scale(.72);
-
-    box-shadow:
-        0 12px 40px rgba(0,0,0,.35);
-
-    will-change:
-        left,
-        top,
-        transform,
-        opacity;
-
-    transition:none;
-
-}
-
-/* keep original avatar above card */
-
-#expertAvatar{
-
-    position:relative;
-    z-index:50;
-
-}
-
-/* side avatars */
-
-#leftCoachWrap,
-#rightCoachWrap{
-
-    z-index:10;
-
-}
-
-/* card */
-
-#expertCardWrap{
-
-    z-index:20;
-
-}
-
-/* text fade */
-
-#expertContent{
-
-    transition:
-        opacity .25s ease;
-
-}
-
-/* smoother image */
-
-#expertAvatar,
-#leftCoachImg,
-#rightCoachImg{
-
-    backface-visibility:hidden;
-
-    transform:translateZ(0);
-
 }

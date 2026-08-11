@@ -58,9 +58,6 @@ const section       = document.getElementById('app-showcase-section');
   let hasPlayed = false; // one-time guard — set the moment capture begins
 
   let scrollLocked = false;
-  let lockedScrollY = 0;
-  let savedBodyOverflowY = '';
-  let savedRootOverflowY = '';
   let sideSwapTimer = null;
   const pendingTimers = [];
 
@@ -182,35 +179,22 @@ function positionHalfPhone() {
 
   const scrollKeys = new Set([' ', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End']);
 
-  function keepScrollPosition() {
-    window.scrollTo(0, lockedScrollY);
-  }
-
   function lockScroll() {
     if (scrollLocked) return;
     scrollLocked = true;
-    lockedScrollY = window.scrollY;
-    savedBodyOverflowY = document.body.style.overflowY;
-    savedRootOverflowY = document.documentElement.style.overflowY;
-    document.body.style.overflowY = 'hidden';
-    document.documentElement.style.overflowY = 'hidden';
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('touchstart', onTouchStart, { passive: true });
     window.addEventListener('touchmove', onTouchMove, { passive: false });
     window.addEventListener('keydown', onKeydown, { passive: false });
-    window.addEventListener('scroll', keepScrollPosition, { passive: true });
   }
 
   function unlockScroll() {
     if (!scrollLocked) return;
     scrollLocked = false;
-    document.body.style.overflowY = savedBodyOverflowY;
-    document.documentElement.style.overflowY = savedRootOverflowY;
     window.removeEventListener('wheel', onWheel);
     window.removeEventListener('touchstart', onTouchStart);
     window.removeEventListener('touchmove', onTouchMove);
     window.removeEventListener('keydown', onKeydown);
-    window.removeEventListener('scroll', keepScrollPosition);
   }
 
   function armJoinRelease() {
@@ -583,7 +567,7 @@ function positionHalfPhone() {
   armInitialState();
 
   // ---------------------------------------------------------------------
-  // Intersection observer — arms the one-time lock
+  // Intersection observer â€” arms the one-time lock
   // ---------------------------------------------------------------------
 
   const io = new IntersectionObserver((entries) => {
@@ -599,7 +583,7 @@ function positionHalfPhone() {
       }
 
       if (entry.isIntersecting && entry.intersectionRatio > 0.5 && !hasPlayed) {
-        hasPlayed = true; // consumed — this can never fire again
+        hasPlayed = true; // consumed â€” this can never fire again
         lockScroll();
         io.unobserve(section);
       }
@@ -608,4 +592,4 @@ function positionHalfPhone() {
 
   io.observe(section);
   armJoinRelease();
-})();.
+})();
