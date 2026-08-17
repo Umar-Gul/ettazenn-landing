@@ -515,7 +515,7 @@ iframe {
   #courseStage {
     flex: 0 0 auto;
     width: 100%;
-    height: clamp(340px, 58dvh, 500px);
+    height: clamp(330px, 56dvh, 470px);
     min-height: 0;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
@@ -613,7 +613,7 @@ iframe {
   }
 
   #courseStage {
-    height: clamp(300px, 54dvh, 440px);
+    height: clamp(290px, 52dvh, 420px);
   }
 
   #courses-check .relative.mx-auto.mt-8 {
@@ -914,6 +914,42 @@ iframe {
   #specialized-practices .mc-card p {
     font-size: clamp(9px, 2.2vw, 11px);
     max-width: 15rem;
+  }
+
+  #courseCardBase,
+  #courseCardRising {
+    padding: clamp(0.55rem, 2vw, 0.9rem);
+  }
+
+  #courseCardBase .flex.w-full.flex-col,
+  #courseCardRising .flex.w-full.flex-col {
+    gap: clamp(0.2rem, 1dvh, 0.55rem);
+  }
+
+  .ring-outer {
+    transform: scale(clamp(0.38, 0.18vw + 0.3, 0.62)) !important;
+  }
+
+  .ring-middle {
+    transform: scale(0.98);
+  }
+
+  .ring-inner {
+    transform: scale(0.98);
+  }
+
+  .course-title {
+    font-size: clamp(0.95rem, 4vw, 1.3rem);
+  }
+
+  .course-desc {
+    font-size: clamp(9px, 2vw, 10px);
+    margin-top: 0.2rem !important;
+  }
+
+  .course-explore-link {
+    padding: 0.4rem 0.95rem !important;
+    font-size: 11px !important;
   }
 
   #specialized-practices .side-card {
