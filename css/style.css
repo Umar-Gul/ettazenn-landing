@@ -58,6 +58,17 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+html,
+body {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+}
+
+.screen-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
 img,
 svg {
   max-width: 100%;
@@ -72,6 +83,16 @@ iframe {
 @media (min-width: 1024px) {
   body {
     scroll-snap-type: y proximity;
+  }
+
+  /* Desktop wheel scrolling should advance the document, not an inner
+     section scroll container. This prevents the first wheel notch from
+     being consumed by a section's overflow area and makes the next snap
+     happen on the same scroll gesture. */
+  section,
+  .screen-section,
+  .hero-fallback {
+    overflow-y: hidden !important;
   }
 
   #wisdom-deck {
