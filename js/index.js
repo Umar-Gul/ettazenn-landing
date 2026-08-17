@@ -796,9 +796,53 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
     if (e.pointerType !== 'mouse') endDrag(e);
   });
 
-  // Optional: clicking the visible edge strip of the base/rising card
-  // (without dragging) advances to the next card, mirroring a tap.
+  // Mouse-wheel scrolling while the cursor is over the card also changes
+  // it — scoped strictly to the stage element, so this never touches or
+  // blocks the page's own scroll anywhere else. A short cooldown stops a
+  // single scroll gesture from firing multiple card changes at once.
+  var wheelCooldown = false;
+  var WHEEL_COOLDOWN_MS = SWAP_DELAY + 150;
+
+  stage.addEventListener('wheel', function (e) {
+    if (animating || wheelCooldown) {
+      e.preventDefault();
+      return;
+    }
+    if (Math.abs(e.deltaY) < 4) return; // ignore tiny/trackpad jitter
+
+    e.preventDefault();
+    wheelCooldown = true;
+
+    if (e.deltaY > 0) {
+      next();
+    } else {
+      prev();
+    }
+
+    window.setTimeout(function () {
+      wheelCooldown = false;
+    }, WHEEL_COOLDOWN_MS);
+  }, { passive: false });
+
+  // A plain click (no drag) also changes the card — treat it like a tap
+  // that scrolls the stack up/down. Clicking the top half of the card
+  // steps backward (like scrolling up), clicking the bottom half steps
+  // forward (like scrolling down).
   stage.addEventListener('click', function (e) {
-    if (dragHandled) return; // a drag already changed the card, ignore the trailing click
+    if (dragHandled) {
+      dragHandled = false; // a drag already changed the card; ignore the trailing click
+      return;
+    }
+    if (animating) return;
+
+    var rect = stage.getBoundingClientRect();
+    var clickY = e.clientY - rect.top;
+    var midpoint = rect.height / 2;
+
+    if (clickY < midpoint) {
+      prev();
+    } else {
+      next();
+    }
   });
 })();
