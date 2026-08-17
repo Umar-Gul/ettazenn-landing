@@ -515,7 +515,7 @@ iframe {
   #courseStage {
     flex: 0 0 auto;
     width: 100%;
-    height: clamp(320px, 56dvh, 480px);
+    height: clamp(340px, 58dvh, 500px);
     min-height: 0;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
@@ -541,7 +541,7 @@ iframe {
 
   #courseCardBase,
   #courseCardRising {
-    padding: clamp(0.75rem, 3vw, 1.5rem);
+    padding: clamp(0.65rem, 2.4vw, 1.1rem);
   }
 
   /* Icon on top, text/button stacked below it, all centered.
@@ -552,7 +552,7 @@ iframe {
     flex-direction: column-reverse;
     align-items: center;
     justify-content: center;
-    gap: clamp(0.4rem, 2dvh, 1rem);
+    gap: clamp(0.3rem, 1.4dvh, 0.75rem);
   }
 
   #courseCardBase .max-w-md,
@@ -563,25 +563,26 @@ iframe {
 
   .course-title {
     text-align: center;
-    font-size: clamp(1.1rem, 4.6vw, 1.7rem);
+    font-size: clamp(1rem, 4.2vw, 1.5rem);
   }
 
   .course-desc {
-    font-size: clamp(10px, 2.3vw, 12px);
-    margin-top: clamp(0.35rem, 1dvh, 0.6rem) !important;
+    font-size: clamp(9px, 2.1vw, 11px);
+    margin-top: clamp(0.25rem, 0.9dvh, 0.5rem) !important;
   }
 
   .ring-outer {
-    transform: scale(clamp(0.48, 0.22vw + 0.38, 0.85));
+    transform: scale(clamp(0.42, 0.2vw + 0.34, 0.72));
     transform-origin: center;
   }
 
   .course-explore-link {
-    margin-top: clamp(0.35rem, 1dvh, 0.75rem) !important;
+    margin-top: clamp(0.25rem, 0.8dvh, 0.55rem) !important;
     margin-left: auto !important;
     margin-right: auto !important;
     padding: 0.5rem 1.25rem !important;
     font-size: 12px !important;
+    width: fit-content;
   }
 }
 
@@ -612,7 +613,7 @@ iframe {
   }
 
   #courseStage {
-    height: clamp(280px, 50dvh, 420px);
+    height: clamp(300px, 54dvh, 440px);
   }
 
   #courses-check .relative.mx-auto.mt-8 {
@@ -744,6 +745,19 @@ iframe {
     flex-direction: column;
     align-items: center;
     text-align: center;
+  }
+
+  #join-community .relative.z-10 {
+    width: min(100%, 38rem);
+    margin-inline: auto;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #join-community .relative.z-10 > * {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   /* App Showcase sizing/behavior lives in the single ≤1023px block above.
@@ -885,6 +899,23 @@ iframe {
     position: relative;
   }
 
+  #specialized-practices .mc-card > div.relative {
+    padding: 0.85rem 0.85rem 1rem;
+  }
+
+  #specialized-practices .mc-card .mc-pill {
+    margin-bottom: 0.35rem;
+  }
+
+  #specialized-practices .mc-card h3 {
+    font-size: clamp(0.95rem, 4vw, 1.2rem);
+  }
+
+  #specialized-practices .mc-card p {
+    font-size: clamp(9px, 2.2vw, 11px);
+    max-width: 15rem;
+  }
+
   #specialized-practices .side-card {
     padding: 0.8rem;
     min-height: 100px;
@@ -925,6 +956,10 @@ iframe {
 
   #join-community .relative.mx-auto.w-full.max-w-\[1065px\] {
     padding-inline: 1rem;
+  }
+
+  #join-community .relative.z-10 {
+    width: min(100%, 34rem);
   }
 
   #wisdom-deck .reveal-pop {
