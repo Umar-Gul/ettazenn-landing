@@ -97,10 +97,10 @@ iframe {
    h-screen ... overflow-y-auto markup) so any section whose
    content slightly overflows scrolls internally instead of
    pushing into the next section. Sections that should never
-   internally scroll (Wisdom Deck, Courses, Crazy Features) opt
-   into overflow:hidden at the ID level below — that single
-   override is now the ONLY thing those blocks still need to set,
-   since height is handled globally, once, here.
+   internally scroll (Wisdom Deck, Courses, Crazy Features,
+   App Showcase) opt into overflow:hidden at the ID level below —
+   that single override is now the ONLY thing those blocks still
+   need to set, since height is handled globally, once, here.
 ------------------------------------------------------------ */
 @media (max-width: 1023px) {
   body {
@@ -182,6 +182,9 @@ iframe {
 
 /* ============================================================
    RESPONSIVE — GENERAL SECTION WIDTH CONTAINMENT (≤1023px)
+   (single consolidated block — do not open a second
+   "@media (max-width: 1023px)" anywhere else in this file;
+   add new ≤1023px rules to THIS block.)
 ============================================================ */
 
 @media (max-width: 1023px) {
@@ -203,9 +206,7 @@ iframe {
   #wisdom-deck .relative.z-10 {
     gap: clamp(1.25rem, 4dvh, 2rem) !important;
   }
-}
 
-@media (max-width: 1023px) {
   .hero-fallback > header {
     border-radius: 0 0 18px 18px;
   }
@@ -258,6 +259,48 @@ iframe {
   #wisdom-deck img {
     max-width: 100%;
     height: auto;
+  }
+
+  /* ---- App Showcase: fits within 100dvh so it never needs to
+     scroll internally, which is what was causing the mobile
+     scroll-lock. Only one set of rules for this section exists
+     in the whole file — do not add more #app-showcase-section
+     rules elsewhere; adjust these clamp() values instead. ---- */
+
+
+  #app-showcase-section #app-showcase-container {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: visible;
+    gap: clamp(0.75rem, 2.5dvh, 1.25rem);
+  }
+
+  #app-showcase-section #stage-glass-card {
+    padding: 1rem;
+    border-radius: 24px;
+  }
+
+  #app-showcase-section #app-text-block {
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+
+  #app-showcase-section #app-phone-block {
+    height: auto;
+    min-height: 240px;
+    overflow: visible;
+  }
+
+  #app-showcase-section #stage-half-phone img {
+    height: clamp(220px, 40dvh, 420px);
+    max-width: 84vw;
+  }
+
+  #app-showcase-section #app-phone-block img {
+    height: clamp(160px, 28dvh, 300px);
+    max-width: 74vw;
   }
 
   #wisdom-deck {
@@ -517,51 +560,13 @@ iframe {
     text-align: center;
   }
 
+  /* App Showcase sizing/behavior lives in the single ≤1023px block above.
+     Only phone-specific padding is set here — do not re-declare
+     touch-action / overflow / scroll-snap-stop / image heights here. */
   #app-showcase-section {
+    
     padding-top: 1rem;
     padding-bottom: 1rem;
-    touch-action: pan-y;
-    overflow-y: auto !important;
-    overscroll-behavior-y: contain;
-    scroll-snap-stop: normal;
-  }
-
-  #app-showcase-section #app-showcase-container {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    overflow: visible;
-  }
-
-  #app-showcase-section #stage-half-phone img {
-    height: min(58svh, 420px);
-    max-width: 84vw;
-  }
-
-  #app-showcase-section #stage-glass-card {
-    padding: 1rem;
-    border-radius: 24px;
-  }
-
-  #app-showcase-section #app-showcase-container {
-    gap: 1.25rem;
-  }
-
-  #app-showcase-section #app-text-block {
-    max-width: 100%;
-    text-align: center;
-    align-items: center;
-  }
-
-  #app-showcase-section #app-phone-block {
-    height: auto;
-    min-height: 240px;
-    overflow: visible;
-  }
-
-  #app-showcase-section #app-phone-block img {
-    height: min(38svh, 300px);
-    max-width: 74vw;
   }
 
   #specialized-practices {
@@ -677,23 +682,10 @@ iframe {
     transform: none !important;
   }
 
-  #app-showcase-section #stage-half-phone img {
-    height: min(52svh, 360px);
-    max-width: 90vw;
-  }
-
-  #app-showcase-section {
-    touch-action: pan-y;
-    overflow-y: auto !important;
-    overscroll-behavior-y: contain;
-    scroll-snap-stop: normal;
-  }
-
-  #app-showcase-section #app-phone-block img {
-    height: min(34svh, 260px);
-    max-width: 82vw;
-  }
-
+  /* App Showcase: only centering here — sizing/overflow/scroll-snap
+     behavior comes from the single ≤1023px block above. Do NOT
+     re-add overflow-y:auto or fixed image heights here; that was
+     the small-phone source of the original scroll-lock bug. */
   #app-showcase-section svg,
   #app-showcase-section #stage-half-phone img,
   #app-showcase-section #app-phone-block img {

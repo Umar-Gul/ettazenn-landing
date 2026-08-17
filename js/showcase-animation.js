@@ -17,6 +17,14 @@
 //   - #stage-half-phone starts flush at the left edge on mobile
 //     (< md breakpoint) and centered on desktop, matching the
 //     `left-0 md:left-1/2` classes on that element.
+//
+//   - bridgeScrollHandoff(): NEW. Fired the instant we unlock at either
+//     boundary (step 0 or step 4). Nudges the page with a native smooth
+//     scroll so the transition from "locked step animation" into
+//     "normal page scroll" reads as one continuous motion instead of a
+//     stall-then-jump (the browser doesn't always resume scroll cleanly
+//     on the very next tick after touch-action/preventDefault has been
+//     intercepting input).
 
 (function () {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -182,6 +190,14 @@ function positionHalfPhone() {
   function lockScroll() {
     if (scrollLocked) return;
     scrollLocked = true;
+    // Hand the vertical gesture fully to JS. Without this, the CSS
+    // "touch-action: pan-y" declared for #app-showcase-section lets the
+    // browser start a native scroll on the very first touchmove tick,
+    // racing against this script's own preventDefault()-based step
+    // logic — that race is what made the section feel stuck on mobile
+    // only (desktop has no touch-action equivalent for wheel events, so
+    // it was never affected).
+    section.style.touchAction = 'none';
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('touchstart', onTouchStart, { passive: true });
     window.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -191,10 +207,26 @@ function positionHalfPhone() {
   function unlockScroll() {
     if (!scrollLocked) return;
     scrollLocked = false;
+    // Clear the inline override so the section falls back to whatever
+    // touch-action the stylesheet defines — normal native scrolling
+    // (pan-y) resumes once the step sequence is done.
+    section.style.touchAction = '';
     window.removeEventListener('wheel', onWheel);
     window.removeEventListener('touchstart', onTouchStart);
     window.removeEventListener('touchmove', onTouchMove);
     window.removeEventListener('keydown', onKeydown);
+    touchStepFired = false;
+    touchStartY = 0;
+  }
+
+  // NEW: bridges the handoff the instant we unlock at a boundary (step 0
+  // or step 4), so leaving the locked sequence flows straight into normal
+  // page scroll instead of the user having to re-initiate a gesture.
+  function bridgeScrollHandoff(direction) {
+    // direction: 1 = continue scrolling down into next section, -1 = up.
+    requestAnimationFrame(() => {
+      window.scrollBy({ top: direction * 140, left: 0, behavior: 'smooth' });
+    });
   }
 
   function armJoinRelease() {
@@ -342,7 +374,7 @@ function positionHalfPhone() {
     await FORWARD_TRANSITIONS[currentStep]();
     currentStep += 1;
     animating = false;
-    if (currentStep === LAST_STEP) unlockScroll();
+    if (currentStep === LAST_STEP) { unlockScroll(); bridgeScrollHandoff(1); }
   }
 
   function handleStepInput(event) {
@@ -352,6 +384,8 @@ function positionHalfPhone() {
     }
     if (currentStep >= LAST_STEP) {
       unlockScroll(); // animation already finished — let this scroll the page
+      bridgeScrollHandoff(1);
+      touchStepFired = false;
       return;
     }
     event.preventDefault();
@@ -430,7 +464,7 @@ function positionHalfPhone() {
     await BACKWARD_TRANSITIONS[leavingStep - 1]();
     currentStep -= 1;
     animating = false;
-    if (currentStep === 0) unlockScroll(); // fully reversed — release to normal upward scroll
+    if (currentStep === 0) { unlockScroll(); bridgeScrollHandoff(-1); } // fully reversed — release to normal upward scroll
   }
 
   function handleStepInputUp(event) {
@@ -440,6 +474,8 @@ function positionHalfPhone() {
     }
     if (currentStep <= 0) {
       unlockScroll(); // nothing left to reverse — let this scroll move the page up
+      bridgeScrollHandoff(-1);
+      touchStepFired = false;
       return;
     }
     event.preventDefault();
@@ -567,7 +603,7 @@ function positionHalfPhone() {
   armInitialState();
 
   // ---------------------------------------------------------------------
-  // Intersection observer â€” arms the one-time lock
+  // Intersection observer — arms the one-time lock
   // ---------------------------------------------------------------------
 
   const io = new IntersectionObserver((entries) => {
@@ -583,7 +619,7 @@ function positionHalfPhone() {
       }
 
       if (entry.isIntersecting && entry.intersectionRatio > 0.5 && !hasPlayed) {
-        hasPlayed = true; // consumed â€” this can never fire again
+        hasPlayed = true; // consumed — this can never fire again
         lockScroll();
         io.unobserve(section);
       }

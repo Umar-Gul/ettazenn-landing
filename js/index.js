@@ -133,7 +133,6 @@
 })();
 
 // Expert Minds - swipeable testimonial carousel
-// Expert Minds - swipeable testimonial carousel
 (function () {
   function getEl(id, className) {
     return document.getElementById(id) || document.querySelector('.' + className);
@@ -580,7 +579,7 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
 
   if (!stage || !baseCard || !risingCard || !dotsWrap) return;
 
-  // The stacked-card interaction is autoplay/wheel driven; it does not need
+  // The stacked-card interaction is swipe driven; it does not need
   // a visible pagination indicator beneath the cards. Inline display wins
   // over the Tailwind `flex` utility on the element.
   dotsWrap.style.display = 'none';
@@ -628,11 +627,6 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
 
   var index = 0;
   var animating = false;
-  var autoplayTimer = null;
-  var wheelCooldown = false;
-  var firstVisitLocked = true;
-  var touchStartY = null;
-  var gestureBlocked = false;
 
   var dots = categories.map(function (cat, i) {
     var dot = document.createElement('button');
@@ -678,9 +672,8 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
   }
 
   function goTo(newIndex) {
-    if (animating || newIndex === index) return;
+    if (animating || newIndex === index || newIndex < 0 || newIndex > categories.length - 1) return;
     animating = true;
-    stopAutoplay();
     var movingBackward = newIndex < index;
 
     // Put the incoming card on the correct outer edge without animating its
@@ -710,153 +703,102 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
       risingCard.style.transition = '';
 
       animating = false;
-      startAutoplay();
     }, SWAP_DELAY);
   }
 
   function next() {
-    goTo((index + 1) % categories.length);
+    goTo(Math.min(index + 1, categories.length - 1));
   }
 
-  function startAutoplay() {
-    // Cards advance only through the section's wheel interaction.
+  function prev() {
+    goTo(Math.max(index - 1, 0));
   }
 
-  function stopAutoplay() {
-    if (autoplayTimer) {
-      window.clearTimeout(autoplayTimer);
-      autoplayTimer = null;
+  // ---------------------------------------------------------------------
+  // Swipe / drag interaction — scoped to the card stage only.
+  //
+  // The page must ALWAYS scroll freely. We never touch document/body
+  // overflow, never listen on the section for wheel events, and never
+  // call preventDefault() on the page's own scroll. The card only reacts
+  // to a drag/swipe gesture that starts on the stage itself, and even then
+  // only once the gesture is clearly horizontal-ish drag/vertical swipe
+  // beyond a threshold, so a normal scroll-through of the page or a simple
+  // click never gets hijacked.
+  // ---------------------------------------------------------------------
+
+  var DRAG_THRESHOLD = 60; // px of vertical movement to count as a swipe
+  var dragging = false;
+  var dragStartY = null;
+  var dragStartX = null;
+  var dragHandled = false;
+  var activePointerId = null;
+
+  function onPointerDown(e) {
+    if (animating) return;
+    // Only react to primary mouse button / a single touch point.
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+    dragging = true;
+    dragHandled = false;
+    dragStartY = e.clientY;
+    dragStartX = e.clientX;
+    activePointerId = e.pointerId;
+
+    stage.classList.add('is-dragging');
+    // Capture so we keep receiving move/up events even if the cursor
+    // leaves the stage during the drag.
+    if (stage.setPointerCapture) {
+      try { stage.setPointerCapture(e.pointerId); } catch (err) {}
     }
   }
 
-  // Scroll-hijack logic
-  var sectionEl = document.getElementById('courses-check');
-  var sectionActive = false;
-  var scrollLocked = false;
+  function onPointerMove(e) {
+    if (!dragging || dragHandled || e.pointerId !== activePointerId) return;
 
-  function setScrollLock(locked) {
-    if (scrollLocked === locked) return;
-    scrollLocked = locked;
-    document.body.style.overflow = locked ? 'hidden' : '';
-    document.documentElement.style.overflow = locked ? 'hidden' : '';
-    document.body.style.height = locked ? '100%' : '';
-    document.documentElement.style.height = locked ? '100%' : '';
-  }
+    var deltaY = e.clientY - dragStartY;
+    var deltaX = e.clientX - dragStartX;
 
-  function updateScrollLock() {
-    var shouldLock = firstVisitLocked && sectionActive && index < categories.length - 1;
-    setScrollLock(shouldLock);
-  }
+    // Ignore gestures that are more horizontal than vertical — let those
+    // pass through untouched (e.g. accidental sideways drag).
+    if (Math.abs(deltaX) > Math.abs(deltaY)) return;
 
-  function releaseSectionFlow() {
-    firstVisitLocked = false;
-    gestureBlocked = false;
-    touchStartY = null;
-    setScrollLock(false);
-  }
-
-  function advanceToNextCard() {
-    if (!sectionActive || animating) {
-      if (index >= categories.length - 1) {
-        releaseSectionFlow();
-      }
-      return false;
+    if (deltaY <= -DRAG_THRESHOLD) {
+      dragHandled = true;
+      next();
+    } else if (deltaY >= DRAG_THRESHOLD) {
+      dragHandled = true;
+      prev();
     }
+  }
 
-    if (index >= categories.length - 1) {
-      releaseSectionFlow();
-      return false;
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    dragStartY = null;
+    dragStartX = null;
+    dragHandled = false;
+    stage.classList.remove('is-dragging');
+    if (activePointerId !== null && stage.releasePointerCapture) {
+      try { stage.releasePointerCapture(activePointerId); } catch (err) {}
     }
-
-    if (wheelCooldown || gestureBlocked) return false;
-    wheelCooldown = true;
-    gestureBlocked = true;
-    goTo(index + 1);
-    window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 220);
-    window.setTimeout(function () { gestureBlocked = false; }, SWAP_DELAY + 260);
-    return true;
+    activePointerId = null;
   }
 
-  function advanceToPreviousCard() {
-    if (!sectionActive || animating || index <= 0 || wheelCooldown || gestureBlocked) return false;
+  // Pointer events unify mouse + touch + pen, so a mouse "swipe" (click,
+  // hold, drag, release) and a finger swipe both work through the same path.
+  stage.addEventListener('pointerdown', onPointerDown);
+  stage.addEventListener('pointermove', onPointerMove);
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', endDrag);
+  stage.addEventListener('pointerleave', function (e) {
+    // Only end the drag on leave for touch, where there's no capture-driven
+    // pointerup guarantee across quick gestures; mouse keeps its capture.
+    if (e.pointerType !== 'mouse') endDrag(e);
+  });
 
-    wheelCooldown = true;
-    gestureBlocked = true;
-    goTo(index - 1);
-    window.setTimeout(function () { wheelCooldown = false; }, SWAP_DELAY + 220);
-    window.setTimeout(function () { gestureBlocked = false; }, SWAP_DELAY + 260);
-    return true;
-  }
-
-  if (sectionEl && typeof IntersectionObserver !== 'undefined') {
-    var sectionObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        sectionActive = entry.isIntersecting && entry.intersectionRatio > 0.6;
-        updateScrollLock();
-      });
-    }, { threshold: [0, 0.6, 1] });
-    sectionObserver.observe(sectionEl);
-
-    sectionEl.addEventListener('wheel', function (e) {
-      if (!sectionActive) return;
-
-      if (animating) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-
-      var delta = e.deltaY;
-      var isAtFinalCard = index >= categories.length - 1;
-
-      if (delta > 0) {
-        if (isAtFinalCard) {
-          releaseSectionFlow();
-          return;
-        }
-
-        e.preventDefault();
-        e.stopPropagation();
-        advanceToNextCard();
-      } else if (delta < 0) {
-        if (index <= 0) {
-          releaseSectionFlow();
-          return;
-        }
-        e.preventDefault();
-        e.stopPropagation();
-        advanceToPreviousCard();
-      }
-    }, { passive: false });
-
-    sectionEl.addEventListener('touchstart', function (e) {
-      if (!sectionActive || animating || index >= categories.length - 1) return;
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    sectionEl.addEventListener('touchmove', function (e) {
-      if (!sectionActive || animating || index >= categories.length - 1 || touchStartY === null || gestureBlocked) return;
-
-      var touchY = e.touches[0].clientY;
-      var delta = touchY - touchStartY;
-
-      if (delta < -60) {
-        e.preventDefault();
-        e.stopPropagation();
-        touchStartY = null;
-        advanceToNextCard();
-      } else if (delta > 60) {
-        e.preventDefault();
-        e.stopPropagation();
-        touchStartY = null;
-        advanceToPreviousCard();
-      }
-    }, { passive: false });
-
-    sectionEl.addEventListener('touchend', function () {
-      touchStartY = null;
-      gestureBlocked = false;
-    }, { passive: true });
-  }
+  // Optional: clicking the visible edge strip of the base/rising card
+  // (without dragging) advances to the next card, mirroring a tap.
+  stage.addEventListener('click', function (e) {
+    if (dragHandled) return; // a drag already changed the card, ignore the trailing click
+  });
 })();
-
