@@ -67,6 +67,7 @@ body {
 .screen-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
+  overflow-y: hidden;
 }
 
 img,
@@ -166,7 +167,7 @@ iframe {
     height: 100dvh !important;
     min-height: 100dvh !important;
     max-height: 100dvh !important;
-    overflow-y: auto !important;
+    overflow-y: hidden !important;
     scroll-snap-align: start;
     scroll-snap-stop: always;
     box-sizing: border-box;
