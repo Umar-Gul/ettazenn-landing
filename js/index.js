@@ -480,21 +480,21 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
       desc: 'Discover partnered wellness centres offering curated retreats, workshops, and community classes tailored to your practice.',
       exploreLabel: 'Explore Wellness Centres',
       target: '#join-community',
-      image: 'images/wellness-bg.svg' // Update to your image path
+      image: 'images/wellness.png' // Update to your image path
     },
     schools: {
       heading: 'Accredited Schools:',
       desc: 'Connect with schools teaching authentic yoga, tai chi, and meditation lineages, from beginner courses to teacher certification.',
       exploreLabel: 'Explore Schools',
       target: '#join-community',
-      image: 'images/schools-bg.svg' // Update to your image path
+      image: 'images/school.png' // Update to your image path
     },
     partners: {
       heading: 'Trusted Partners:',
       desc: 'Explore our network of partner studios, brands, and practitioners collaborating to bring you a richer wellness journey.',
       exploreLabel: 'Explore Partners',
       target: '#join-community',
-      image: 'images/partner-bg.svg' // Update to your image path
+      image: 'images/music.png' // Update to your image path
     }
   };
 

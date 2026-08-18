@@ -454,9 +454,16 @@ iframe {
     padding: 0 16px 16px;
   }
 
-  footer .flex.flex-col {
+  #footerInner {
+    width: 100%;
     align-items: center;
     text-align: center;
+    gap: 1rem;
+  }
+
+  #footerInner > a,
+  #footerInner > div {
+    max-width: 100%;
   }
 }
 
@@ -1052,7 +1059,7 @@ iframe {
   #specialized-practices .mc-card > div.relative {
     justify-content: flex-end;
     align-items: flex-start;
-    padding: 0.65rem 0.7rem 0.8rem 0.7rem;
+    padding: 7.65rem 0.7rem 0.8rem 0.7rem;
     text-align: left;
   }
 
