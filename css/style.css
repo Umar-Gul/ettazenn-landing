@@ -497,6 +497,8 @@ iframe {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: auto !important;
+    min-height: 100dvh !important;
 
     padding-top: clamp(0.25rem, 1dvh, 0.55rem);
     padding-bottom: clamp(0.55rem, 1.75dvh, 0.95rem);
@@ -701,6 +703,16 @@ iframe {
   .ring-outer {
     transform: scale(0.42) !important;
   }
+
+  #courses-check {
+    padding-top: 0.4rem;
+    padding-bottom: 0.55rem;
+  }
+
+  #courseStage {
+    min-height: clamp(300px, 50dvh, 420px);
+    aspect-ratio: 16 / 12;
+  }
 }
 
 /* Normal phones — FIX: was `clamp(0.5rem, 4vw, 2.1rem)`. 4vw keeps
@@ -724,6 +736,16 @@ iframe {
   .ring-outer {
     transform: scale(0.5) !important;
   }
+
+  #courses-check {
+    padding-top: 0.35rem;
+    padding-bottom: 0.65rem;
+  }
+
+  #courseStage {
+    min-height: clamp(320px, 52dvh, 450px);
+    aspect-ratio: 16 / 11;
+  }
 }
 
 /* Tablet */
@@ -735,6 +757,11 @@ iframe {
 
   .ring-outer {
     transform: scale(0.62) !important;
+  }
+
+  #courses-check {
+    padding-top: 0.5rem;
+    padding-bottom: 0.8rem;
   }
 }
 
