@@ -562,7 +562,7 @@ iframe {
   #courseCardRising .max-w-md {
     text-align: center;
     max-width: min(100%, 28rem);
-    margin-top: 0.15rem;
+    margin-top: -3.85rem;
   }
 
   #courseCardBase .shrink-0.relative.flex.items-center.justify-center.p-4,
