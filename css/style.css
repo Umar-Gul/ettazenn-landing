@@ -588,7 +588,30 @@ iframe {
   #courseCardRising .max-w-md {
     text-align: center;
     max-width: min(100%, 28rem);
-    margin-top: clamp(0.85rem, -10vw, -2.5rem);
+    /* FIX: was `clamp(0.85rem, -10vw, -2.5rem)` — an invalid clamp where
+       MIN > MAX, which per spec always resolves to MIN (0.85rem) at every
+       width and was dead weight. The real, live value for this property
+       actually comes from the unscoped "Flexible course cards" block and
+       the width-banded rules further down the file, since they're
+       declared later at equal specificity. See those for the fix. */
+    margin-top: 0.5rem;
+  }
+
+  /* Let the column compress instead of overflowing #courseStage's
+     hidden overflow edge if content ever runs slightly tall — without
+     this, flex items default to min-height:auto, which can force the
+     column taller than its parent allows and get silently clipped. */
+  #courseCardBase .flex.w-full.flex-col,
+  #courseCardRising .flex.w-full.flex-col {
+    min-height: 0;
+  }
+
+  /* The explore button is the thing you specifically don't want clipped
+     — protect it from ever being squeezed by flex distribution so it's
+     always rendered at full size; the description/gap above it are the
+     safer things to compress first if space is ever tight. */
+  .course-explore-link {
+    flex-shrink: 0;
   }
 
   #courseCardBase .shrink-0.relative.flex.items-center.justify-center.p-4,
@@ -639,7 +662,13 @@ iframe {
 #courseCardRising .max-w-md {
   width: 100%;
   max-width: min(100%, 28rem);
-  margin-top: clamp(-1rem, 2vw, 2rem);
+  /* FIX: was `clamp(-1rem, 2vw, 2rem)`, which — combined with the
+     width-banded overrides below that also scaled with vw — grew large
+     enough on wider phones (up toward 767px) to push the description
+     and Explore button past #courseStage's clipped bottom edge. Pinned
+     to a small non-scaling value; the banded rules below are now
+     equally small and non-growing for the same reason. */
+  margin-top: 0.5rem;
 }
 
 #courseCardBase .flex.w-full.flex-col,
@@ -664,7 +693,7 @@ iframe {
 @media (max-width: 389px) {
   #courseCardBase .max-w-md,
   #courseCardRising .max-w-md {
-    margin-top: clamp(-1rem, -2vw, -0.35rem);
+    margin-top: 0.35rem;
   }
 
   #courseCardBase .flex.w-full.flex-col,
@@ -673,11 +702,17 @@ iframe {
   }
 }
 
-/* Normal phones */
+/* Normal phones — FIX: was `clamp(0.5rem, 4vw, 2.1rem)`. 4vw keeps
+   growing linearly across this whole 390–767px band, reaching ~2.1rem
+   right as the icon above is also at its largest scale — together they
+   pushed the description/button past #courseStage's clipped bottom
+   edge on phones toward the upper end of this range (roughly 600–767px:
+   larger Android phones and phablets). Pinned to a small fixed value
+   that stays constant across the band instead of growing with it. */
 @media (min-width: 390px) and (max-width: 767px) {
   #courseCardBase .max-w-md,
   #courseCardRising .max-w-md {
-    margin-top: clamp(0.5rem, 4vw, 2.1rem);
+    margin-top: 0.5rem;
   }
 
   #courseCardBase .flex.w-full.flex-col,
@@ -690,11 +725,13 @@ iframe {
 @media (min-width: 768px) and (max-width: 1023px) {
   #courseCardBase .max-w-md,
   #courseCardRising .max-w-md {
-    margin-top: clamp(0.5rem, 2vw, 1.5rem);
+    margin-top: 0.75rem;
   }
 }
 
-/* Desktop */
+/* Desktop — unaffected by the mobile clipping bug (desktop's
+   #courseStage isn't height-constrained the same way), left as the
+   original authored value. */
 @media (min-width: 1024px) {
   #courseCardBase .max-w-md,
   #courseCardRising .max-w-md {
