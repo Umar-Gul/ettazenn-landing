@@ -515,10 +515,10 @@ iframe {
   }
 
   #courseStage {
-    flex: 0 0 auto;
     width: 100%;
-    height: clamp(330px, 56dvh, 500px);
-    min-height: 0;
+    height: auto;
+    min-height: clamp(340px, 58dvh, 520px);
+    aspect-ratio: 16 / 11;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
   }
@@ -554,19 +554,20 @@ iframe {
     flex-direction: column-reverse;
     align-items: center;
     justify-content: flex-start;
-    gap: 0.35rem !important;
+    gap: clamp(0.25rem, 1dvh, 0.6rem) !important;
+    width: 100%;
   }
 
   #courseCardBase .max-w-md,
   #courseCardRising .max-w-md {
     text-align: center;
-    max-width: 100%;
-    margin-top: 0.1rem;
+    max-width: min(100%, 28rem);
+    margin-top: 0.15rem;
   }
 
   #courseCardBase .shrink-0.relative.flex.items-center.justify-center.p-4,
   #courseCardRising .shrink-0.relative.flex.items-center.justify-center.p-4 {
-    padding: 0.05rem !important;
+    padding: 0.1rem !important;
   }
 
   #courseCardBase .max-w-md > *,
@@ -576,27 +577,27 @@ iframe {
 
   .course-title {
     text-align: center;
-    font-size: clamp(0.92rem, 3.8vw, 1.25rem);
+    font-size: clamp(0.95rem, 4vw, 1.35rem);
     line-height: 1.08;
   }
 
   .course-desc {
-    font-size: clamp(9px, 2vw, 10px);
-    margin-top: 0.08rem !important;
+    font-size: clamp(9px, 2.1vw, 11px);
+    margin-top: 0.12rem !important;
     line-height: 1.35;
   }
 
   .ring-outer {
-    transform: scale(clamp(0.36, 0.18vw + 0.3, 0.62));
+    transform: scale(clamp(0.4, 0.22vw + 0.32, 0.7));
     transform-origin: center;
   }
 
   .course-explore-link {
-    margin-top: 0.42rem !important;
+    margin-top: 0.5rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    padding: 0.45rem 1rem !important;
-    font-size: 11px !important;
+    padding: 0.5rem 1.05rem !important;
+    font-size: clamp(11px, 2.2vw, 13px) !important;
     width: fit-content;
   }
 }
@@ -628,7 +629,8 @@ iframe {
   }
 
   #courseStage {
-    height: clamp(305px, 53dvh, 430px);
+    min-height: clamp(300px, 52dvh, 430px);
+    aspect-ratio: 16 / 12;
   }
 
   #courses-check .relative.mx-auto.mt-8 {
@@ -938,11 +940,11 @@ iframe {
 
   #courseCardBase .flex.w-full.flex-col,
   #courseCardRising .flex.w-full.flex-col {
-    gap: 0.25rem !important;
+    gap: 0.2rem !important;
   }
 
   .ring-outer {
-    transform: scale(clamp(0.34, 0.16vw + 0.28, 0.56)) !important;
+    transform: scale(clamp(0.34, 0.16vw + 0.28, 0.58)) !important;
   }
 
   .ring-middle {
@@ -954,17 +956,17 @@ iframe {
   }
 
   .course-title {
-    font-size: clamp(0.9rem, 3.6vw, 1.15rem);
+    font-size: clamp(0.9rem, 3.7vw, 1.2rem);
     line-height: 1.05;
   }
 
   .course-desc {
-    font-size: clamp(8px, 1.9vw, 10px);
-    margin-top: 0.06rem !important;
+    font-size: clamp(8px, 2vw, 10px);
+    margin-top: 0.1rem !important;
   }
 
   .course-explore-link {
-    padding: 0.38rem 0.9rem !important;
+    padding: 0.42rem 0.95rem !important;
     font-size: 11px !important;
   }
 
