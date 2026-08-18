@@ -28,6 +28,8 @@ body {
   width: 100%;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 html::-webkit-scrollbar,
@@ -237,8 +239,8 @@ iframe {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: clamp(1rem, 2.5dvh, 1.5rem);
-    padding-bottom: clamp(1rem, 2.5dvh, 1.5rem);
+    padding-top: clamp(0.75rem, 1.8dvh, 1.1rem);
+    padding-bottom: clamp(0.75rem, 1.8dvh, 1.1rem);
   }
 
   section > *,
@@ -264,7 +266,7 @@ iframe {
     min-height: 0;
     height: auto;
     justify-content: center;
-    padding: 1rem 1rem 1.5rem;
+    padding: 0.85rem 1rem 1.1rem;
   }
 
   .hero-fallback h1 {
@@ -279,7 +281,7 @@ iframe {
 
   .hero-fallback .relative.z-10 {
     justify-content: flex-end;
-    padding-bottom: clamp(1rem, 3dvh, 1.75rem);
+    padding-bottom: clamp(0.75rem, 2dvh, 1.25rem);
   }
 
   .hero-fallback .relative.z-10 > .mt-6.flex.flex-row.items-center.justify-center.gap-3 {
@@ -380,11 +382,11 @@ iframe {
     justify-content: center;
     text-align: center;
     overflow: visible;
-    gap: clamp(0.75rem, 2.5dvh, 1.25rem);
+    gap: clamp(0.6rem, 2dvh, 1rem);
   }
 
   #app-showcase-section #stage-glass-card {
-    padding: clamp(0.9rem, 2.2dvh, 1.25rem);
+    padding: clamp(0.75rem, 1.8dvh, 1rem);
     border-radius: 24px;
   }
 
@@ -414,8 +416,8 @@ iframe {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     overflow: hidden !important;
-    padding-top: clamp(0.75rem, 2.5dvh, 1.5rem);
-    padding-bottom: clamp(0.75rem, 2.5dvh, 1.5rem);
+    padding-top: clamp(0.6rem, 1.8dvh, 1rem);
+    padding-bottom: clamp(0.6rem, 1.8dvh, 1rem);
   }
 
   #wisdomSwiper {
@@ -470,8 +472,8 @@ iframe {
     align-items: center;
     justify-content: center;
 
-    padding-top: clamp(0.35rem, 1.25dvh, 0.75rem);
-    padding-bottom: clamp(0.75rem, 2.25dvh, 1.25rem);
+    padding-top: clamp(0.25rem, 1dvh, 0.55rem);
+    padding-bottom: clamp(0.55rem, 1.75dvh, 0.95rem);
   }
 
   #courses-check > .max-w-shell {
@@ -515,7 +517,7 @@ iframe {
   #courseStage {
     flex: 0 0 auto;
     width: 100%;
-    height: clamp(330px, 56dvh, 470px);
+    height: clamp(330px, 56dvh, 500px);
     min-height: 0;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
@@ -541,7 +543,7 @@ iframe {
 
   #courseCardBase,
   #courseCardRising {
-    padding: clamp(0.65rem, 2.4vw, 1.1rem);
+    padding: clamp(0.5rem, 1.8vw, 0.85rem);
   }
 
   /* Icon on top, text/button stacked below it, all centered.
@@ -552,7 +554,7 @@ iframe {
     flex-direction: column-reverse;
     align-items: center;
     justify-content: center;
-    gap: clamp(0.3rem, 1.4dvh, 0.75rem);
+    gap: clamp(0.25rem, 1.1dvh, 0.6rem);
   }
 
   #courseCardBase .max-w-md,
@@ -563,25 +565,25 @@ iframe {
 
   .course-title {
     text-align: center;
-    font-size: clamp(1rem, 4.2vw, 1.5rem);
+    font-size: clamp(0.95rem, 3.9vw, 1.35rem);
   }
 
   .course-desc {
-    font-size: clamp(9px, 2.1vw, 11px);
-    margin-top: clamp(0.25rem, 0.9dvh, 0.5rem) !important;
+    font-size: clamp(9px, 2vw, 10px);
+    margin-top: clamp(0.2rem, 0.7dvh, 0.45rem) !important;
   }
 
   .ring-outer {
-    transform: scale(clamp(0.42, 0.2vw + 0.34, 0.72));
+    transform: scale(clamp(0.36, 0.18vw + 0.3, 0.62));
     transform-origin: center;
   }
 
   .course-explore-link {
-    margin-top: clamp(0.25rem, 0.8dvh, 0.55rem) !important;
+    margin-top: clamp(0.2rem, 0.6dvh, 0.45rem) !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    padding: 0.5rem 1.25rem !important;
-    font-size: 12px !important;
+    padding: 0.45rem 1rem !important;
+    font-size: 11px !important;
     width: fit-content;
   }
 }
@@ -613,7 +615,7 @@ iframe {
   }
 
   #courseStage {
-    height: clamp(290px, 52dvh, 420px);
+    height: clamp(305px, 53dvh, 430px);
   }
 
   #courses-check .relative.mx-auto.mt-8 {
@@ -770,8 +772,8 @@ iframe {
   }
 
   #specialized-practices {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
 
   #specialized-practices .grid.min-h-\[520px\],
@@ -804,8 +806,8 @@ iframe {
   }
 
   #expert-minds {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
 
   #expert-minds .mx-auto.flex.w-full.max-w-\[1065px\] {
@@ -918,16 +920,16 @@ iframe {
 
   #courseCardBase,
   #courseCardRising {
-    padding: clamp(0.55rem, 2vw, 0.9rem);
+    padding: clamp(0.5rem, 1.8vw, 0.8rem);
   }
 
   #courseCardBase .flex.w-full.flex-col,
   #courseCardRising .flex.w-full.flex-col {
-    gap: clamp(0.2rem, 1dvh, 0.55rem);
+    gap: clamp(0.15rem, 0.9dvh, 0.45rem);
   }
 
   .ring-outer {
-    transform: scale(clamp(0.38, 0.18vw + 0.3, 0.62)) !important;
+    transform: scale(clamp(0.34, 0.16vw + 0.28, 0.56)) !important;
   }
 
   .ring-middle {
@@ -939,16 +941,16 @@ iframe {
   }
 
   .course-title {
-    font-size: clamp(0.95rem, 4vw, 1.3rem);
+    font-size: clamp(0.9rem, 3.7vw, 1.2rem);
   }
 
   .course-desc {
-    font-size: clamp(9px, 2vw, 10px);
-    margin-top: 0.2rem !important;
+    font-size: clamp(8px, 1.9vw, 10px);
+    margin-top: 0.15rem !important;
   }
 
   .course-explore-link {
-    padding: 0.4rem 0.95rem !important;
+    padding: 0.38rem 0.9rem !important;
     font-size: 11px !important;
   }
 

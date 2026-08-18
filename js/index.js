@@ -657,6 +657,14 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
     icon.alt = cat.alt;
   }
 
+  function setCardTextVisibility(card, visible) {
+    var textBlock = card.querySelector('.max-w-md');
+    if (!textBlock) return;
+    textBlock.style.transition = 'opacity 180ms ease-in-out';
+    textBlock.style.opacity = visible ? '1' : '0';
+    textBlock.style.pointerEvents = visible ? '' : 'none';
+  }
+
   // Fade the floating badge out with the outgoing card, swap its asset while
   // the incoming card covers the stage, then fade it back in before landing.
   function updateBadgeIcon(cat) {
@@ -684,6 +692,8 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
     void risingCard.offsetWidth;
     risingCard.style.transition = '';
 
+    setCardTextVisibility(baseCard, false);
+
     index = newIndex;
     populateCard(risingCard, categories[index]);
     updateDots();
@@ -695,6 +705,7 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
 
     window.setTimeout(function () {
       populateCard(baseCard, categories[index]);
+      setCardTextVisibility(baseCard, true);
 
       risingCard.style.transition = 'none';
       risingCard.classList.remove('is-up');
