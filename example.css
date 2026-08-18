@@ -293,16 +293,10 @@ iframe {
     padding-bottom: clamp(0.75rem, 2dvh, 1.25rem);
   }
 
-  /* FIX: was `flex-wrap: nowrap; overflow-x: auto`, which created an
-     internal horizontal-scroll strip inside the Hero section on narrow
-     phones — the two store badges were only reachable by swiping
-     sideways within the section, which breaks "only the main page
-     scrolls." Wrapping onto a second row instead keeps both badges
-     fully visible with no internal scroll container. */
   .hero-fallback .relative.z-10 > .mt-6.flex.flex-row.items-center.justify-center.gap-3 {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.5rem;
-    overflow-x: visible;
+    overflow-x: auto;
     max-width: 100%;
     -webkit-overflow-scrolling: touch;
   }
