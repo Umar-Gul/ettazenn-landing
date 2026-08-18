@@ -130,6 +130,15 @@ iframe {
 }
 
 /* ------------------------------------------------------------
+   ULTRA-WIDE DESKTOP
+   Intentionally left neutral so very large screens keep the same
+   composition as the regular desktop layout.
+------------------------------------------------------------ */
+@media (min-width: 1600px) {
+  /* no-op */
+}
+
+/* ------------------------------------------------------------
    GLOBAL MOBILE/TABLET SCROLL + SNAP BEHAVIOR (≤1023px)
 
    ROOT FIX: every section is locked to exactly one screen using a
@@ -312,6 +321,10 @@ iframe {
   .hero-fallback .relative.z-10 > .mt-6.flex.flex-row.items-center.justify-center.gap-3 > a > span > span {
     text-align: center;
     width: 100%;
+  }
+
+  .hero-fallback .relative.z-10 > .mt-6.flex.flex-row.items-center.justify-center.gap-3 > a.hero-store-badge > span > span:last-child {
+    white-space: nowrap;
   }
 
   .hero-fallback .relative.z-10 > .mt-6.flex.flex-row.items-center.justify-center.gap-3 > a svg {
@@ -858,6 +871,30 @@ iframe {
     margin-right: auto;
   }
 
+  #join-community .relative.z-10 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 1.65rem;
+    padding-bottom: 1.65rem;
+  }
+
+  #join-community h2 {
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    line-height: 1.12;
+  }
+
+  #join-community .relative.z-10 p {
+    max-width: 26rem;
+    font-size: clamp(0.72rem, 2.4vw, 0.875rem);
+    margin-top: 0.7rem;
+  }
+
+  #join-community .relative.z-10 a {
+    margin-top: 1.1rem;
+    padding: 0.7rem 1.35rem;
+    font-size: 12px;
+  }
+
   /* App Showcase sizing/behavior lives in the single ≤1023px block above.
      Only phone-specific padding is set here — do not re-declare
      touch-action / overflow / scroll-snap-stop / image heights here. */
@@ -1096,6 +1133,26 @@ iframe {
 
   #join-community .relative.z-10 {
     width: min(100%, 34rem);
+  }
+
+  #join-community .relative.z-10 {
+    padding-top: 1.35rem;
+    padding-bottom: 1.35rem;
+  }
+
+  #join-community h2 {
+    font-size: clamp(1.3rem, 4.8vw, 1.7rem);
+  }
+
+  #join-community .relative.z-10 p {
+    font-size: clamp(0.68rem, 2.2vw, 0.8rem);
+    margin-top: 1.85rem;
+  }
+
+  #join-community .relative.z-10 a {
+    margin-top: 0.85rem;
+    padding: 0.62rem 1.2rem;
+    font-size: 11px;
   }
 
   #wisdom-deck .reveal-pop {

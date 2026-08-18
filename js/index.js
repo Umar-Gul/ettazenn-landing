@@ -247,6 +247,10 @@
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   }
 
+  function isMobileSized() {
+    return !!(window.matchMedia && window.matchMedia('(max-width: 1023px)').matches);
+  }
+
   // leftCoachWrap/rightCoachWrap only render at the xl breakpoint
   // (1280px+) — below that they're `display:none`, so
   // getBoundingClientRect() on them returns an all-zero rect and the
@@ -261,7 +265,8 @@
 
     var cardRect = cardWrap.getBoundingClientRect();
     var size = avatar.getBoundingClientRect().width || 96;
-    var x = side === 'left' ? cardRect.left - size * 0.4 : cardRect.right + size * 0.4;
+    var gapFactor = isMobileSized() ? 0.8 : 0.4;
+    var x = side === 'left' ? cardRect.left - size * gapFactor : cardRect.right + size * gapFactor;
     var y = cardRect.top + cardRect.height / 2;
     return { left: x - size / 2, top: y - size / 2, width: size, height: size };
   }
