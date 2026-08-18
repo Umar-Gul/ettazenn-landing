@@ -1052,7 +1052,7 @@ iframe {
 
   #courseCardBase,
   #courseCardRising {
-    padding: clamp(0.5rem, 1.8vw, 0.8rem);
+    padding: clamp(1.5rem, 1.8vw, 0.8rem);
   }
 
   #courseCardBase .flex.w-full.flex-col,
