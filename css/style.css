@@ -500,8 +500,8 @@ iframe {
     height: auto !important;
     min-height: 100dvh !important;
 
-    padding-top: clamp(0.25rem, 1dvh, 0.55rem);
-    padding-bottom: clamp(0.55rem, 1.75dvh, 0.95rem);
+    padding-top: 0.25rem;
+    padding-bottom: 0.35rem;
   }
 
   #courses-check > .max-w-shell {
@@ -539,7 +539,7 @@ iframe {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: clamp(0.35rem, 1.4dvh, 0.75rem);
+    margin-top: 0.2rem;
   }
 
   #courseStage {
@@ -548,8 +548,8 @@ iframe {
     /* Keep the card stack inside the real mobile viewport more reliably.
        A slightly smaller upper bound prevents Safari's dynamic toolbar
        from pushing the section taller than DevTools emulation suggests. */
-    min-height: clamp(320px, 54dvh, 470px);
-    aspect-ratio: 16 / 11;
+    min-height: clamp(220px, 38dvh, 340px);
+    aspect-ratio: 16 / 12;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
   }
@@ -574,7 +574,7 @@ iframe {
 
   #courseCardBase,
   #courseCardRising {
-    padding: clamp(0.5rem, 1.8vw, 0.85rem);
+    padding: clamp(0.35rem, 1.2vw, 0.65rem);
   }
 
   /* Icon on top, text/button stacked below it, all centered.
@@ -585,7 +585,7 @@ iframe {
     flex-direction: column-reverse;
     align-items: center;
     justify-content: flex-start;
-    gap: clamp(0.25rem, 1dvh, 0.6rem) !important;
+    gap: clamp(0.15rem, 0.7dvh, 0.4rem) !important;
     width: 100%;
   }
 
@@ -599,7 +599,7 @@ iframe {
        actually comes from the unscoped "Flexible course cards" block and
        the width-banded rules further down the file, since they're
        declared later at equal specificity. See those for the fix. */
-    margin-top: 0.5rem;
+    margin-top: 0.15rem;
   }
 
   /* Let the column compress instead of overflowing #courseStage's
@@ -631,27 +631,27 @@ iframe {
 
   .course-title {
     text-align: center;
-    font-size: clamp(0.92rem, 3.8vw, 1.25rem);
-    line-height: 1.08;
+    font-size: clamp(0.8rem, 3vw, 1.05rem);
+    line-height: 1.04;
   }
 
   .course-desc {
-    font-size: clamp(8px, 1.95vw, 10px);
-    margin-top: 0.1rem !important;
-    line-height: 1.3;
+    font-size: clamp(7px, 1.55vw, 9px);
+    margin-top: 0 !important;
+    line-height: 1.18;
   }
 
   .ring-outer {
-    transform: scale(0.56);
+    transform: scale(0.42);
     transform-origin: center;
   }
 
   .course-explore-link {
-    margin-top: 0.35rem !important;
+    margin-top: 0.1rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    padding: 0.45rem 0.95rem !important;
-    font-size: clamp(10px, 2vw, 12px) !important;
+    padding: 0.35rem 0.85rem !important;
+    font-size: 9px !important;
     width: fit-content;
   }
 }
@@ -705,12 +705,12 @@ iframe {
   }
 
   #courses-check {
-    padding-top: 0.4rem;
-    padding-bottom: 0.55rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.3rem;
   }
 
   #courseStage {
-    min-height: clamp(300px, 50dvh, 420px);
+    min-height: clamp(210px, 36dvh, 300px);
     aspect-ratio: 16 / 12;
   }
 }
@@ -734,17 +734,17 @@ iframe {
   }
 
   .ring-outer {
-    transform: scale(0.5) !important;
+    transform: scale(0.44) !important;
   }
 
   #courses-check {
-    padding-top: 0.35rem;
-    padding-bottom: 0.65rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.35rem;
   }
 
   #courseStage {
-    min-height: clamp(320px, 52dvh, 450px);
-    aspect-ratio: 16 / 11;
+    min-height: clamp(230px, 40dvh, 340px);
+    aspect-ratio: 16 / 12;
   }
 }
 
@@ -760,8 +760,8 @@ iframe {
   }
 
   #courses-check {
-    padding-top: 0.5rem;
-    padding-bottom: 0.8rem;
+    padding-top: 0.35rem;
+    padding-bottom: 0.55rem;
   }
 }
 
