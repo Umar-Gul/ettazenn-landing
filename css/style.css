@@ -619,6 +619,7 @@ iframe {
     min-width: 110px;
     overflow: visible;
     flex-shrink: 0;
+    margin-top: 0.4rem;
   }
 
   #courseCardBase .max-w-md > *,
@@ -697,8 +698,12 @@ iframe {
     gap: 0.25rem !important;
   }
 
-  .ring-outer {
-    transform: scale(0.42) !important;
+   .ring-outer {
+    transform: scale(0.48);
+    transform-origin: center;
+    aspect-ratio: 1 / 1;
+    width: 212px;
+    height: 212px;
   }
 }
 
