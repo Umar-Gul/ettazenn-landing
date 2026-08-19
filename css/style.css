@@ -611,16 +611,12 @@ iframe {
     flex-shrink: 0;
   }
 
-    #courseCardBase .shrink-0.relative.flex.items-center.justify-center.p-4,
-  #courseCardRising .shrink-0.relative.flex.items-center.justify-center.p-4 {
-    padding: 0.1rem !important;
-    width: 112px;
-    height: 112px;
-    min-width: 110px;
-    overflow: visible;
-    flex-shrink: 0;
-    margin-top: 0.4rem;
-  }
+  #courseCardBase .shrink-0.relative.flex.items-center.justify-center.p-4,
+#courseCardRising .shrink-0.relative.flex.items-center.justify-center.p-4 {
+  padding: 0.1rem !important;
+  overflow: visible;
+  flex-shrink: 0;
+}
 
   #courseCardBase .max-w-md > *,
   #courseCardRising .max-w-md > * {
@@ -698,12 +694,14 @@ iframe {
     gap: 0.25rem !important;
   }
 
-   .ring-outer {
+  .ring-outer {
     transform: scale(0.48);
     transform-origin: center;
     aspect-ratio: 1 / 1;
     width: 212px;
     height: 212px;
+    flex-shrink: 0;
+    min-width: 212px;
   }
 }
 
