@@ -624,7 +624,7 @@ iframe {
 
   #courseCardBase .max-w-md > *,
   #courseCardRising .max-w-md > * {
-    margin-top: 0 !important;
+    margin-top: 18px !important;
   }
 
    .course-title {
