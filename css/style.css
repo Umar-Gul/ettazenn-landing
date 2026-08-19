@@ -578,20 +578,20 @@ iframe {
   /* Icon on top, text/button stacked below it, all centered.
      DOM order is [text block, icon block] — column-reverse renders the
      icon first (top) without touching the markup. */
-  #courseCardBase .flex.w-full.flex-col,
+    #courseCardBase .flex.w-full.flex-col,
   #courseCardRising .flex.w-full.flex-col {
-    flex-direction: column-reverse;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem !important;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: clamp(0.5rem, 3vw, 1rem) !important;
     width: 100%;
   }
 
    #courseCardBase .max-w-md,
   #courseCardRising .max-w-md {
-    text-align: center;
-    max-width: 100%;
-    margin-top: 0.3rem;
+    text-align: left;
+    max-width: 62%;
+    margin-top: 0;
   }
 
   /* Let the column compress instead of overflowing #courseStage's
@@ -611,10 +611,15 @@ iframe {
     flex-shrink: 0;
   }
 
-  #courseCardBase .shrink-0.relative.flex.items-center.justify-center.p-4,
+    #courseCardBase .shrink-0.relative.flex.items-center.justify-center.p-4,
   #courseCardRising .shrink-0.relative.flex.items-center.justify-center.p-4 {
     padding: 0.1rem !important;
+    width: 112px;
+    height: 112px;
+    min-width: 110px;
     overflow: visible;
+    flex-shrink: 0;
+    margin-top: 0.4rem;
   }
 
   #courseCardBase .max-w-md > *,
@@ -622,21 +627,16 @@ iframe {
     margin-top: 18px !important;
   }
 
-    .course-title {
-    text-align: center;
-    font-size: clamp(0.95rem, 3.5vw, 1.2rem);
-    line-height: 1.12;
+   .course-title {
+    text-align: left;
+    font-size: clamp(0.85rem, 3.2vw, 1.1rem);
+    line-height: 1.1;
   }
 
-     .course-desc {
-    font-size: clamp(9px, 2vw, 11px);
-    margin-top: 0.35rem !important;
-    line-height: 1.35;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    overflow: hidden;
+   .course-desc {
+    font-size: clamp(9px, 2.1vw, 11px);
+    margin-top: 0.4rem !important;
+    line-height: 1.4;
   }
 
    .ring-outer {
@@ -645,10 +645,10 @@ iframe {
   }
 
   .course-explore-link {
-    margin-top: 0.5rem !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding: 0.42rem 0.9rem !important;
+    margin-top: 0.55rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0.4rem 0.85rem !important;
     font-size: clamp(9px, 1.8vw, 11px) !important;
     width: fit-content;
   }
@@ -698,8 +698,8 @@ iframe {
     gap: 0.25rem !important;
   }
 
-    .ring-outer {
-    transform: scale(0.42);
+   .ring-outer {
+    transform: scale(0.48);
     transform-origin: center;
     aspect-ratio: 1 / 1;
     width: 212px;
@@ -717,7 +717,7 @@ iframe {
 @media (min-width: 390px) and (max-width: 767px) {
   #courseCardBase .max-w-md,
   #courseCardRising .max-w-md {
-    margin-top: -2rem;
+    margin-top: 0.5rem;
   }
 
   #courseCardBase .flex.w-full.flex-col,
