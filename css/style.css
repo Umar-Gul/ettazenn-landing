@@ -430,35 +430,49 @@ iframe {
     height: clamp(160px, 28dvh, 300px);
     max-width: 74vw;
   }
-
-  #wisdom-deck {
+#wisdom-deck {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
+
+    /* Keep the section clean without clipping the deck */
     overflow: hidden !important;
-    padding-top: clamp(0.6rem, 1.8dvh, 1rem);
-    padding-bottom: clamp(0.6rem, 1.8dvh, 1rem);
-  }
+}
 
-  #wisdomSwiper {
+#wisdomSwiper {
     overflow: visible;
-  }
+}
 
-  #wisdom-deck .relative.z-10 {
+/* Figma content group */
+#wisdom-deck .relative.z-10 {
     width: min(100%, 447px);
-    max-width: 100%;
+    max-width: 447px;
     margin-inline: auto;
-    gap: clamp(0.9rem, 2.2dvh, 1.5rem) !important;
-    transform: scale(0.88);
-    transform-origin: center top;
-  }
 
-  #expertCardWrap {
-    width: min(100%, 460px);
-  }
+    /* Figma gap */
+    gap: 50px !important;
 
+    /* Remove the scaling that is causing positioning/clipping problems */
+    transform: none;
+    transform-origin: center center;
+
+    /* Keep horizontally centered */
+    align-items: center;
+    justify-content: center;
+}
+
+#expertCardWrap {
+  width: min(100%, 460px);
+}
+
+#expertContent {
+  padding: 6rem 1.5rem 2rem;
+}
+
+@media (min-width: 640px) {
   #expertContent {
-    padding: 5rem 1rem 1.25rem;
+    padding: 6rem 2rem 2rem;
   }
+}
 
   .faq-item {
     width: 100%;
@@ -836,9 +850,11 @@ iframe {
     max-height: 28rem;
   }
 
-  #wisdom-deck .relative.z-10 {
-    gap: 1.25rem;
-    transform: scale(0.95);
+  #wisdom-deck {
+    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #wisdom-deck {
@@ -949,8 +965,10 @@ iframe {
   }
 
   #expert-minds {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #expert-minds .mx-auto.flex.w-full.max-w-\[1065px\] {
