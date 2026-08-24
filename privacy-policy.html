@@ -79,7 +79,7 @@
     <div class="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
 
       <!-- Logo -->
-      <a href="index.html" class="relative flex shrink-0 items-center gap-2 group">
+      <a href="index.html#top" class="relative flex shrink-0 items-center gap-2 group">
         <span class="relative w-[40.5px] h-[42.65px]">
           <img src="images/vector.svg" alt="Ettazenn logo" class="absolute object-contain w-[40.5px] h-[42.65px] top-[1.58px] left-[2.68px] transition-transform duration-300 group-hover:scale-105" />
         </span>
@@ -88,7 +88,7 @@
 
       <!-- Nav links (desktop) -->
       <nav class="hidden font-dm-sans items-center gap-9 text-[15px] text-white/85 lg:flex">
-        <a href="index.html" class="transition hover:text-white">Home</a>
+        <a href="index.html#top" class="transition hover:text-white">Home</a>
         <a href="index.html#crazyFeatures" class="transition hover:text-white">Features</a>
         <a href="index.html#app-showcase-section" class="transition hover:text-white">Explore</a>
         <a href="index.html#expert-minds" class="transition hover:text-white">Coaches</a>
@@ -102,7 +102,7 @@
           <button type="button" aria-label="Switch to Arabic" class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
         </div>
         
-        <a href="#" class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20 bg-[linear-gradient(88.01deg,rgba(117,92,180,0.5)_10.28%,rgba(74,51,133,0.5)_104.01%)]">
+        <a href="index.html#top" class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20 bg-[linear-gradient(88.01deg,rgba(117,92,180,0.5)_10.28%,rgba(74,51,133,0.5)_104.01%)]">
           Log in
         </a>
 
@@ -121,7 +121,7 @@
     <!-- Mobile nav drawer -->
     <div id="mobileNavPanel" class="mobile-nav-panel border-t border-white/10 lg:hidden">
       <div class="flex flex-col gap-4 px-4 py-5 sm:px-6">
-        <a href="index.html" class="text-[15px] text-white/80 transition hover:text-white">Home</a>
+        <a href="index.html#top" class="text-[15px] text-white/80 transition hover:text-white">Home</a>
         <a href="index.html#crazyFeatures" class="text-[15px] text-white/80 transition hover:text-white">Features</a>
         <a href="index.html#app-showcase-section" class="text-[15px] text-white/80 transition hover:text-white">Explore</a>
         <a href="index.html#expert-minds" class="text-[15px] text-white/80 transition hover:text-white">Coaches</a>
@@ -132,7 +132,7 @@
           <button type="button" class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
         </div>
 
-        <a href="#" class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20 bg-[linear-gradient(88.01deg,rgba(117,92,180,0.5)_10.28%,rgba(74,51,133,0.5)_104.01%)]">
+        <a href="index.html#top" class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20 bg-[linear-gradient(88.01deg,rgba(117,92,180,0.5)_10.28%,rgba(74,51,133,0.5)_104.01%)]">
           Log in
         </a>
       </div>
@@ -424,18 +424,27 @@
   <!-- ===== JAVASCRIPT ===== -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Mobile Drawer Toggle
       const navToggle = document.getElementById('navToggle');
       const mobileNavPanel = document.getElementById('mobileNavPanel');
       const navIconOpen = document.getElementById('navIconOpen');
       const navIconClose = document.getElementById('navIconClose');
 
       if (navToggle && mobileNavPanel) {
-        navToggle.addEventListener('click', () => {
+        const toggleMenu = () => {
           const isOpen = mobileNavPanel.classList.toggle('open');
           navToggle.setAttribute('aria-expanded', isOpen);
-          navIconOpen.classList.toggle('hidden', isOpen);
-          navIconClose.classList.toggle('hidden', !isOpen);
+          if (navIconOpen) navIconOpen.classList.toggle('hidden', isOpen);
+          if (navIconClose) navIconClose.classList.toggle('hidden', !isOpen);
+        };
+
+        navToggle.addEventListener('click', toggleMenu);
+
+        document.querySelectorAll('#mobileNavPanel a').forEach(link => {
+          link.addEventListener('click', () => {
+            if (mobileNavPanel.classList.contains('open')) {
+              toggleMenu();
+            }
+          });
         });
       }
 

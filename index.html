@@ -49,6 +49,11 @@
   </script>
 
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
 </head>
 
 <body
@@ -67,7 +72,7 @@
       <div class="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
 
         <!-- Logo -->
-        <a href="#" class="relative flex shrink-0 items-center gap-2">
+        <a href="index.html#top" class="relative flex shrink-0 items-center gap-2">
           <span class="relative" style="width: 40.5px; height: 42.65px;">
             <img src="images/vector.svg" alt="Ettazenn logo" class="absolute object-contain"
               style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
@@ -91,7 +96,7 @@
               style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
             <button class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
           </div>
-          <a href="#"
+          <a href="index.html#top"
             class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20"
             style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">
             Log in
@@ -126,7 +131,7 @@
             <button class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
           </div>
 
-          <a href="#"
+          <a href="index.html#top"
             class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20">
             Log in
           </a>
@@ -1143,6 +1148,31 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
   <script src="js/index.js"></script>
   <script src="js/showcase-animation.js"></script>
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const mobileNavPanel = document.getElementById('mobileNavPanel');
+    const navIconOpen = document.getElementById('navIconOpen');
+    const navIconClose = document.getElementById('navIconClose');
+
+    if (navToggle && mobileNavPanel) {
+      const toggleMenu = () => {
+        const isOpen = mobileNavPanel.classList.toggle('open');
+        navToggle.setAttribute('aria-expanded', isOpen);
+        if (navIconOpen) navIconOpen.classList.toggle('hidden', isOpen);
+        if (navIconClose) navIconClose.classList.toggle('hidden', !isOpen);
+      };
+
+      navToggle.addEventListener('click', toggleMenu);
+
+      document.querySelectorAll('#mobileNavPanel a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (mobileNavPanel.classList.contains('open')) {
+            toggleMenu();
+          }
+        });
+      });
+    }
+  </script>
 
 </body>
 

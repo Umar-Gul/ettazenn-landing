@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Why Ettazenn</title>
-  
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Swiper & GSAP -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
@@ -18,7 +18,9 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
 
   <script>
     tailwind.config = {
@@ -41,7 +43,50 @@
   </script>
 
   <style>
-    /* Glass Effect Utilities */
+    /* ===== BASE / SCROLL FIX =====
+       This page only has one content section + footer, so it must NOT
+       inherit scroll-snap-type from the multi-section index.html system.
+       Forcing snap here with only one snap target is what causes the
+       "stuck" / "won't scroll past hero" feeling. Plain natural scroll. */
+    html {
+      scroll-behavior: smooth;
+      height: auto;
+      overflow-y: auto;
+      scroll-snap-type: none;
+    }
+
+    body {
+      height: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0c0a16; }
+    ::-webkit-scrollbar-thumb { background: #2a1f3d; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #8b5cf6; }
+
+    /* ===== SECTION ===== */
+    .pg-section {
+      /* No scroll-snap-align here — natural flow, no snap trap */
+      background: radial-gradient(
+        circle at 50% 0%,
+        rgba(var(--edge-rgb), 0.35) 0%,
+        #0c0a16 65%
+      );
+    }
+
+    /* ===== GLASS PANEL ===== */
+    .pg-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
     .glass-card {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(20px);
@@ -49,7 +94,6 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       transition: all 0.3s ease;
     }
-    
     .glass-card:hover {
       border-color: rgba(139, 92, 246, 0.3);
       transform: translateY(-4px);
@@ -59,85 +103,159 @@
       background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.2) 10.28%, rgba(74, 51, 133, 0.2) 104.01%);
       border: 1px solid rgba(139, 92, 246, 0.3);
     }
+
+    /* ===== TABS (left column of the panel) ===== */
+    .pg-tab {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.85rem 1.1rem;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(216, 204, 228, 0.6); /* lavender/60 */
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+      text-align: left;
+    }
+
+    .pg-tab svg {
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+
+    .pg-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .pg-tab.active {
+      color: #fff;
+      background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.35) 10.28%, rgba(74, 51, 133, 0.35) 104.01%);
+      border-color: rgba(139, 92, 246, 0.4);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
+    }
+
+    .pg-tab.active svg {
+      opacity: 1;
+      color: #A78BFA;
+    }
+
+    /* ===== IMAGE CARD ===== */
+    .brain-bg {
+      background: linear-gradient(135deg, #2A1F3D 0%, #131023 100%);
+    }
+
+    #pgPanelText.fading {
+      opacity: 0;
+    }
+
+    /* ===== MOBILE NAV DRAWER ===== */
+    .mobile-nav-panel {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-in-out, opacity 0.25s ease-in-out;
+      background: rgba(12, 19, 36, 0.95);
+      backdrop-filter: blur(24px);
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 82px;
+      z-index: 60;
+    }
+    .mobile-nav-panel.open {
+      max-height: 400px;
+      opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
   </style>
 </head>
 
 <body class="font-sans antialiased bg-[#0c0a16] text-white min-h-screen overflow-x-hidden">
-         <header class="relative z-20 h-[82px]"
-      style="background: rgba(12, 19, 36, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0px 0px 40px 0px rgba(139, 92, 246, 0.1); backdrop-filter: blur(24px);">
-      <div class="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
+  <header class="relative z-50 h-[82px]"
+    style="background: rgba(12, 19, 36, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0px 0px 40px 0px rgba(139, 92, 246, 0.1); backdrop-filter: blur(24px);">
+    <div class="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
 
-        <!-- Logo -->
-        <a href="#" class="relative flex shrink-0 items-center gap-2">
-          <span class="relative" style="width: 40.5px; height: 42.65px;">
-            <img src="images/vector.svg" alt="Ettazenn logo" class="absolute object-contain"
-              style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
-          </span>
-          <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
+      <!-- Logo -->
+      <a href="index.html#top" class="relative flex shrink-0 items-center gap-2">
+        <span class="relative" style="width: 40.5px; height: 42.65px;">
+          <img src="images/vector.svg" alt="Ettazenn logo" class="absolute object-contain"
+            style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
+        </span>
+        <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
+      </a>
+
+      <!-- Nav links (desktop) -->
+      <nav class="hidden font-dm-sans items-center gap-9 text-[15px] text-white/85 lg:flex">
+        <a href="index.html#top" class="font-medium text-white">Home</a>
+        <a href="index.html#crazyFeatures" class="transition hover:text-white">Features</a>
+        <a href="index.html#app-showcase-section" class="transition hover:text-white">Explore</a>
+        <a href="index.html#expert-minds" class="transition hover:text-white">Coaches</a>
+      </nav>
+
+      <!-- Right actions -->
+      <div class="flex items-center gap-2 sm:gap-4">
+        <div
+          class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
+          <button class="rounded-full font-dm-sans px-3 py-1 font-medium text-white"
+            style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
+          <button class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
+        </div>
+        <a href="index.html#top"
+          class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20"
+          style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">
+          Log in
         </a>
 
-        <!-- Nav links (desktop) -->
-        <nav class="hidden font-dm-sans items-center gap-9 text-[15px] text-white/85 lg:flex">
-          <a href="#top" class="font-medium text-white">Home</a>
-          <a href="#crazyFeatures" class="transition hover:text-white">Features</a>
-          <a href="#app-showcase-section" class="transition hover:text-white">Explore</a>
-          <a href="#expert-minds" class="transition hover:text-white">Coaches</a>
-        </nav>
-
-        <!-- Right actions -->
-        <div class="flex items-center gap-2 sm:gap-4">
-          <div
-            class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
-            <button class="rounded-full font-dm-sans px-3 py-1 font-medium text-white"
-              style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
-            <button class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
-          </div>
-          <a href="#"
-            class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20"
-            style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">
-            Log in
-          </a>
-
-          <!-- Mobile hamburger toggle (opens drawer below) -->
-          <button id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNavPanel"
-            class="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white lg:hidden">
-            <svg id="navIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" class="h-5 w-5">
-              <path d="M3 6h18M3 12h18M3 18h18" />
-            </svg>
-            <svg id="navIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" class="hidden h-5 w-5">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
-        </div>
+        <!-- Mobile hamburger toggle (opens drawer below) -->
+        <button id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNavPanel"
+          class="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white lg:hidden">
+          <svg id="navIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" class="h-5 w-5">
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+          <svg id="navIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" class="hidden h-5 w-5">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
       </div>
+    </div>
 
-      <!-- Mobile nav drawer -->
-      <div id="mobileNavPanel" class="mobile-nav-panel border-t border-white/10 lg:hidden">
-        <div class="flex flex-col gap-4 px-4 py-5 sm:px-6">
-          <a href="#top" class="text-[15px] font-medium text-white">Home</a>
-          <a href="#crazyFeatures" class="text-[15px] text-white/80 transition hover:text-white">Features</a>
-          <a href="#app-showcase-section" class="text-[15px] text-white/80 transition hover:text-white">Explore</a>
-          <a href="#expert-minds" class="text-[15px] text-white/80 transition hover:text-white">Coaches</a>
+    <!-- Mobile nav drawer -->
+    <div id="mobileNavPanel" class="mobile-nav-panel border-t border-white/10 lg:hidden">
+      <div class="flex flex-col gap-4 px-4 py-5 sm:px-6">
+        <a href="index.html#top" class="text-[15px] font-medium text-white">Home</a>
+        <a href="index.html#crazyFeatures" class="text-[15px] text-white/80 transition hover:text-white">Features</a>
+        <a href="index.html#app-showcase-section" class="text-[15px] text-white/80 transition hover:text-white">Explore</a>
+        <a href="index.html#expert-minds" class="text-[15px] text-white/80 transition hover:text-white">Coaches</a>
 
-          <div class="flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] w-fit">
-            <button class="rounded-full px-3 py-1.5 font-medium text-white"
-              style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
-            <button class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
-          </div>
-
-          <a href="#"
-            class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20">
-            Log in
-          </a>
+        <div class="flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] w-fit">
+          <button class="rounded-full px-3 py-1.5 font-medium text-white"
+            style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
+          <button class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
         </div>
+
+        <a href="index.html#top"
+          class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20">
+          Log in
+        </a>
       </div>
-    </header>
+    </div>
+  </header>
 
   <!-- ===== WHY ATTAZENN / WHY APP SECTION ===== -->
-  <section
-    class="pg-section screen-section flex flex-col justify-center overflow-hidden px-4 py-14 sm:px-6 lg:py-8 h-screen w-full snap-start snap-always shrink-0 overflow-y-auto"
+  <section id="whyApp"
+    class="pg-section flex flex-col justify-center px-4 py-14 sm:px-6 lg:py-20 w-full min-h-[85vh]"
     style="--edge-rgb: 19, 16, 35;">
     <div class="mx-auto w-full max-w-shell">
 
@@ -153,7 +271,6 @@
       </div>
 
       <!-- Panel -->
-      <!-- Panel (Figma: 1065 x 642) -->
       <div
         class="pg-panel mx-auto mt-10 grid min-h-[560px] w-full max-w-[1065px] gap-6 p-5 sm:p-6 md:grid-cols-[1fr_1.5fr] md:p-7 lg:h-[62vh] lg:max-h-[642px] lg:min-h-0">
 
@@ -201,7 +318,7 @@
             class="absolute inset-0 h-full w-full object-cover object-center" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
 
-          <div id="pgPanelText" class="absolute inset-x-0 bottom-0 p-5 sm:p-7" style="transition: opacity .25s ease;">
+          <div id="pgPanelText" class="absolute inset-x-0 bottom-0 p-5 sm:p-7">
             <h4 id="pgHeading" class="text-[16px] sm:text-[17px] font-inter text-white">Coach &amp; Wellness centre's:
             </h4>
             <p id="pgDesc" class="mt-2 max-w-md font-dm-sans text-[13px] leading-relaxed text-lavender/70">
@@ -215,7 +332,7 @@
     </div>
   </section>
 
-       <footer class="bg-[#0c0a16] px-4 py-10 sm:px-6 snap-end">
+  <footer class="bg-[#0c0a16] px-4 py-10 sm:px-6">
     <div class="mx-auto max-w-shell">
 
       <div id="footerInner"
@@ -236,7 +353,6 @@
 
         <!-- Social icons -->
         <div class="flex shrink-0 items-center gap-4 text-white/70">
-          <!-- X (Twitter) -->
           <a href="https://x.com/ettazenn" target="_blank" rel="noopener noreferrer" aria-label="X"
             class="transition hover:text-white">
             <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
@@ -244,7 +360,6 @@
                 d="M18.24 2.5h3.32l-7.26 8.3 8.54 11.2h-6.68l-5.23-6.84-5.99 6.84H1.6l7.77-8.88L1.16 2.5h6.85l4.73 6.25L18.24 2.5Zm-1.17 17.5h1.84L7.03 4.4H5.05l12.02 15.6Z" />
             </svg>
           </a>
-          <!-- Facebook -->
           <a href="https://www.facebook.com/ettazenn" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
             class="transition hover:text-white">
             <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
@@ -252,7 +367,6 @@
                 d="M13.5 21v-7.75h2.6l.39-3.02h-3v-1.93c0-.87.24-1.47 1.5-1.47h1.6V4.14C15.98 4.06 15.03 4 13.9 4c-2.35 0-3.96 1.43-3.96 4.06v2.17H7.33v3.02h2.6V21h3.57Z" />
             </svg>
           </a>
-          <!-- Instagram -->
           <a href="https://www.instagram.com/ettazenn/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
             class="transition hover:text-white">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-[18px] w-[18px]">
@@ -261,7 +375,6 @@
               <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
             </svg>
           </a>
-          <!-- WhatsApp -->
           <a href="https://api.whatsapp.com/send?phone=966545071233" target="_blank" rel="noopener noreferrer"
             aria-label="WhatsApp" class="transition hover:text-white">
             <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
@@ -272,40 +385,25 @@
         </div>
       </div>
 
-      <!-- Divider -->
       <div class="my-6 h-px w-full bg-white/5"></div>
 
-      <!-- Payment + App badges -->
       <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
-
-        <!-- Payment methods -->
         <div class="flex items-center justify-center gap-4">
-
-          <!-- Mastercard -->
           <div class="flex h-8 w-14 items-center justify-center">
             <img src="images/mastercard.svg" alt="Mastercard" class="h-auto w-12 object-contain" />
           </div>
-
-          <!-- Visa -->
           <div class="flex h-8 w-14 items-center justify-center">
             <img src="images/visa.svg" alt="Visa" class="h-auto w-12 object-contain" />
           </div>
-
-          <!-- Mada -->
           <div class="flex h-8 w-14 items-center justify-center">
             <img src="images/mada.jfif" alt="Mada" class="h-auto w-12 object-contain" />
           </div>
-
-          <!-- Apple Pay -->
           <div class="flex h-8 w-14 items-center justify-center">
             <img src="images/apple-pay.png" alt="Apple Pay" class="h-auto w-12 object-contain" />
           </div>
-
         </div>
 
-        <!-- App store badges -->
         <div class="flex flex-row items-center justify-center gap-3">
-          <!-- App Store Badge -->
           <a href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455" target="_blank"
             rel="noopener noreferrer" aria-label="Download on the App Store"
             class="hero-store-badge flex w-[162px] flex-1 items-center justify-center gap-2 rounded-[7.8px] bg-white px-3.5 py-1.5 ring-1 ring-white/10 transition hover:bg-white/90 sm:w-auto">
@@ -319,7 +417,6 @@
             </span>
           </a>
 
-          <!-- Google Play Badge -->
           <a href="https://play.google.com/store/apps/details?id=com.ettazenn.ettazen" target="_blank"
             rel="noopener noreferrer" aria-label="Get it on Google Play"
             class="hero-store-badge flex w-[162px] flex-1 items-center justify-center gap-2 rounded-[7.8px] bg-white px-3.5 py-1.5 ring-1 ring-white/10 transition hover:bg-white/90 sm:w-auto">
@@ -336,14 +433,10 @@
             </span>
           </a>
         </div>
-
-
       </div>
 
-      <!-- Divider -->
       <div class="my-6 h-px w-full bg-white/5"></div>
 
-      <!-- Copyright -->
       <div class="flex flex-col items-center gap-1 text-center sm:items-start sm:text-left">
         <p class="text-[12px] text-lavender/50">© 2026 Ettazenn. All rights reserved.</p>
         <p class="text-[12px] italic text-lavender/40">Establishment Ettazenn For Information Technology</p>
@@ -352,22 +445,133 @@
     </div>
   </footer>
 
-  <!-- Animation Script -->
+  <!-- ===== JAVASCRIPT (inline, self-contained — no external css/style.css or js/index.js) ===== -->
   <script>
-    gsap.registerPlugin(ScrollTrigger);
+    document.addEventListener("DOMContentLoaded", () => {
 
-    gsap.from(".glass-card", {
-      scrollTrigger: {
-        trigger: "#whyApp",
-        start: "top 80%",
-      },
-      opacity: 0,
-      y: 30,
-      stagger: 0.15,
-      duration: 0.8,
-      ease: "power2.out"
+      /* ---------- MOBILE NAV TOGGLE ---------- */
+      const navToggle = document.getElementById('navToggle');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const navIconOpen = document.getElementById('navIconOpen');
+      const navIconClose = document.getElementById('navIconClose');
+
+      const closeMenu = () => {
+        mobileNavPanel.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navIconOpen.classList.remove('hidden');
+        navIconClose.classList.add('hidden');
+      };
+
+      const toggleMenu = () => {
+        const isOpen = mobileNavPanel.classList.toggle('open');
+        navToggle.setAttribute('aria-expanded', String(isOpen));
+        navIconOpen.classList.toggle('hidden', isOpen);
+        navIconClose.classList.toggle('hidden', !isOpen);
+      };
+
+      if (navToggle && mobileNavPanel) {
+        navToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleMenu();
+        });
+
+        // Close on link click
+        mobileNavPanel.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', closeMenu);
+        });
+
+        // Close when clicking outside the drawer
+        document.addEventListener('click', (e) => {
+          if (mobileNavPanel.classList.contains('open') &&
+              !mobileNavPanel.contains(e.target) &&
+              !navToggle.contains(e.target)) {
+            closeMenu();
+          }
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && mobileNavPanel.classList.contains('open')) {
+            closeMenu();
+          }
+        });
+
+        // Close automatically if resized up to desktop width
+        window.addEventListener('resize', () => {
+          if (window.innerWidth >= 1024 && mobileNavPanel.classList.contains('open')) {
+            closeMenu();
+          }
+        });
+      }
+
+      /* ---------- TAB SWITCHING (Personalized Guidance panel) ---------- */
+      const tabContent = {
+        coaches: {
+          heading: "Coach & Wellness centre's:",
+          desc: "Journey inward with direct support from our master instructors. Our personalized sessions offer a serene path to wellness.",
+          link: "#"
+        },
+        wellness: {
+          heading: "Wellness Center's:",
+          desc: "Partner wellness centers extend Ettazenn's guided practices into dedicated, in-person spaces built for calm and recovery.",
+          link: "#"
+        },
+        schools: {
+          heading: "Schools:",
+          desc: "Bring mindful movement and breathwork into classrooms with programs designed for focus, resilience, and student wellbeing.",
+          link: "#"
+        },
+        partners: {
+          heading: "Partners:",
+          desc: "Collaborate with Ettazenn to bring holistic wellness offerings to your organization, studio, or community.",
+          link: "#"
+        }
+      };
+
+      const tabs = document.querySelectorAll('.pg-tab');
+      const pgPanelText = document.getElementById('pgPanelText');
+      const pgHeading = document.getElementById('pgHeading');
+      const pgDesc = document.getElementById('pgDesc');
+      const pgExploreLink = document.getElementById('pgExploreLink');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const key = tab.getAttribute('data-tab');
+          const data = tabContent[key];
+          if (!data) return;
+
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          if (pgPanelText) {
+            pgPanelText.classList.add('fading');
+            setTimeout(() => {
+              pgHeading.textContent = data.heading;
+              pgDesc.textContent = data.desc;
+              if (pgExploreLink) pgExploreLink.href = data.link;
+              pgPanelText.classList.remove('fading');
+            }, 200);
+          }
+        });
+      });
+
+      /* ---------- GSAP ENTRANCE ANIMATION ---------- */
+      if (typeof gsap !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from(".pg-panel", {
+          scrollTrigger: {
+            trigger: "#whyApp",
+            start: "top 80%",
+          },
+          opacity: 0,
+          y: 30,
+          duration: 0.8,
+          ease: "power2.out"
+        });
+      }
     });
   </script>
 
 </body>
+
 </html>
