@@ -828,42 +828,69 @@ stage.addEventListener('wheel', function (e) {
     var scrollingDown = e.deltaY > 0;
     var scrollingUp = e.deltaY < 0;
 
-    // At the LAST card + scrolling down:
-    // allow the page to continue to the next section.
-    if (scrollingDown && index === categories.length - 1) {
-        wheelCooldown = false;
-        return;
-    }
-
-    // At the FIRST card + scrolling up:
-    // allow the page to continue to the previous section.
-    if (scrollingUp && index === 0) {
-        wheelCooldown = false;
-        return;
-    }
-
-    // While there is another card available, consume the wheel
-    // and use the existing card animation.
-    if (animating || wheelCooldown) {
+    // While animation is running, keep the page locked.
+    if (animating) {
         e.preventDefault();
         return;
     }
 
-    e.preventDefault();
-    wheelCooldown = true;
-
-    if (scrollingDown) {
-        next();
-    } else {
-        prev();
+    // Prevent multiple card changes from one wheel gesture.
+    if (wheelCooldown) {
+        e.preventDefault();
+        return;
     }
 
-    window.setTimeout(function () {
-        wheelCooldown = false;
-    }, WHEEL_COOLDOWN_MS);
+    // ---------------------------------------------------------
+    // DOWN
+    // ---------------------------------------------------------
+    if (scrollingDown) {
+
+        // There is another card available:
+        // show it first and keep the section locked.
+        if (index < categories.length - 1) {
+            e.preventDefault();
+
+            wheelCooldown = true;
+            next();
+
+            window.setTimeout(function () {
+                wheelCooldown = false;
+            }, WHEEL_COOLDOWN_MS);
+
+            return;
+        }
+
+        // We are ALREADY displaying the last card.
+        // Now allow this NEW scroll to move to the next section.
+        return;
+    }
+
+    // ---------------------------------------------------------
+    // UP
+    // ---------------------------------------------------------
+    if (scrollingUp) {
+
+        // There is another previous card available:
+        // show it first and keep the section locked.
+        if (index > 0) {
+            e.preventDefault();
+
+            wheelCooldown = true;
+            prev();
+
+            window.setTimeout(function () {
+                wheelCooldown = false;
+            }, WHEEL_COOLDOWN_MS);
+
+            return;
+        }
+
+        // We are ALREADY displaying the first card.
+        // Now allow this NEW scroll to move to the previous section.
+        return;
+    }
 
 }, { passive: false });
-
   // A plain click (no drag) also changes the card — treat it like a tap
   // that scrolls the stack up/down. Clicking the top half of the card
   // steps backward (like scrolling up), clicking the bottom half steps
