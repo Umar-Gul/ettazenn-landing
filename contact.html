@@ -16,6 +16,53 @@
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
 
+    <!-- intl-tel-input CSS (this was missing — without it the flag/country dropdown has no styling at all) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/css/intlTelInput.css" />
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/intlTelInput.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const phoneInput = document.getElementById("phone");
+
+            if (!phoneInput) return;
+
+            const iti = window.intlTelInput(phoneInput, {
+                initialCountry: "sa",
+                separateDialCode: true,
+                preferredCountries: ["sa", "ae", "pk", "qa", "kw"],
+                nationalMode: true,
+                autoPlaceholder: "aggressive",
+                // v25 loads the validation/formatting/placeholder engine on demand via loadUtils
+                // (the old "utilsScript" option no longer exists in this version) — without this,
+                // autoPlaceholder does nothing and getNumber() below can't format properly.
+                loadUtils: () => import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/utils.js"),
+                // The phone field sits inside a backdrop-filter/transform ancestor (.glass-container,
+                // GSAP's animated .anim-field), which creates a new containing block for the dropdown.
+                // That makes the list render in the right spot but breaks click/typing hit-testing on it.
+                // dropdownContainer detaches the list to <body> and repositions it via JS instead.
+                // NOTE: this option is named "dropdownContainer" on this version (25.3.1) — it was
+                // renamed to "dropdownParent" in v29+, so that name is silently ignored here.
+                dropdownContainer: document.body,
+            });
+
+            // Make the selected country update correctly
+            phoneInput.addEventListener("countrychange", function () {
+                console.log("Selected country:", iti.getSelectedCountryData());
+            });
+
+            // Get complete international number when submitting
+            const form = phoneInput.closest("form");
+
+            if (form) {
+                form.addEventListener("submit", function () {
+                    phoneInput.value = iti.getNumber();
+                });
+            }
+
+        });
+    </script>
+
     <!-- GSAP -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 
@@ -127,6 +174,43 @@
                 opacity: 1;
             }
         }
+
+        .iti {
+            width: 100%;
+        }
+
+        /* .iti__country-list is position:static by default, so z-index on it does nothing —
+           the element that actually needs to sit above everything else once dropdownContainer
+           detaches it to <body> is .iti--container (position: fixed). */
+        .iti--container {
+            z-index: 99999 !important;
+        }
+
+        .iti__country-list {
+            background: rgba(20, 15, 35, 0.98) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: white;
+            max-height: 280px;
+        }
+
+        .iti__country {
+            color: white !important;
+            cursor: pointer;
+        }
+
+        .iti__country:hover,
+        .iti__country.iti__highlight {
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .iti__selected-dial-code {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .iti__arrow {
+            border-top-color: rgba(255, 255, 255, 0.6) !important;
+        }
     </style>
 </head>
 
@@ -161,7 +245,8 @@
                     class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
                     <button class="rounded-full font-dm-sans px-3 py-1 font-medium text-white"
                         style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
-                    <button class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
+                    <button
+                        class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
                 </div>
                 <a href="index.html#top"
                     class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20"
@@ -188,11 +273,15 @@
         <div id="mobileNavPanel" class="mobile-nav-panel border-t border-white/10 lg:hidden">
             <div class="flex flex-col gap-4 px-4 py-5 sm:px-6">
                 <a href="index.html#top" class="text-[15px] font-medium text-white">Home</a>
-                <a href="index.html#crazyFeatures" class="text-[15px] text-white/80 transition hover:text-white">Features</a>
-                <a href="index.html#app-showcase-section" class="text-[15px] text-white/80 transition hover:text-white">Explore</a>
-                <a href="index.html#expert-minds" class="text-[15px] text-white/80 transition hover:text-white">Coaches</a>
+                <a href="index.html#crazyFeatures"
+                    class="text-[15px] text-white/80 transition hover:text-white">Features</a>
+                <a href="index.html#app-showcase-section"
+                    class="text-[15px] text-white/80 transition hover:text-white">Explore</a>
+                <a href="index.html#expert-minds"
+                    class="text-[15px] text-white/80 transition hover:text-white">Coaches</a>
 
-                <div class="flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] w-fit">
+                <div
+                    class="flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] w-fit">
                     <button class="rounded-full px-3 py-1.5 font-medium text-white"
                         style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
                     <button class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
@@ -207,7 +296,8 @@
     </header>
 
     <!-- ===== BRAND HERO BANNER ===== -->
-    <section class="relative z-10 w-full bg-gradient-to-r from-[#2A1F3D] via-[#5B3A6E] to-[#8B5CF6] pt-12 pb-24 sm:pt-16 sm:pb-32">
+    <section
+        class="relative z-10 w-full bg-gradient-to-r from-[#2A1F3D] via-[#5B3A6E] to-[#8B5CF6] pt-12 pb-24 sm:pt-16 sm:pb-32">
         <div class="mx-auto flex max-w-shell flex-col items-center text-center px-4">
             <h1 id="heroTitle"
                 class="font-inter text-[38px] sm:text-[54px] font-bold leading-tight tracking-tight text-white drop-shadow-md">
@@ -216,7 +306,8 @@
 
             <!-- Curved Double Line Accent -->
             <div id="heroArc" class="mt-3 flex justify-center">
-                <svg width="220" height="20" viewBox="0 0 220 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-white/85">
+                <svg width="220" height="20" viewBox="0 0 220 20" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    class="text-white/85">
                     <path d="M4 14C60 3 160 3 216 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
                     <path d="M20 17C75 7 145 7 200 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                 </svg>
@@ -261,15 +352,7 @@
                     </div>
 
                     <!-- Field 3: Phone Number with Country Code -->
-                    <div class="anim-field flex items-center glass-input rounded-2xl px-4 py-3.5">
-                        <div class="flex items-center gap-2 border-r border-white/10 pr-3 mr-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-lavender/60" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
-                            <span class="font-dm-sans text-[13px] font-medium text-white/90">+966</span>
-                        </div>
+                    <div class="anim-field glass-input rounded-2xl px-4 py-3.5">
                         <input type="tel" id="phone" name="phone" placeholder="512345678"
                             class="w-full bg-transparent font-dm-sans text-[14px] text-white placeholder-lavender/40 focus:outline-none" />
                     </div>
