@@ -68,87 +68,105 @@
     .mobile-nav-panel.open {
       display: block;
     }
+
+    /* Custom Ultra-Glow Hover Effects for Discovery Icons */
+    .discover-icon-circle {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .discover-icon:hover .discover-icon-circle {
+      transform: translateY(-8px) scale(1.08);
+      box-shadow: 0 15px 35px -5px rgba(139, 92, 246, 0.6), 0 0 20px 2px rgba(167, 139, 250, 0.4);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .discover-icon img {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+    }
+
+    .discover-icon:hover img {
+      transform: scale(1.28) rotate(5deg);
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    }
   </style>
 </head>
 
 <body class="font-dm-sans antialiased bg-plum-900 text-white overflow-x-hidden">
 
-  <!-- ===== YOUR CUSTOM HEADER / NAVBAR (unchanged, reused from the landing page) ===== -->
-     <header class="relative z-20 h-[82px]"
-      style="background: rgba(12, 19, 36, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0px 0px 40px 0px rgba(139, 92, 246, 0.1); backdrop-filter: blur(24px);">
-      <div class="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
+  <!-- ===== HEADER / NAVBAR ===== -->
+  <header class="relative z-20 h-[82px]"
+    style="background: rgba(12, 19, 36, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0px 0px 40px 0px rgba(139, 92, 246, 0.1); backdrop-filter: blur(24px);">
+    <div class="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
 
-        <!-- Logo -->
-          <a href="index.html#top" class="relative flex shrink-0 items-center gap-2">
-          <span class="relative" style="width: 40.5px; height: 42.65px;">
-            <img src="images/vector.svg" alt="Ettazenn logo" class="absolute object-contain"
-              style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
-          </span>
-          <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
+      <!-- Logo -->
+      <a href="index.html#top" class="relative flex shrink-0 items-center gap-2">
+        <span class="relative" style="width: 40.5px; height: 42.65px;">
+          <img src="images/vector.svg" alt="Ettazenn logo" class="absolute object-contain"
+            style="width: 40.5px; height: 42.65px; top: 1.58px; left: 2.68px; transform: rotate(0deg); opacity: 1;" />
+        </span>
+        <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
+      </a>
+
+      <!-- Nav links (desktop) -->
+      <nav class="hidden font-dm-sans items-center gap-9 text-[15px] text-white/85 lg:flex">
+        <a href="index.html#top" class="font-medium text-white">Home</a>
+        <a href="index.html#crazyFeatures" class="transition hover:text-white">Features</a>
+        <a href="index.html#app-showcase-section" class="transition hover:text-white">Explore</a>
+        <a href="index.html#expert-minds" class="transition hover:text-white">Coaches</a>
+      </nav>
+
+      <!-- Right actions -->
+      <div class="flex items-center gap-2 sm:gap-4">
+        <div
+          class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
+          <button class="rounded-full font-dm-sans px-3 py-1 font-medium text-white"
+            style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
+          <button class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
+        </div>
+        <a href="index.html#top"
+          class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20"
+          style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">
+          Log in
         </a>
 
-        <!-- Nav links (desktop) -->
-        <nav class="hidden font-dm-sans items-center gap-9 text-[15px] text-white/85 lg:flex">
-          <a href="index.html#top" class="font-medium text-white">Home</a>
-          <a href="index.html#crazyFeatures" class="transition hover:text-white">Features</a>
-          <a href="index.html#app-showcase-section" class="transition hover:text-white">Explore</a>
-          <a href="index.html#expert-minds" class="transition hover:text-white">Coaches</a>
-        </nav>
-
-        <!-- Right actions -->
-        <div class="flex items-center gap-2 sm:gap-4">
-          <div
-            class="hidden sm:flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] backdrop-blur-sm">
-            <button class="rounded-full font-dm-sans px-3 py-1 font-medium text-white"
-              style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
-            <button class="rounded-full font-dm-sans px-3 py-1 text-white/70 transition hover:text-white">عربي</button>
-          </div>
-          <a href="index.html#top"
-            class="hidden sm:inline-block rounded-full font-inter border border-brand/70 px-6 py-2 text-[14px] font-medium text-white transition hover:bg-brand/20"
-            style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">
-            Log in
-          </a>
-
-          <!-- Mobile hamburger toggle (opens drawer below) -->
-          <button id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNavPanel"
-            class="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white lg:hidden">
-            <svg id="navIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" class="h-5 w-5">
-              <path d="M3 6h18M3 12h18M3 18h18" />
-            </svg>
-            <svg id="navIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" class="hidden h-5 w-5">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
-        </div>
+        <!-- Mobile hamburger toggle -->
+        <button id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNavPanel"
+          class="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white lg:hidden">
+          <svg id="navIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" class="h-5 w-5">
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+          <svg id="navIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" class="hidden h-5 w-5">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
       </div>
+    </div>
 
-      <!-- Mobile nav drawer -->
-      <div id="mobileNavPanel" class="mobile-nav-panel border-t border-white/10 lg:hidden">
-        <div class="flex flex-col gap-4 px-4 py-5 sm:px-6">
-          <a href="index.html#top" class="text-[15px] font-medium text-white">Home</a>
-          <a href="index.html#crazyFeatures" class="text-[15px] text-white/80 transition hover:text-white">Features</a>
-          <a href="index.html#app-showcase-section" class="text-[15px] text-white/80 transition hover:text-white">Explore</a>
-          <a href="index.html#expert-minds" class="text-[15px] text-white/80 transition hover:text-white">Coaches</a>
+    <!-- Mobile nav drawer -->
+    <div id="mobileNavPanel" class="mobile-nav-panel border-t border-white/10 lg:hidden">
+      <div class="flex flex-col gap-4 px-4 py-5 sm:px-6">
+        <a href="index.html#top" class="text-[15px] font-medium text-white">Home</a>
+        <a href="index.html#crazyFeatures" class="text-[15px] text-white/80 transition hover:text-white">Features</a>
+        <a href="index.html#app-showcase-section" class="text-[15px] text-white/80 transition hover:text-white">Explore</a>
+        <a href="index.html#expert-minds" class="text-[15px] text-white/80 transition hover:text-white">Coaches</a>
 
-          <div class="flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] w-fit">
-            <button class="rounded-full px-3 py-1.5 font-medium text-white"
-              style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
-            <button class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
-          </div>
-
-          <a href="index.html#top"
-            class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20">
-            Log in
-          </a>
+        <div class="flex items-center gap-1 rounded-full border border-white/20 bg-white/5 p-1 text-[13px] w-fit">
+          <button class="rounded-full px-3 py-1.5 font-medium text-white"
+            style="background: linear-gradient(88.01deg, rgba(117, 92, 180, 0.5) 10.28%, rgba(74, 51, 133, 0.5) 104.01%);">EN</button>
+          <button class="rounded-full px-3 py-1.5 text-white/70 transition hover:text-white">عربي</button>
         </div>
+
+        <a href="index.html#top"
+          class="w-full text-center rounded-full border border-brand/70 px-6 py-2.5 text-[14px] font-medium text-white transition hover:bg-brand/20">
+          Log in
+        </a>
       </div>
-    </header>
+    </div>
+  </header>
 
   <main id="top" class="snap-y snap-mandatory">
-
-
 
     <!-- ===== DISCOVER SECTION (FEATURE GRID) ===== -->
     <section id="about-discover" class="screen-section relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-plum-800 px-4 py-16 sm:px-6 snap-start shrink-0">
@@ -173,191 +191,182 @@
 
         <div class="mt-10 grid grid-cols-3 gap-x-4 gap-y-8 sm:grid-cols-6 sm:gap-6 lg:mt-12">
 
-          <div class="discover-icon flex flex-col items-center gap-3 text-center">
-            <div class="flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
+          <!-- Icon Item 1 -->
+          <div class="discover-icon group flex cursor-pointer flex-col items-center gap-3 text-center">
+            <div class="discover-icon-circle flex h-20 w-20 items-center justify-center rounded-full border border-white/10 sm:h-24 sm:w-24 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
               <img src="https://api.iconify.design/mdi/radio.svg?color=%23ffffff" alt="Stories icon" class="h-9 w-9 sm:h-10 sm:w-10" loading="lazy" />
             </div>
-            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px]">Stories</span>
+            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px] transition-colors duration-300 group-hover:text-white">Stories</span>
           </div>
 
-          <div class="discover-icon flex flex-col items-center gap-3 text-center">
-            <div class="flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
+          <!-- Icon Item 2 -->
+          <div class="discover-icon group flex cursor-pointer flex-col items-center gap-3 text-center">
+            <div class="discover-icon-circle flex h-20 w-20 items-center justify-center rounded-full border border-white/10 sm:h-24 sm:w-24 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
               <img src="https://api.iconify.design/mdi/human-handsup.svg?color=%23ffffff" alt="Movement icon" class="h-9 w-9 sm:h-10 sm:w-10" loading="lazy" />
             </div>
-            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px]">Movement</span>
+            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px] transition-colors duration-300 group-hover:text-white">Movement</span>
           </div>
 
-          <div class="discover-icon flex flex-col items-center gap-3 text-center">
-            <div class="flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
+          <!-- Icon Item 3 -->
+          <div class="discover-icon group flex cursor-pointer flex-col items-center gap-3 text-center">
+            <div class="discover-icon-circle flex h-20 w-20 items-center justify-center rounded-full border border-white/10 sm:h-24 sm:w-24 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
               <img src="https://api.iconify.design/mdi/head-cog-outline.svg?color=%23ffffff" alt="Contemplation icon" class="h-9 w-9 sm:h-10 sm:w-10" loading="lazy" />
             </div>
-            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px]">Contemplation</span>
+            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px] transition-colors duration-300 group-hover:text-white">Contemplation</span>
           </div>
 
-          <div class="discover-icon flex flex-col items-center gap-3 text-center">
-            <div class="flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
+          <!-- Icon Item 4 -->
+          <div class="discover-icon group flex cursor-pointer flex-col items-center gap-3 text-center">
+            <div class="discover-icon-circle flex h-20 w-20 items-center justify-center rounded-full border border-white/10 sm:h-24 sm:w-24 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
               <img src="https://api.iconify.design/mdi/flower-outline.svg?color=%23ffffff" alt="Breathing icon" class="h-9 w-9 sm:h-10 sm:w-10" loading="lazy" />
             </div>
-            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px]">Breathing</span>
+            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px] transition-colors duration-300 group-hover:text-white">Breathing</span>
           </div>
 
-          <div class="discover-icon flex flex-col items-center gap-3 text-center">
-            <div class="flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
+          <!-- Icon Item 5 -->
+          <div class="discover-icon group flex cursor-pointer flex-col items-center gap-3 text-center">
+            <div class="discover-icon-circle flex h-20 w-20 items-center justify-center rounded-full border border-white/10 sm:h-24 sm:w-24 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
               <img src="https://api.iconify.design/mdi/yoga.svg?color=%23ffffff" alt="Yoga icon" class="h-9 w-9 sm:h-10 sm:w-10" loading="lazy" />
             </div>
-            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px]">Yoga</span>
+            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px] transition-colors duration-300 group-hover:text-white">Yoga</span>
           </div>
 
-          <div class="discover-icon flex flex-col items-center gap-3 text-center">
-            <div class="flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
+          <!-- Icon Item 6 -->
+          <div class="discover-icon group flex cursor-pointer flex-col items-center gap-3 text-center">
+            <div class="discover-icon-circle flex h-20 w-20 items-center justify-center rounded-full border border-white/10 sm:h-24 sm:w-24 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);">
               <img src="https://api.iconify.design/mdi/meditation.svg?color=%23ffffff" alt="Tai Chi icon" class="h-9 w-9 sm:h-10 sm:w-10" loading="lazy" />
             </div>
-            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px]">Tai Chi</span>
+            <span class="text-[13px] font-medium text-lavender/80 sm:text-[14px] transition-colors duration-300 group-hover:text-white">Tai Chi</span>
           </div>
 
         </div>
       </div>
     </section>
 
-
-
     <!-- ===== FOOTER ===== -->
-     <footer class="bg-[#0c0a16] px-4 py-10 sm:px-6 snap-end">
-    <div class="mx-auto max-w-shell">
+    <footer class="bg-[#0c0a16] px-4 py-10 sm:px-6 snap-end">
+      <div class="mx-auto max-w-shell">
 
-      <div id="footerInner"
-        class="flex flex-col items-center gap-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-        <!-- Logo -->
-        <a href="#" class="flex shrink-0 items-center gap-2">
-          <span class="grid h-8 w-8 place-items-center rounded-full bg-brand/20 text-brand-light">
-            <img src="images/vector.svg" alt="Ettazenn logo" class="h-5 w-5 object-contain" />
-          </span>
-          <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
-        </a>
-
-        <!-- Centered links -->
-        <a href="about.html" class="text-lavender/70 transition hover:text-white">About Us</a>
-        <a href="why-ettazenn.html" class="text-lavender/70 transition hover:text-white">Why Ettazenn</a>
-        <a href="contact.html" class="text-lavender/70 transition hover:text-white">Contact Us</a>
-        <a href="privacy-policy.html" class="text-lavender/70 transition hover:text-white">Privacy Policy</a>
-
-        <!-- Social icons -->
-        <div class="flex shrink-0 items-center gap-4 text-white/70">
-          <!-- X (Twitter) -->
-          <a href="https://x.com/ettazenn" target="_blank" rel="noopener noreferrer" aria-label="X"
-            class="transition hover:text-white">
-            <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
-              <path
-                d="M18.24 2.5h3.32l-7.26 8.3 8.54 11.2h-6.68l-5.23-6.84-5.99 6.84H1.6l7.77-8.88L1.16 2.5h6.85l4.73 6.25L18.24 2.5Zm-1.17 17.5h1.84L7.03 4.4H5.05l12.02 15.6Z" />
-            </svg>
-          </a>
-          <!-- Facebook -->
-          <a href="https://www.facebook.com/ettazenn" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-            class="transition hover:text-white">
-            <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
-              <path
-                d="M13.5 21v-7.75h2.6l.39-3.02h-3v-1.93c0-.87.24-1.47 1.5-1.47h1.6V4.14C15.98 4.06 15.03 4 13.9 4c-2.35 0-3.96 1.43-3.96 4.06v2.17H7.33v3.02h2.6V21h3.57Z" />
-            </svg>
-          </a>
-          <!-- Instagram -->
-          <a href="https://www.instagram.com/ettazenn/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-            class="transition hover:text-white">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-[18px] w-[18px]">
-              <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
-              <circle cx="12" cy="12" r="4" />
-              <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
-            </svg>
-          </a>
-          <!-- WhatsApp -->
-          <a href="https://api.whatsapp.com/send?phone=966545071233" target="_blank" rel="noopener noreferrer"
-            aria-label="WhatsApp" class="transition hover:text-white">
-            <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
-              <path
-                d="M12.01 2C6.76 2 2.5 6.26 2.5 11.51c0 1.82.5 3.52 1.38 4.98L2 22l5.68-1.83a9.46 9.46 0 0 0 4.33 1.05h.01c5.25 0 9.51-4.26 9.51-9.51S17.26 2 12.01 2Zm5.56 13.47c-.24.66-1.4 1.27-1.93 1.34-.5.07-1.1.1-1.78-.11a13.6 13.6 0 0 1-1.62-.6c-2.86-1.24-4.72-4.14-4.86-4.33-.14-.19-1.16-1.54-1.16-2.94 0-1.4.73-2.08 1-2.36.24-.28.53-.34.7-.34.18 0 .35 0 .5.01.16.01.38-.06.6.46.24.57.8 1.97.87 2.11.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.16-.3.36-.42.48-.14.14-.29.29-.13.57.17.28.74 1.22 1.6 1.98 1.1.98 2.02 1.28 2.31 1.42.28.14.45.12.62-.07.16-.2.7-.82.89-1.1.19-.28.38-.23.63-.14.26.09 1.65.78 1.94.92.28.14.47.21.54.33.07.12.07.7-.17 1.36Z" />
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Divider -->
-      <div class="my-6 h-px w-full bg-white/5"></div>
-
-      <!-- Payment + App badges -->
-      <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
-
-        <!-- Payment methods -->
-        <div class="flex items-center justify-center gap-4">
-
-          <!-- Mastercard -->
-          <div class="flex h-8 w-14 items-center justify-center">
-            <img src="images/mastercard.svg" alt="Mastercard" class="h-auto w-12 object-contain" />
-          </div>
-
-          <!-- Visa -->
-          <div class="flex h-8 w-14 items-center justify-center">
-            <img src="images/visa.svg" alt="Visa" class="h-auto w-12 object-contain" />
-          </div>
-
-          <!-- Mada -->
-          <div class="flex h-8 w-14 items-center justify-center">
-            <img src="images/mada.jfif" alt="Mada" class="h-auto w-12 object-contain" />
-          </div>
-
-          <!-- Apple Pay -->
-          <div class="flex h-8 w-14 items-center justify-center">
-            <img src="images/apple-pay.png" alt="Apple Pay" class="h-auto w-12 object-contain" />
-          </div>
-
-        </div>
-
-        <!-- App store badges -->
-        <div class="flex flex-row items-center justify-center gap-3">
-          <!-- App Store Badge -->
-          <a href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455" target="_blank"
-            rel="noopener noreferrer" aria-label="Download on the App Store"
-            class="hero-store-badge flex w-[162px] flex-1 items-center justify-center gap-2 rounded-[7.8px] bg-white px-3.5 py-1.5 ring-1 ring-white/10 transition hover:bg-white/90 sm:w-auto">
-            <svg viewBox="0 0 24 24" fill="currentColor" class="h-8 w-5 text-black shrink-0">
-              <path
-                d="M16.365 1.43c0 1.14-.417 2.09-1.25 2.85-.83.76-1.79 1.2-2.79 1.12-.13-1.09.42-2.24 1.2-2.98.85-.8 2.02-1.32 2.84-1.36.02.12.02.24 0 .37zM20.5 17.2c-.55 1.27-.82 1.84-1.53 2.97-.99 1.57-2.39 3.53-4.12 3.55-1.54.01-1.94-1-4.03-.99-2.09.01-2.52 1.01-4.06.99-1.73-.02-3.05-1.79-4.04-3.36-2.77-4.39-3.06-9.54-1.35-12.28 1.21-1.95 3.13-3.09 4.93-3.09 1.83 0 2.98 1 4.5 1 1.47 0 2.36-1 4.48-1 1.6 0 3.3.87 4.51 2.38-3.96 2.17-3.32 7.82.71 9.83z" />
-            </svg>
-            <span class="flex w-full min-w-0 flex-col items-center justify-center text-center leading-none">
-              <span class="block text-[8px] font-medium uppercase tracking-tight text-black/70">Download on the</span>
-              <span class="block text-[13px] font-semibold tracking-tight text-black">App Store</span>
+        <div id="footerInner"
+          class="flex flex-col items-center gap-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <!-- Logo -->
+          <a href="#" class="flex shrink-0 items-center gap-2">
+            <span class="grid h-8 w-8 place-items-center rounded-full bg-brand/20 text-brand-light">
+              <img src="images/vector.svg" alt="Ettazenn logo" class="h-5 w-5 object-contain" />
             </span>
+            <span class="text-[20px] font-semibold tracking-tight text-white">Ettazenn</span>
           </a>
 
-          <!-- Google Play Badge -->
-          <a href="https://play.google.com/store/apps/details?id=com.ettazenn.ettazen" target="_blank"
-            rel="noopener noreferrer" aria-label="Get it on Google Play"
-            class="hero-store-badge flex w-[162px] flex-1 items-center justify-center gap-2 rounded-[7.8px] bg-white px-3.5 py-1.5 ring-1 ring-white/10 transition hover:bg-white/90 sm:w-auto">
-            <svg viewBox="0 0 24 24" class="h-8 w-5 shrink-0">
-              <path fill="#EA4335" d="M3.6 2.2 13.4 12 3.6 21.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1z" />
-              <path fill="#FBBC04" d="m17.2 8.3 3.1 1.8c1 .6 1 2.2 0 2.8l-3.1 1.8L14 12l3.2-3.7z" />
-              <path fill="#34A853" d="M3.6 21.8 13.4 12l3.8 2.7-11.1 6.4c-.9.5-1.9.3-2.5-.3z" />
-              <path fill="#4285F4" d="M3.6 2.2c.6-.6 1.6-.8 2.5-.3l11.1 6.4L13.4 12 3.6 2.2z" />
-            </svg>
-            <span class="flex w-full min-w-0 flex-col items-center justify-center text-center leading-none">
-              <span class="block text-[8px] font-medium uppercase tracking-tight text-black/70">GET IT ON</span>
-              <span class="block whitespace-nowrap text-[13px] font-semibold tracking-tight text-black">Google
-                Play</span>
-            </span>
-          </a>
+          <!-- Centered links -->
+          <a href="about.html" class="text-lavender/70 transition hover:text-white">About Us</a>
+          <a href="why-ettazenn.html" class="text-lavender/70 transition hover:text-white">Why Ettazenn</a>
+          <a href="contact.html" class="text-lavender/70 transition hover:text-white">Contact Us</a>
+          <a href="privacy-policy.html" class="text-lavender/70 transition hover:text-white">Privacy Policy</a>
+
+          <!-- Social icons -->
+          <div class="flex shrink-0 items-center gap-4 text-white/70">
+            <!-- X (Twitter) -->
+            <a href="https://x.com/ettazenn" target="_blank" rel="noopener noreferrer" aria-label="X"
+              class="transition hover:text-white">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
+                <path
+                  d="M18.24 2.5h3.32l-7.26 8.3 8.54 11.2h-6.68l-5.23-6.84-5.99 6.84H1.6l7.77-8.88L1.16 2.5h6.85l4.73 6.25L18.24 2.5Zm-1.17 17.5h1.84L7.03 4.4H5.05l12.02 15.6Z" />
+              </svg>
+            </a>
+            <!-- Facebook -->
+            <a href="https://www.facebook.com/ettazenn" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
+              class="transition hover:text-white">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
+                <path
+                  d="M13.5 21v-7.75h2.6l.39-3.02h-3v-1.93c0-.87.24-1.47 1.5-1.47h1.6V4.14C15.98 4.06 15.03 4 13.9 4c-2.35 0-3.96 1.43-3.96 4.06v2.17H7.33v3.02h2.6V21h3.57Z" />
+              </svg>
+            </a>
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/ettazenn/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+              class="transition hover:text-white">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-[18px] w-[18px]">
+                <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://api.whatsapp.com/send?phone=966545071233" target="_blank" rel="noopener noreferrer"
+              aria-label="WhatsApp" class="transition hover:text-white">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="h-[18px] w-[18px]">
+                <path
+                  d="M12.01 2C6.76 2 2.5 6.26 2.5 11.51c0 1.82.5 3.52 1.38 4.98L2 22l5.68-1.83a9.46 9.46 0 0 0 4.33 1.05h.01c5.25 0 9.51-4.26 9.51-9.51S17.26 2 12.01 2Zm5.56 13.47c-.24.66-1.4 1.27-1.93 1.34-.5.07-1.1.1-1.78-.11a13.6 13.6 0 0 1-1.62-.6c-2.86-1.24-4.72-4.14-4.86-4.33-.14-.19-1.16-1.54-1.16-2.94 0-1.4.73-2.08 1-2.36.24-.28.53-.34.7-.34.18 0 .35 0 .5.01.16.01.38-.06.6.46.24.57.8 1.97.87 2.11.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.16-.3.36-.42.48-.14.14-.29.29-.13.57.17.28.74 1.22 1.6 1.98 1.1.98 2.02 1.28 2.31 1.42.28.14.45.12.62-.07.16-.2.7-.82.89-1.1.19-.28.38-.23.63-.14.26.09 1.65.78 1.94.92.28.14.47.21.54.33.07.12.07.7-.17 1.36Z" />
+              </svg>
+            </a>
+          </div>
         </div>
 
+        <!-- Divider -->
+        <div class="my-6 h-px w-full bg-white/5"></div>
+
+        <!-- Payment + App badges -->
+        <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+
+          <!-- Payment methods -->
+          <div class="flex items-center justify-center gap-4">
+            <div class="flex h-8 w-14 items-center justify-center">
+              <img src="images/mastercard.svg" alt="Mastercard" class="h-auto w-12 object-contain" />
+            </div>
+            <div class="flex h-8 w-14 items-center justify-center">
+              <img src="images/visa.svg" alt="Visa" class="h-auto w-12 object-contain" />
+            </div>
+            <div class="flex h-8 w-14 items-center justify-center">
+              <img src="images/mada.jfif" alt="Mada" class="h-auto w-12 object-contain" />
+            </div>
+            <div class="flex h-8 w-14 items-center justify-center">
+              <img src="images/apple-pay.png" alt="Apple Pay" class="h-auto w-12 object-contain" />
+            </div>
+          </div>
+
+          <!-- App store badges -->
+          <div class="flex flex-row items-center justify-center gap-3">
+            <a href="https://apps.apple.com/us/app/ettzen-%D8%A7%D8%AA%D8%B2%D9%86/id6476050455" target="_blank"
+              rel="noopener noreferrer" aria-label="Download on the App Store"
+              class="hero-store-badge flex w-[162px] flex-1 items-center justify-center gap-2 rounded-[7.8px] bg-white px-3.5 py-1.5 ring-1 ring-white/10 transition hover:bg-white/90 sm:w-auto">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="h-8 w-5 text-black shrink-0">
+                <path
+                  d="M16.365 1.43c0 1.14-.417 2.09-1.25 2.85-.83.76-1.79 1.2-2.79 1.12-.13-1.09.42-2.24 1.2-2.98.85-.8 2.02-1.32 2.84-1.36.02.12.02.24 0 .37zM20.5 17.2c-.55 1.27-.82 1.84-1.53 2.97-.99 1.57-2.39 3.53-4.12 3.55-1.54.01-1.94-1-4.03-.99-2.09.01-2.52 1.01-4.06.99-1.73-.02-3.05-1.79-4.04-3.36-2.77-4.39-3.06-9.54-1.35-12.28 1.21-1.95 3.13-3.09 4.93-3.09 1.83 0 2.98 1 4.5 1 1.47 0 2.36-1 4.48-1 1.6 0 3.3.87 4.51 2.38-3.96 2.17-3.32 7.82.71 9.83z" />
+              </svg>
+              <span class="flex w-full min-w-0 flex-col items-center justify-center text-center leading-none">
+                <span class="block text-[8px] font-medium uppercase tracking-tight text-black/70">Download on the</span>
+                <span class="block text-[13px] font-semibold tracking-tight text-black">App Store</span>
+              </span>
+            </a>
+
+            <a href="https://play.google.com/store/apps/details?id=com.ettazenn.ettazen" target="_blank"
+              rel="noopener noreferrer" aria-label="Get it on Google Play"
+              class="hero-store-badge flex w-[162px] flex-1 items-center justify-center gap-2 rounded-[7.8px] bg-white px-3.5 py-1.5 ring-1 ring-white/10 transition hover:bg-white/90 sm:w-auto">
+              <svg viewBox="0 0 24 24" class="h-8 w-5 shrink-0">
+                <path fill="#EA4335" d="M3.6 2.2 13.4 12 3.6 21.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1z" />
+                <path fill="#FBBC04" d="m17.2 8.3 3.1 1.8c1 .6 1 2.2 0 2.8l-3.1 1.8L14 12l3.2-3.7z" />
+                <path fill="#34A853" d="M3.6 21.8 13.4 12l3.8 2.7-11.1 6.4c-.9.5-1.9.3-2.5-.3z" />
+                <path fill="#4285F4" d="M3.6 2.2c.6-.6 1.6-.8 2.5-.3l11.1 6.4L13.4 12 3.6 2.2z" />
+              </svg>
+              <span class="flex w-full min-w-0 flex-col items-center justify-center text-center leading-none">
+                <span class="block text-[8px] font-medium uppercase tracking-tight text-black/70">GET IT ON</span>
+                <span class="block whitespace-nowrap text-[13px] font-semibold tracking-tight text-black">Google Play</span>
+              </span>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Divider -->
+        <div class="my-6 h-px w-full bg-white/5"></div>
+
+        <!-- Copyright -->
+        <div class="flex flex-col items-center gap-1 text-center sm:items-start sm:text-left">
+          <p class="text-[12px] text-lavender/50">© 2026 Ettazenn. All rights reserved.</p>
+          <p class="text-[12px] italic text-lavender/40">Establishment Ettazenn For Information Technology</p>
+        </div>
 
       </div>
-
-      <!-- Divider -->
-      <div class="my-6 h-px w-full bg-white/5"></div>
-
-      <!-- Copyright -->
-      <div class="flex flex-col items-center gap-1 text-center sm:items-start sm:text-left">
-        <p class="text-[12px] text-lavender/50">© 2026 Ettazenn. All rights reserved.</p>
-        <p class="text-[12px] italic text-lavender/40">Establishment Ettazenn For Information Technology</p>
-      </div>
-
-    </div>
-  </footer>
+    </footer>
 
   </main>
 
@@ -402,36 +411,6 @@
           start: "top 85%",
         }
       });
-    });
-
-    // Hero phone mockup — load-in reveal + a slow ambient float
-    gsap.from('#heroMockup', {
-      opacity: 0,
-      y: 40,
-      scale: 0.96,
-      duration: 0.9,
-      delay: 0.3,
-      ease: "power2.out"
-    });
-    gsap.to('#heroMockup img', {
-      y: -10,
-      duration: 2.6,
-      ease: "sine.inOut",
-      repeat: -1,
-      yoyo: true,
-      delay: 1.2
-    });
-
-    // Pain-points paired visual — scroll reveal
-    gsap.from('#painPointsVisual', {
-      opacity: 0,
-      x: 40,
-      duration: 0.9,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: '#painPointsVisual',
-        start: "top 80%",
-      }
     });
 
     // Discover section — icon circles stagger in together
