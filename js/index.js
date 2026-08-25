@@ -816,29 +816,53 @@ flyStraight(flyer4, enterPoint, incomingWrapRect, TOTAL_TIME, { startScale: 1, e
   // it — scoped strictly to the stage element, so this never touches or
   // blocks the page's own scroll anywhere else. A short cooldown stops a
   // single scroll gesture from firing multiple card changes at once.
-  var wheelCooldown = false;
-  var WHEEL_COOLDOWN_MS = SWAP_DELAY + 150;
+ // Mouse-wheel scrolling while the cursor is over the card.
+// Cards consume the scroll only while another card is available.
+// At the first/last card, normal page/section scrolling takes over.
+var wheelCooldown = false;
+var WHEEL_COOLDOWN_MS = SWAP_DELAY + 150;
 
-  stage.addEventListener('wheel', function (e) {
-    if (animating || wheelCooldown) {
-      e.preventDefault();
-      return;
+stage.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) < 4) return;
+
+    var scrollingDown = e.deltaY > 0;
+    var scrollingUp = e.deltaY < 0;
+
+    // At the LAST card + scrolling down:
+    // allow the page to continue to the next section.
+    if (scrollingDown && index === categories.length - 1) {
+        wheelCooldown = false;
+        return;
     }
-    if (Math.abs(e.deltaY) < 4) return; // ignore tiny/trackpad jitter
+
+    // At the FIRST card + scrolling up:
+    // allow the page to continue to the previous section.
+    if (scrollingUp && index === 0) {
+        wheelCooldown = false;
+        return;
+    }
+
+    // While there is another card available, consume the wheel
+    // and use the existing card animation.
+    if (animating || wheelCooldown) {
+        e.preventDefault();
+        return;
+    }
 
     e.preventDefault();
     wheelCooldown = true;
 
-    if (e.deltaY > 0) {
-      next();
+    if (scrollingDown) {
+        next();
     } else {
-      prev();
+        prev();
     }
 
     window.setTimeout(function () {
-      wheelCooldown = false;
+        wheelCooldown = false;
     }, WHEEL_COOLDOWN_MS);
-  }, { passive: false });
+
+}, { passive: false });
 
   // A plain click (no drag) also changes the card — treat it like a tap
   // that scrolls the stack up/down. Clicking the top half of the card
